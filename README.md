@@ -1,2 +1,3 @@
-# custos
-custos
+# Custos
+
+OpenSource Admin Addon for GMod.
