@@ -1,2 +1,3 @@
 # Custos
-Simple open source administration mod for Garry's Mod.
+
+OpenSource Admin Addon for GMod.
