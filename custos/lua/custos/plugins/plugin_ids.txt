@@ -1,0 +1,5 @@
+1 = Ban Plugin (sv_ban.lua)
+2 = Run Lua (sv_runlua.lua)
+3 = Admin Utility Commands (sv_adminutils.lua)
+4 = Player Pickup (sv_playerpickup.lua)
+5 = Gag/Mute (sv_mute.lua)

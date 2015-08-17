@@ -1,0 +1,139 @@
+Version number:
+	0.0.0i
+	^ Release Version
+	  ^ Major update number
+	    ^ Minor update number
+	     ^ Status (i = in dev, a = alpha, b = beta, r = release)
+
+::::::::::::::::::::::::::::::::::::
+Version 0.2.0i (20)
+	[CHANGE] Renamed con lib to ccm and removed it as we're no longer using it for now.
+	[CHANGE] Changed the config back to the old lua format. :(
+	[FIX] Fix'd the table functions in netx lib that shouldn't even exist.
+		we need them for backwards capability because i'm lazy
+
+	I still haven't learned how to do changelogs are versioning correctly yet.
+
+Version 0.1.9i (19)
+	[ADD] added con library
+		Makes a humanreadable config with sections, similar to ini config format.
+	[ADD] added a simple way to network stuff to the client and vice-versa
+	[CHANGE] changed the way libaries are loaded a bit.
+		external libaries load first because they're independent
+	[REMOVE] removed the menu convert functions they're no longer being used.
+	[REMOVE] removed server side derma menu functions due to them not working.
+	[FIX] Fixed a few small bugs due to coding errors.
+
+	Still need to add table support to the con library format, and a way to generate/read comments.
+
+Version 0.1.8i (18)
+	Reverted back to vON.
+	+Added netx library
+	+Added colorx library
+		We no longer save RGB of the group color, we save by the hex instead.
+	+Added multifolder plugin loading.
+		You can now have multiple files for a single plugin.
+	+Added user permissions
+		You can now give specific users permissions.
+	+Added global table for command (Custos.G.Commands)
+	Improved plugin system.
+
+Version 0.1.7i (17)
+	Replaced vON with pON
+		pON is faster and creates a shorter string.
+
+Version 0.1.6i (16)
+	Started working on player quick menu
+	+Added client function Player:GetGroupColor() to get a player's group color.
+	+Added Gamemodes field to plugin structure
+		Allows people to register their plugin based on what gamemode is loaded.
+	+Added more plugins
+
+Version 0.1.5i (15)
+	Fixed ban/unban system
+	+Added Custos.PlayerName(Player) function to get a player's name
+
+Version 0.1.4i (14)
+	+Added group parenting
+	Fixed console commands
+	Fixed Custos.FindPlayer - it should now work properly.
+	Fixed a few other things here and there.
+	Fixed Custos.Notify
+	Improved RunLua plugin.
+	Simplified group permission check.
+
+Version 0.1.3i (13)
+	+Added internal version number
+	+Added sh_init_loader - our loader system is now contained in there
+		Loading is now down in sh_init instead
+			client/shared files should load correctly now.
+	+Added our own PrintTable function (PrintTableEx)
+	+Added cu_setgroup command to allow you to set a person's usergroup.
+		Currently not finished.
+	-Removed sv_init as it's no longer needed.
+	Fix'd server side chat.AddText()
+
+Version 0.1.2i
+	+Added RunLua plugin
+	Fix'd logging
+	Fix'd group loading
+	Fix'd user loading and saving
+	Fix'd plugin object
+	Fix'd a few smaller bugs.
+
+Version 0.1.1i
+	+Added logging for server events and chat.
+	+Added check to delete old logs.
+	+Added new SQL system.
+	Finished SQLite
+
+Version 0.1.0i
+	+Added changelog
+	+Added group immunity
+	+Added get functions to get group data. (Ex. Custos.GetGroupPerms(groupid))
+	+Added group and user loading on server start up.
+	+Added help command.
+	+Added permissions table where all permissions have to be registered.
+		You can register permissions with Custos.Perms.Register(permission)
+	+Added chat commands.
+	+Added chat command arguement to pluginMeta:AddCommand
+	+Added Logging
+	Renamed Custos.CreatePlugin to Custos.DefinePlugin
+	Override IsAdmin, IsSuperAdmin, Nick, and Name functions to use our group system.
+	Changed config around a bit
+	Modified Plugin Permission function (pluginMeta:AddPermissions())
+	Moved Ban Plugin to core, due to it being a core plugin.
+
+Version 0.0.9i
+	Modified Plugin System
+
+Version 0.0.8i
+	Modified Plugin System
+	Modified Ban Plugin
+
+Version 0.0.7i
+	Modified everything basically.
+
+Version 0.0.6i
+	+Added Group System
+	+Added VON module (https://github.com/vercas/vON)
+	Renamed sv_core to sv_init
+	Modified a bunch of stuff
+
+Version 0.0.5i
+	Modified Config, Core, and Plugin System
+
+Version 0.0.4i
+	+Added shared chat.AddText()
+	Modified Core
+
+Version 0.0.3i
+	Modified everything
+
+Version 0.0.2i
+	+Added Plugin System
+	+Added Ban Plugin
+	Modified MySQL, SQLite, and Core
+
+Version 0.0.1i
+	Initial Creation
