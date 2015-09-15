@@ -16,8 +16,8 @@ PLUGIN.Author = "Wishbone"
 PLUGIN.Desc = "Ban people."
 
 PLUGIN:AddPermissions({
-	"cu_ban",
-	"cu_unban"
+	["cu_ban"] = "Ban",
+	["cu_unban"] = "Unban"
 })
 
 Custos.G.Bans = {}

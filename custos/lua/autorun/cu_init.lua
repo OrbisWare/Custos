@@ -11,8 +11,15 @@
 	We load the core files here.
 */
 Custos = {}
-Custos.Version = "0.2.0i"
-Custos.InternalVersion = 20
+Custos.Version = 0
+Custos.InternalVersion = 0
+
+if file.Exists("data/version.txt", "GAME") then
+	local vers = file.Read("data/version.txt", "GAME")
+
+	Custos.Version = string.sub(vers, 1, 6)
+	Custos.InternalVersion = string.sub(vers, 8, vers:len())
+end
 
 if SERVER then
 	AddCSLuaFile("custos/sh_init_loader.lua")

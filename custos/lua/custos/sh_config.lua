@@ -49,6 +49,12 @@ Custos.G.Config.ChatPrefixes = {
 }
 
 /*------------------
+Chat Echo
+--------------------*/
+Custos.G.Config.ChatAdmin = false //Only echo to staff user groups.
+Custos.G.Config.ChatSilent = false //Don't echo at all.
+
+/*------------------
 Logging System
 --------------------*/
 Custos.G.Config.Log = true //Enable logging.

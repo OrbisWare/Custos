@@ -11,8 +11,6 @@
 	SQL Core System
 	defines the core of SQL functions
 */
-
-
 Custos.SQLCore = {}
 Custos.SQLCore.ActiveSQL = nil
 Custos.SQLCore._SQLTBL = {}

@@ -24,9 +24,8 @@ end
 function Custos.Notify(ply, ...)
 	local args = {...}
 
-	if type(ply) == "Player" then
+	if utilx.CheckType(ply, "Player") then
 		chat.AddText(ply, COLOR_TAG, "[Custos] ", unpack(args))
-
 	else
 		MsgC(unpack(args))
 	end
@@ -36,7 +35,13 @@ function Custos.Broadcast(...)
 	local args = {...}
 
 	for k,v in pairs(player.GetAll()) do
-		Custos.Notify(v, unpack(args))
+		if Custos.G.Config.ChatSilent then
+			return
+		elseif Custos.G.Config.ChatAdmin and ply:HasPermission("cu_adminecho") then
+			Custos.Notify(v, unpack(args))
+		else
+			Custos.Notify(v, unpack(args))
+		end
 	end
 end
 

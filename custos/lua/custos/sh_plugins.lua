@@ -14,9 +14,7 @@ function Custos.Plugin.GetActivePlugins()
 	local pluginList = {}
 
 	for k,v in pairs(Custos.G.Plugins) do
-		for _,p in pairs(v) do
-			pluginList[p.ID] = p.Name
-		end
+		pluginList[k] = v.Name
 	end
 
 	return pluginList
@@ -50,13 +48,10 @@ function Custos.DefinePlugin()
 end
 
 function pluginMeta:AddPermissions(perm)
-	if utilx.CheckType(perm, "table") then
-		for _,v in pairs(perm) do
-			table.insert(self.Perms, v)
+	if utilx.CheckTypeStrict(perm, "table") then
+		for k,v in pairs(perm) do
+			self.Perms[k] = v
 		end
-
-	elseif utilx.CheckType(perm, "string") then
-		table.insert(self.Perms, perm)
 	end
 end
 
@@ -81,7 +76,7 @@ function pluginMeta:Inject()
 
 	if SERVER then
 		for k,v in pairs(self.Perms) do
-			Custos.Perm.Register(v)
+			Custos.Perm.Register({k, v})
 		end
 
 		for k,v in pairs(self.Command) do

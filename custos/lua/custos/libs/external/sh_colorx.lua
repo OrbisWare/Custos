@@ -21,11 +21,13 @@ function colorx.hextostring(hex)
 	local str = ""
 	while hex > 0 do
 		local m = fmod(hex, 16)
+		//print(m)
 		str = conversionTable[m+1]..str
+		//print(str)
 		hex = floor(hex / 16)
 	end
 	if str == "" then str = "0" end
-	return str
+	return "#"..str
 end
 
 //Unpack a color table.
@@ -51,19 +53,38 @@ end
 
 //Convert Hex to RGB
 function colorx.hextorgb(hex)
-	local b = band(rshift(hex, 0), 255)
-	local g = band(rshift(hex, 8), 255)
-	local r = band(rshift(hex, 16), 255)
+	if type(hex) == "number" then
+		local b = band(rshift(hex, 0), 255)
+		local g = band(rshift(hex, 8), 255)
+		local r = band(rshift(hex, 16), 255)
 
-	return r, g, b
+		return {
+			["r"]=r,
+			["g"]=g,
+			["b"]=b
+		}
+
+	elseif type(hex) == "string" then
+
+	end
 end
 
 //Convert Hex to RGBA
 function colorx.hextorgba(hex)
-	local a = band(rshift(hex, 0), 255)
-	local b = band(rshift(hex, 8), 255)
-	local g = band(rshift(hex, 16), 255)
-	local r = band(rshift(hex, 24), 255)
+	if type(hex) == "number" then
+		local a = band(rshift(hex, 0), 255)
+		local b = band(rshift(hex, 8), 255)
+		local g = band(rshift(hex, 16), 255)
+		local r = band(rshift(hex, 24), 255)
 
-	return r, g, b, a
+		return {
+			["r"]=r,
+			["g"]=g,
+			["b"]=b,
+			["a"]=a
+		}
+
+	elseif type(hex) == "string" then
+
+	end
 end

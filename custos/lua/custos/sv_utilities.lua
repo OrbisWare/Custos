@@ -28,6 +28,13 @@ function Custos.SQLVersion()
 	return Custos.SQLCore.Version()
 end
 
+/*function Custos.SQLError(err, query, trace)
+	ErrorNoHalt("[SQL] Error: "..err.." ["..query.."]\n")
+	if trace then
+		debug.Trace()
+	end
+end*/
+
 function Custos.FindPlayer(str, ply, unrestr)
 	local sL = string.lower
 
@@ -93,10 +100,11 @@ function Custos.FindPlayer(str, ply, unrestr)
 end
 
 /*
-	Based off Breakpoint's AddCmd function.
+	Console Command System
+	-Based off Breakpoint's AddCmd function.
 */
 function Custos.AddConCommand(name, callback, permi, help)
-	if permi and !table.HasValue(Custos.G.Permissions, permi) then
+	if permi and !Custos.G.Permissions[permi] then
 		Custos.Error("CONCMD", "Permission not registered: "..permi, false)
 		return false
 	end
@@ -139,20 +147,62 @@ function Custos.RemoveConCommand(cmd)
 	end
 end
 
-function Custos.SQLError(err, query, trace)
-	ErrorNoHalt("[SQL] Error: "..err.." ["..query.."]\n")
-	if trace then
-		debug.Trace()
+/*
+	Concept Console Command System
+	-Some concept for console command system.
+
+function Custos.AddConCommand(cmd, callback, permi, help)
+	if permi and !table.HasValue(Custos.G.Permissions, permi) then
+		Custos.Error("CONCMD", "Permission not registered: "..permi, false)
+		return false
 	end
+
+	Custos.G.Commands[cmd] = {
+		callback = callback,
+		permission = permi,
+		help = help
+	}
 end
 
+function Custos.ProcessConCommand(cmd)
+	local cmds = Custos.G.Commands
+	local callback = cmds[cmd].callback
+	local permission = cmds[cmd].permission
+	local help = cmds[cmd].help
+
+	concommand.Add("cu "..cmd, function(ply, cmd, args, raw)
+		if !IsValid(ply) then
+			ply = {
+				GetUserGroup,IsUserGroup,IsAdmin,IsSuperAdmin = function() return true end,
+				HasPermission = function() return true end,
+				GetImmunity = function() return 0x3E8 end,
+				CanTarget = function() return true end,
+			}
+		end
+		
+		if permission and !ply:HasPermission(permission) then
+			Custos.Notify(ply, COLOR_ERROR, "You don't have access to that command!")
+			Custos.WriteLog("COMMAND", "%s tried to run command %s", Custos.PlayerName(ply), name)
+			return
+		end
+		
+		local run, err, msg = pcall(callback, ply, raw, unpack(args))
+		if !run then
+			Custos.Notify(ply, COLOR_ERROR, "Command failed to run: "..err)
+			Custos.WriteLog("COMMAND", "%s tried to run command %s. Error %s", Custos.PlayerName(ply), name, err)
+			return
+		end
+	end, nil, help)
+end
+*/
+/*
+	Chat Command System
+	-Concept by Sassilization
+*/
 function Custos.AddChatCommand(chatcmd, cmd)
 	ChatCommands[chatcmd] = cmd
 end
 
-/*
-	Concept by Sassilization
-*/
 function Custos.RemoveChatCommand(chatcmd)
 	ChatCommands[chatcmd] = nil
 end

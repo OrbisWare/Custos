@@ -8,7 +8,7 @@
 
 	~https://github.com/BadWolfGames/custos
 
-	QuickMenu
+	Quick Menu
 */
 local plyMeta = FindMetaTable("Player")
 

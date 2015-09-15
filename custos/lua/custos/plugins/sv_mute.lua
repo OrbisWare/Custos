@@ -16,8 +16,8 @@ PLUGIN.Author = "Wishbone"
 PLUGIN.Desc = "Gag and/or mute players."
 
 PLUGIN:AddPermissions({
-	"cu_gag",
-	"cu_mute"
+	["cu_gag"] = "Gag",
+	["cu_mute"] = "Mute"
 })
 
 PLUGIN:AddCommand("cu_gag", function(ply, raw, name)
@@ -29,9 +29,11 @@ PLUGIN:AddCommand("cu_gag", function(ply, raw, name)
 
 	if target then
 		if !target.CanSpeak or target.CanSpeak == false then
+			Custos.WriteLog("ADMIN", "%s(%s) gagged %s(%s)", Custos.PlayerName(ply), Custos.GetSteamID(ply), Custos.PlayerName(target), target:SteamID())
 			Custos.Broadcast(COLOR_ADMIN, Custos.PlayerName(ply), COLOR_TEXT, " gagged ", COLOR_TARGET, Custos.PlayerName(target))
 			target.CanSpeak = true
 		else
+			Custos.WriteLog("ADMIN", "%s(%s) ungagged %s(%s)", Custos.PlayerName(ply), Custos.GetSteamID(ply), Custos.PlayerName(target), target:SteamID())
 			Custos.Broadcast(COLOR_ADMIN, Custos.PlayerName(ply), COLOR_TEXT, " ungagged ", COLOR_TARGET, Custos.PlayerName(target))
 			target.CanSpeak = false
 		end
@@ -53,9 +55,11 @@ PLUGIN:AddCommand("cu_mute", function(ply, raw, name)
 
 	if target then
 		if !target.CanType or target.CanType == false then
+			Custos.WriteLog("ADMIN", "%s(%s) muted %s(%s)", Custos.PlayerName(ply), Custos.GetSteamID(ply), Custos.PlayerName(target), target:SteamID())
 			Custos.Broadcast(COLOR_ADMIN, Custos.PlayerName(ply), COLOR_TEXT, " muted ", COLOR_TARGET, Custos.PlayerName(target))
 			target.CanType = true
 		else
+			Custos.WriteLog("ADMIN", "%s(%s) unmuted %s(%s)", Custos.PlayerName(ply), Custos.GetSteamID(ply), Custos.PlayerName(target), target:SteamID())
 			Custos.Broadcast(COLOR_ADMIN, Custos.PlayerName(ply), COLOR_TEXT, " unmuted ", COLOR_TARGET, Custos.PlayerName(target))
 			target.CanType = false
 		end

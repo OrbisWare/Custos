@@ -6,9 +6,25 @@ Version number:
 	     ^ Status (i = in dev, a = alpha, b = beta, r = release)
 
 ::::::::::::::::::::::::::::::::::::
+ToDo:
+	-Add plugin disable/enable.
+	-Rewrite SQL wrapper to work for MySQLoo, SQLite, and tMysql
+
+	-Finish HTML based menu.
+	-Networking stuff to client.
+	-Add Queue command plugin.
+	-Work on plugin system.
+	-Add some other useless plugins to make some people happy.
+
 Version 0.2.0i (20)
+	[ADDED] Update checker
+	[ADDED] New main menu based on HTML (Unfinished)
+	[ADDED] Console commands to modify user and group data.
+	[ADDED] Network functions for groups, users, and permissions.
 	[CHANGE] Renamed con lib to ccm and removed it as we're no longer using it for now.
 	[CHANGE] Changed the config back to the old lua format. :(
+	[CHANGE] Permissions are now stored with their user friendly name (for the gui)
+	[REMOVE] Useless networking method (cnet)
 	[FIX] Fix'd the table functions in netx lib that shouldn't even exist.
 		we need them for backwards capability because i'm lazy
 

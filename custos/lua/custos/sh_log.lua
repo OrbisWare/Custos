@@ -176,9 +176,9 @@ else
 		end
 
 		if #fArgs > 0 then
-			log = "["..prefix.."] "..string.format(str, unpack(fArgs)))
+			log = "["..prefix.."] "..string.format(str, unpack(fArgs))
 		else
-			log = "["..prefix.."] "..str)
+			log = "["..prefix.."] "..str
 		end
 
 		net.Start("cu_WriteLog")

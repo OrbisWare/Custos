@@ -15,7 +15,9 @@ PLUGIN.Name = "Run Lua"
 PLUGIN.Author = "Wishbone"
 PLUGIN.Desc = "Run lua code."
 
-PLUGIN:AddPermissions("cu_runlua")
+PLUGIN:AddPermissions({
+	["cu_runlua"] = "Run Lua"
+})
 
 PLUGIN:AddCommand("cu_runlua", function(ply, str)
 	local res = CompileString(str, "CU RunLua["..ply:SteamID().."]", false)

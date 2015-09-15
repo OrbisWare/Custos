@@ -41,3 +41,11 @@ function Custos.PlayerName(ply)
 		return "Console"
 	end
 end
+
+function Custos.GetSteamID(ply)
+	if IsValid(ply) and utilx.CheckType(ply, "Player") then
+		return ply:SteamID()
+	else
+		return "Console"
+	end
+end

@@ -10,6 +10,7 @@
 
 	Server User class functions and player functions
 */
+util.AddNetworkString("cu_SentUsers")
 local playerMeta = FindMetaTable("Player")
 
 function Custos.User.Load()
@@ -121,6 +122,7 @@ function Custos.User.Add(ply, group, perms)
 		lastConnected = os.time(),
 		perm = perm
 	}
+
 	hook.Call("CU_OnAddUser")
 end
 
@@ -148,6 +150,24 @@ function Custos.User.AddPerm(ply, permission, value)
 	end
 end
 
+function Custos.User.RemovePerm(ply, permission)
+	local sSteamid32
+
+	if utilx.CheckType(ply, "Player") then
+		sSteamid32 = ply:SteamID()
+
+	elseif utilx.IsValidSteamID(ply) then
+		sSteamid32 = ply
+	else
+		return false
+	end
+
+	local user = Custos.G.Users[sSteamid32]
+	if user and user.perm[permission] then
+		user.perm[permission]=nil
+	end
+end
+
 function Custos.User.CheckPerm(ply, permi)
 	local user = Custos.G.Users[ply:SteamID()]
 
@@ -156,13 +176,6 @@ function Custos.User.CheckPerm(ply, permi)
 	end
 
 	return false
-end
-
-function Custos.SendUserInfo(ply)
-	local group = ply:GetUserGroup()
-	local groupColor = Custos.Group.GetColor(group)
-
-	ply:SetNWInt("grpColor", colorx.rgbtohex(groupColor))
 end
 
 function Custos.User.Unload()
@@ -174,6 +187,15 @@ function Custos.User.Reload()
 	Custos.User.Load()
 end
 
+function Custos.User.Send(ply)
+	net.Start("cu_SentUsers")
+		netx.WriteTable(Custos.G.Users)
+	net.Send(ply)
+end
+
+/*
+	Player Functions
+*/
 function playerMeta:HasPermission(perm)
 	local group = self:GetUserGroup()
 
@@ -182,7 +204,6 @@ function playerMeta:HasPermission(perm)
 		local u = Custos.User.CheckPerm(self, perm)
 
 		if c then
-			print("penis")
 			return c
 		else
 			return u
@@ -225,17 +246,6 @@ function playerMeta:GetGroupColor()
 
 	return Custos.Group.GetColor(group)
 end
-
-//Clientside Player functions handle
-/*util.AddNetworkString("cu_Permission")
-net.Receive("cu_Permission", function(len, ply)
-	local perm = net.ReadString()
-	local check = ply:HasPermission(perm)
-
-	net.Start("cu_Permission")
-		net.WriteBit(check)
-	net.Send(ply)
-end)*/
 
 hook.Add("ShutDown", "cu_SaveUsers", function()
 	Custos.User.Unload()

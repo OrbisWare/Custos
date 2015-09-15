@@ -15,7 +15,9 @@ PLUGIN.Name = "Player Pickup"
 PLUGIN.Author = "Wishbone"
 PLUGIN.Desc = "You can pick up players with your physics gun."
 
-PLUGIN:AddPermissions("cu_playerpickup")
+PLUGIN:AddPermissions({
+	["cu_playerpickup"] = "Pickup Player"
+})
 
 PLUGIN:AddHook("PhysgunPickup", "CU_PlayerPickup", function(ply, ent)
 	if !IsValid(ent) then return false; end

@@ -169,7 +169,7 @@ netx.types = {
 	[NETX_bit] = {
 		write = function(v) net.WriteBit(v) end,
 		read = function() return net.ReadBit() end,
-	}
+	},
 	[NETX_int8] = {
 		write = function(v) net.WriteInt(v, 8) end,
 		read = function() return net.ReadInt(8) end,
@@ -249,7 +249,7 @@ netx.types = {
 		read = function() return net.ReadAngle() end,
 	},
 	[NETX_bool] = {
-		write = netx.types[NETX_bit].write,
+		write = function(v) net.WriteBit(v) end,
 		read = function() return net.ReadBit() == 1 end,
 	},
 	[NETX_color] = {
@@ -279,7 +279,7 @@ netx.types = {
 
 			return tbl
 		end,
-	}
+	},
 	[NETX_null] = {
 		write = function(v) return end,
 		read = function() return end,

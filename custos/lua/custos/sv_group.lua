@@ -10,6 +10,9 @@
 
 	Group system - serverside. Group and Perm class functions.
 */
+util.AddNetworkString("cu_SentGroups")
+util.AddNetworkString("cu_SentPermissions")
+
 function Custos.Group.Create(id, display, colorObj, inherit, perm, immunity)
 	local colorObj = utilx.CheckTypeStrict(colorObj, "table") 
 	local immunity = utilx.CheckTypeStrict(immunity, "number")
@@ -33,20 +36,23 @@ function Custos.Group.DefaultGroups()
 
 	Custos.G.Groups["superadmin"] = {
 		display = "Super Admin",
-		color = Color(255, 0, 0, 255),
+		color = Color(0, 255, 0, 255),
 		parent = "admin",
 		immunity = 99,
 		perm = {
 			["cu_runlua"]=true,
 			["cu_setusergroup"]=true,
 			["cu_rcon"]=true,
-			["cu_menu"]=true,
+			["cu_modifygroup"]=true,
+			["cu_removegroup"]=true,
+			["cu_creategroup"]=true,
+			["cu_modifyuser"]=true,
 		}
 	}
 
 	Custos.G.Groups["admin"] = {
 		display = "Admin",
-		color = Color(0, 255, 0, 255),
+		color = Color(255, 0, 0, 255),
 		parent = "moderator",
 		immunity = 20,
 		perm = {
@@ -57,7 +63,7 @@ function Custos.Group.DefaultGroups()
 
 	Custos.G.Groups["moderator"] = {
 		display = "Moderator",
-		color = Color(0, 255, 0, 255),
+		color = Color(255, 117, 0, 255),
 		parent = "user",
 		immunity = 10,
 		perm = {
@@ -68,12 +74,13 @@ function Custos.Group.DefaultGroups()
 			["cu_mute"]=true,
 			["cu_gag"]=true,
 			["cu_playermenu"]=true,
+			["cu_adminecho"]=true,
 		}
 	}
 
 	Custos.G.Groups["user"] = {
 		display = "User",
-		color = Color(0, 255, 0, 255),
+		color = Color(0, 0, 255, 255),
 		parent = "",
 		immunity = 0,
 		perm = {
@@ -90,7 +97,7 @@ function Custos.Group.Load()
 		for k,v in ipairs(data) do
 			Custos.G.Groups[v.name] = {
 				display = v.display,
-				color = Color(colorx.hextorgb(v.colorHex), 255)
+				color = Color(colorx.hextorgb(v.colorHex).r, colorx.hextorgb(v.colorHex).g, colorx.hextorgb(v.colorHex).b, 255),
 				parent = v.inherit,
 				perm = von.deserialize(tostring(v.perm)),
 				immunity = v.immunity
@@ -195,10 +202,24 @@ function Custos.Group.GetPerms(groupid)
 	return group.perm
 end
 
+function Custos.Group.SetImmunity(groupid, num)
+	if utilx.CheckTypeStrict(num, "number") then
+		local group = Custos.G.Groups[groupid]
+		group.immunity = num
+	else
+		return
+	end
+end
+
 function Custos.Group.GetImmunity(groupid)
 	local group = Custos.G.Groups[groupid]
 
 	return group.immunity
+end
+
+function Custos.Group.SetDisplay(groupid, name)
+	local group = Custos.G.Groups[groupid]
+	group.display = tostring(name)
 end
 
 function Custos.Group.GetDisplay(groupid)
@@ -207,10 +228,29 @@ function Custos.Group.GetDisplay(groupid)
 	return group.display
 end
 
+function Custos.Group.SetParent(groupid, parent)
+	local tbl = Custos.G.Groups
+
+	if tbl[parent] then
+		tbl[groupid].parent = parent
+	else
+		return
+	end
+end
+
 function Custos.Group.GetParent(groupid)
 	local group = Custos.G.Groups[groupid]
 
 	return group.parent
+end
+
+function Custos.Group.SetColor(groupid, obj)
+	if utilx.CheckTypeStrict(obj, "table") then
+		local group = Custos.G.Groups[groupid]
+		group.color = obj
+	else
+		return
+	end
 end
 
 function Custos.Group.GetColor(groupid)
@@ -219,13 +259,26 @@ function Custos.Group.GetColor(groupid)
 	return group.color
 end
 
+function Custos.Group.Send(ply)
+	net.Start("cu_SentGroups")
+		netx.WriteTable(Custos.G.Groups)
+	net.Send(ply)
+end
+
+/*
+	Permission System
+*/
 function Custos.Perm.Check(perm)
 	if utilx.CheckType(perm, "string") then
-		return table.HasValue(Custos.G.Permissions, perm)
+		if Custos.G.Permissions[perm] then
+			return true
+		end
 
 	elseif utilx.CheckType(perm, "table") then
 		for _,v in pairs(perm) do
-			return table.HasValue(Custos.G.Permissions, perm)
+			if Custos.G.Permissions[perm] then
+				return true
+			end
 		end
 	end
 	return false
@@ -233,30 +286,29 @@ end
 
 function Custos.Perm.Register(perm)
 	if Custos.Perm.Check(perm) then
-		return false
+		return
 	end
 
-	if utilx.CheckType(perm, "table") then
-		for _,v in pairs(perm) do
-			table.insert(Custos.G.Permissions, v)
+	if utilx.CheckTypeStrict(perm, "table") then
+		for k,v in pairs(perm) do
+			Custos.G.Permissions[k] = v
 			Custos.PrintDebug(v.." permissions sucessfully registered.")
 		end
-
-	elseif utilx.CheckType(perm, "string") then
-		table.insert(Custos.G.Permissions, perm)
-		Custos.PrintDebug(perm.." permission sucessfully registered.")
 	end
 end
 
 function Custos.Perm.Unregister(perm)
-	if utilx.CheckType(perm, "table") then
-		for _,v in pairs(perm) do
-			table.RemoveByValue(Custos.G.Permissions, v)
+	if utilx.CheckTypeStrict(perm, "table") then
+		for k,_ in pairs(perm) do
+			Custos.G.Permissions[k] = nil
 		end
-
-	elseif utilx.CheckType(perm, "string") then
-		table.RemoveByValue(Custos.G.Permissions, perm)
 	end
+end
+
+function Custos.Perm.Send(ply)
+	net.Start("cu_SentPermissions")
+		netx.WriteTable(Custos.G.Permissions)
+	net.Send(ply)
 end
 
 hook.Add("ShutDown", "cu_SaveGroups", function()

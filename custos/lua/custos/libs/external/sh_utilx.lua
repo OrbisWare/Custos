@@ -114,9 +114,9 @@ end
 
 function utilx.UpdateCheck()
 	local result = {
-		curVer = 0
-		newVer = 0
-		success = nil
+		curVer = 0,
+		newVer = 0,
+		success = nil,
 		error = nil
 	}
 
@@ -124,7 +124,7 @@ function utilx.UpdateCheck()
 		function(content)
 			result.newVer = tonumber(content[2])
 			result.success = true
-		end
+		end,
 		function(err)
 			result.success = false
 			result.error = err

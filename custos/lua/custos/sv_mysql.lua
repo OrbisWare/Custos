@@ -17,8 +17,8 @@ local _SQL = Custos.NewSqlObject()
 	Edit the following lines for MySQL info. If you're not using MySQL then ignore this file.
 */
 _SQL.Host = "localhost" //Put your SQL host here.
-_SQL.User = "" //Put the SQL user you want to use.
-_SQL.Pass = "" //Put SQL users password.
+_SQL.User = "server" //Put the SQL user you want to use.
+_SQL.Pass = "LHzpzd8MqEGfzaaw" //Put SQL users password.
 _SQL.Database = "custos" //The database you want to use
 _SQL.Port = 3306 //SQL Port
 _SQL.UnixSock = "/var/run/mysqld/mysqld.sock" //Opional Unix Socket. Keep empty
