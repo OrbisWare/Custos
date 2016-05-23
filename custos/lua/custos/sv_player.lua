@@ -247,6 +247,28 @@ function playerMeta:GetGroupColor()
 	return Custos.Group.GetColor(group)
 end
 
+//Author - https://facepunch.com/showthread.php?t=1508566&p=50357219&viewfull=1#post50357219
+function playerMeta:Stuck()
+	local pos = self:GetPos()
+
+	local tr = {
+		start = pos,
+		endpos = pos,
+		mins = Vector(-16, -16, 0),
+		maxs = Vector(16, 16, 71),
+		filter = {
+			self,
+		},
+	}
+
+	local hullTrace = util.TraceHull(tr)
+	if (hullTrace.Hit) then
+		return true
+	end
+
+	return false
+end
+
 hook.Add("ShutDown", "cu_SaveUsers", function()
 	Custos.User.Unload()
 end)
