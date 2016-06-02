@@ -30,15 +30,11 @@ function plyMeta:QuickMenu()
 
 	menu:AddSpacer()
 
-	function Custos.QuickMenu.AddOption(base, title, func, icon)
-		base:AddOption(title, func, icon):SetImage(icon)
-	end
+	menu:AddOption("Kick Player", function()
+		RunConsoleCommand("cu_kick", self, "Kicked from server.")
+	end):SetImage("icon16/kjsda.png")
 
-	function Custos.QuickMenu.AddSubMenu(base, title, icon)
-		base = menu:AddSubMenu(title):SetImage(icon)
-	end
-
-	function Custos.QuickMenu.AddSpacer(base)
-		base:AddSpacer()
-	end
+	menu:AddOption("Ban Player", function()
+		RunConsoleCommand("cu_kick", self, "Kicked from server.")
+	end):SetImage("icon16/kjsda.png")
 end

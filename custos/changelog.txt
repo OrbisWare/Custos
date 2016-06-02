@@ -8,13 +8,20 @@ Version number:
 ::::::::::::::::::::::::::::::::::::
 ToDo:
 	-Add plugin disable/enable.
-	-Rewrite SQL wrapper to work for MySQLoo, SQLite, and tMysql
+	-[DONE] Rewrite SQL wrapper to work for MySQLoo, SQLite, and tMysql
 
 	-Finish HTML based menu.
-	-Networking stuff to client.
+	-Rewrite player pemissions and groups as modules.
 	-Add Queue command plugin.
 	-Work on plugin system.
 	-Add some other useless plugins to make some people happy.
+
+Version 0.2.2 (22)
+	[RECODE] Recoded the group, user, and permission system to be more modular than before.
+
+Version 0.2.1 (21)
+	[ADDED] New SQL wrapper that support tmysql, mysqloo, and sqlite.
+	[REMOVE] Old SQL wrapper and other SQL files.
 
 Version 0.2.0i (20)
 	[ADDED] Update checker

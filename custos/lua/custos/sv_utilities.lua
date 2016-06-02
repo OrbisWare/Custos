@@ -10,31 +10,29 @@
 
 	Server utilities
 */
-local ChatCommands = {}
+local cSQL = BWSQL.CreateInstance()
 
-function Custos.Query(...)
-	Custos.SQLCore.EasyQuery(...)
+if BWSQL.Module == "tmysql" or BWSQL.Module == "mysqloo" then
+	cSQL._Host = "localhost" //Put your SQL host here.
+	cSQL._User = "aura" //Put the SQL user you want to use.
+	cSQL._Pass = "uPCThxQXuNncMtDT" //Put SQL users password.
+	cSQL._DB = "custos" //The database you want to use
+	cSQL._Port = 3306 //SQL Port
+	cSQL._Socket = "/var/run/mysqld/mysqld.sock" //Opional Unix Socket. Keep empty
+														//unless you know what you're doing
+
+	cSQL:Connect(self._Host, self._User, self._Pass, self._DB, self._Port, self._Socket)
 end
 
-function Custos.num_rows()
-	return Custos.SQLCore.num_rows()
-end
+Custos.Query = cSQL:EasyQuery //Access to the EasyQuery function.
 
-function Custos.last_id()
-	return Custos.SQLCore.last_id()
-end
+hook.Add("ShutDown", "cu_ShutdownSQL", function()
+	BWSQL.DestroyInstance() //We destroy the SQL instance since the server is shutting down.
+end)
 
-function Custos.SQLVersion()
-	return Custos.SQLCore.Version()
-end
-
-/*function Custos.SQLError(err, query, trace)
-	ErrorNoHalt("[SQL] Error: "..err.." ["..query.."]\n")
-	if trace then
-		debug.Trace()
-	end
-end*/
-
+/*
+	Find player object based on partial name.
+*/
 function Custos.FindPlayer(str, ply, unrestr)
 	local sL = string.lower
 
@@ -199,6 +197,7 @@ end
 	Chat Command System
 	-Concept by Sassilization
 */
+local ChatCommands = {}
 function Custos.AddChatCommand(chatcmd, cmd)
 	ChatCommands[chatcmd] = cmd
 end

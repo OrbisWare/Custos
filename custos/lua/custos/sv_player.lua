@@ -277,7 +277,7 @@ hook.Add("InitPostEntity", "cu_LoadUsers", function()
 	Custos.User.Load()
 end)
 
-hook.Add("PlayerInitialSpawn", "cu_SetUserGroup", function(ply)
+hook.Add("PlayerAuthed", "cu_SetUserGroup", function(ply)
 	local steamid = ply:SteamID()
 	local userData = Custos.G.Users[steamid]
 

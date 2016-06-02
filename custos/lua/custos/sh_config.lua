@@ -11,9 +11,12 @@
 	Config file.
 */
 /*------------------
-Disable MySQL if you're using SQLite which is in gmod by default. For MySQL you'll need tmysql4
+Choose what svaing method you want to use.
+	"tmysql" - tMySQL4 Module
+	"mysqloo" - MySQLoo Module
+	"sqlite" - SQLite
 --------------------*/
-Custos.G.Config.MySQL = true
+BWSQL.Module = "tmysql"
 
 /*------------------
 Load plugins (true/false)

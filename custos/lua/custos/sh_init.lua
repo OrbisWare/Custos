@@ -15,10 +15,7 @@
 	Function Classes
 */
 Custos.QuickMenu = {} //Quick menu functions
-Custos.Group = {} //Group functions
-Custos.User = {} //User functions
 Custos.Plugin = {} //Plugin functions
-Custos.Perm = {} //Permission functions
 
 /*
 	Globals - We store variables and other things in these.
@@ -26,10 +23,10 @@ Custos.Perm = {} //Permission functions
 Custos.G = {} //Table for our globals.
 Custos.G.Config = {} //Table for all of our config options.
 Custos.G.Plugins = {} //All our plugins and their data.
+Custos.G.Groups = {} //All of our user groups and their data.
+Custos.G.Users = {} //All of our user data.
+Custos.G.Permissions = {} //All of our register permissions.
 if SERVER then
-	Custos.G.Users = {} //All of our user data.
-	Custos.G.Groups = {} //All of our user groups and their data.
-	Custos.G.Permissions = {} //All of our register permissions.
 	Custos.G.Commands = {} //All of our commands
 end
 
@@ -61,12 +58,11 @@ MsgN("//Loading Log System...")
 Custos.LoadFile("sh_log.lua")
 
 MsgN("//Loading SQL System...")
-Custos.LoadFile("sv_sqlcore.lua")
-Custos.LoadFile("sv_mysql.lua")
-Custos.LoadFile("sv_sqlite.lua")
+Custos.LoadFile("sv_sql.lua")
 
 MsgN("//Loading Group System...")
 Custos.LoadFile("sv_group.lua")
+Custos.LoadFile("cl_group.lua")
 
 MsgN("//Loading Player Scripts...")
 Custos.LoadFile("sh_player.lua")
@@ -88,9 +84,6 @@ if Custos.G.Config.LoadPlugins then
 	MsgN("//Loading Plugins...")
 	Custos.AutoLoad("plugins")
 end
-
-MsgN("//Loading Networking...")
-//Custos.LoadFile("sh_networking.lua")
 
 PrintTable(Custos.Plugin.GetActivePlugins())
 
