@@ -1,15 +1,15 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
-	 
+
 	~https://github.com/BadWolfGames/custos
 
 	We load the core files here.
-*/
+]]
 Custos = {}
 Custos.Version = 0
 Custos.InternalVersion = 0

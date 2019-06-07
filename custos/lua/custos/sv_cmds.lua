@@ -1,15 +1,15 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
 
 	~https://github.com/BadWolfGames/custos
 
-	Commands
-*/
+	Command System
+]]
 Custos.Perm.Register({
 	["cu_setusergroup"] = "Set Usergroup",
 	["cu_modifygroup"] = "Modify Group",
@@ -38,10 +38,10 @@ Custos.AddConCommand("cu_help", function(ply, raw, cmd)
 	end
 end, nil, "cu_help <cmd> - Prints help on a certen command or lists available commands.")
 
-/*
+--[[---------------------
 	Creating/deleting/modifying Groups
 	-Instead of having to network the stuff from client to via server, we're just going have console commands do everything for us.
-*/
+]]----------------------
 local GroupModOptions = {
 	["cname"] = function(grp, args)
 		Custos.Group.SetDisplay(grp, args[1])
@@ -62,6 +62,7 @@ local GroupModOptions = {
 		Custos.Group.RemovePerm(grp, args[1])
 	end
 }
+
 Custos.AddConCommand("cu_modgroup", function(ply, raw, groupid, opt, args)
 	if !Custos.G.Groups[groupid] then
 		//some kind of error
@@ -77,7 +78,7 @@ Custos.AddConCommand("cu_removegroup", function(ply, raw, groupid)
 	local group = Custos.G.Groups[groupid]
 
 	if !group then
-		//some kind of error
+		--some kind of error
 		return
 
 	else
@@ -89,17 +90,17 @@ Custos.AddConCommand("cu_creategroup", function(ply, raw, groupid, dname, color_
 	local group = Custos.G.Groups[groupid]
 
 	if group then
-		//some kind of error
+		--some kind of error
 		return
 	end
 
 	Custos.Group.Create(groupid, dname, Color(color_r, color_g, color_b, 255), parent, immunity, perms)
 end, "cu_creategroup", "cu_creategroup <groupid> <name> <color.r> <color.g> <color.b> <parent> <immunity> <permissions> - Create a group.")
 
-/*
+--[[---------------------
 	Modifying User Data
 	-Instead of having to network the stuff from client to via server, we're just going have console commands do everything for us.
-*/
+]]----------------------
 local UserModOptions = {
 	["aperm"] = function(user, args)
 		Custos.User.AddPerm(user, args[1], true)

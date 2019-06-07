@@ -1,38 +1,19 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
 
 	~https://github.com/BadWolfGames/custos
 
-	Server utilities
-*/
-local cSQL = BWSQL.CreateInstance()
+	Server Utilities
+]]
 
-if BWSQL.Module == "tmysql" or BWSQL.Module == "mysqloo" then
-	cSQL._Host = "localhost" //Put your SQL host here.
-	cSQL._User = "aura" //Put the SQL user you want to use.
-	cSQL._Pass = "uPCThxQXuNncMtDT" //Put SQL users password.
-	cSQL._DB = "custos" //The database you want to use
-	cSQL._Port = 3306 //SQL Port
-	cSQL._Socket = "/var/run/mysqld/mysqld.sock" //Opional Unix Socket. Keep empty
-														//unless you know what you're doing
-
-	cSQL:Connect(self._Host, self._User, self._Pass, self._DB, self._Port, self._Socket)
-end
-
-Custos.Query = cSQL:EasyQuery //Access to the EasyQuery function.
-
-hook.Add("ShutDown", "cu_ShutdownSQL", function()
-	BWSQL.DestroyInstance() //We destroy the SQL instance since the server is shutting down.
-end)
-
-/*
+--[[---------------------
 	Find player object based on partial name.
-*/
+]]----------------------
 function Custos.FindPlayer(str, ply, unrestr)
 	local sL = string.lower
 
@@ -97,10 +78,10 @@ function Custos.FindPlayer(str, ply, unrestr)
 	end
 end
 
-/*
+--[[---------------------
 	Console Command System
 	-Based off Breakpoint's AddCmd function.
-*/
+]]----------------------
 function Custos.AddConCommand(name, callback, permi, help)
 	if permi and !Custos.G.Permissions[permi] then
 		Custos.Error("CONCMD", "Permission not registered: "..permi, false)
@@ -122,13 +103,13 @@ function Custos.AddConCommand(name, callback, permi, help)
 				CanTarget = function() return true end,
 			}
 		end
-		
+
 		if permi and !ply:HasPermission(permi) then
 			Custos.Notify(ply, COLOR_ERROR, "You don't have access to that command!")
 			Custos.WriteLog("COMMAND", "%s tried to run command %s", Custos.PlayerName(ply), name)
 			return
 		end
-		
+
 		local run, err, msg = pcall(callback, ply, raw, unpack(args))
 		if !run then
 			Custos.Notify(ply, COLOR_ERROR, "Command failed to run: "..err)
@@ -145,10 +126,11 @@ function Custos.RemoveConCommand(cmd)
 	end
 end
 
-/*
+--[[---------------------
 	Concept Console Command System
 	-Some concept for console command system.
-
+]]----------------------
+--[[
 function Custos.AddConCommand(cmd, callback, permi, help)
 	if permi and !table.HasValue(Custos.G.Permissions, permi) then
 		Custos.Error("CONCMD", "Permission not registered: "..permi, false)
@@ -177,13 +159,13 @@ function Custos.ProcessConCommand(cmd)
 				CanTarget = function() return true end,
 			}
 		end
-		
+
 		if permission and !ply:HasPermission(permission) then
 			Custos.Notify(ply, COLOR_ERROR, "You don't have access to that command!")
 			Custos.WriteLog("COMMAND", "%s tried to run command %s", Custos.PlayerName(ply), name)
 			return
 		end
-		
+
 		local run, err, msg = pcall(callback, ply, raw, unpack(args))
 		if !run then
 			Custos.Notify(ply, COLOR_ERROR, "Command failed to run: "..err)
@@ -192,11 +174,12 @@ function Custos.ProcessConCommand(cmd)
 		end
 	end, nil, help)
 end
-*/
-/*
+--]]
+
+--[[---------------------
 	Chat Command System
 	-Concept by Sassilization
-*/
+]]----------------------
 local ChatCommands = {}
 function Custos.AddChatCommand(chatcmd, cmd)
 	ChatCommands[chatcmd] = cmd

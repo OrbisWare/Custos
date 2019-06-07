@@ -1,7 +1,7 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
@@ -9,7 +9,7 @@
 	~https://github.com/BadWolfGames/custos
 
 	Utility functions
-*/
+]]
 utilx = {}
 
 function utilx.CheckTypeStrict(arg, tp)
@@ -30,7 +30,7 @@ function utilx.CheckType(arg, tp)
 	end
 end
 
-//http://lua-users.org/wiki/SwitchStatement
+--http://lua-users.org/wiki/SwitchStatement
 function switch(t)
   t.case = function (self,x)
     local f=self[x] or self.default
@@ -53,26 +53,26 @@ function utilx.IsValidSteamID(steamid)
 	end
 end
 
-//We return the string if no match is found, unlike garry's function
+--We return the string if no match is found, unlike garry's function
 function utilx.GetFileFromFilename(path)
 	return path:match( "[\\/]([^/\\]+)$" ) or path
 end
 
-//Helper function for PrintTableEx
+--Helper function for PrintTableEx
 local function tblPrint(msg, ply)
 	if ply == nil then
 		MsgN(msg)
 	else
-		if SERVER then //Why would you use this on client?
+		if SERVER then --Why would you use this on client?
 			ply:ChatPrint(msg)
-			//ply:PrintMessage(HUD_PRINTCONSOLE, msg)
+			--ply:PrintMessage(HUD_PRINTCONSOLE, msg)
 		end
 	end
 end
 
 function utilx.PrintTableEx(tbl,d,ply)
 	local out = ""
-	
+
 	if getmetatable(tbl) then --for extra compatibility with classes/metatables
 		for i,t in pairs(getmetatable(tbl)) do
 			if not (type(t) == "table") then
@@ -120,7 +120,7 @@ function utilx.UpdateCheck()
 		error = nil
 	}
 
-	http.Fetch("https://raw.github.com/BadWolfGames/Custos/master/version.txt", 
+	http.Fetch("https://raw.github.com/BadWolfGames/Custos/master/version.txt",
 		function(content)
 			result.newVer = tonumber(content[2])
 			result.success = true
@@ -131,25 +131,24 @@ function utilx.UpdateCheck()
 		end
 	)
 
-	timer.Simple(3, function() //The version fetch should be completed by then.
-		if result.success then //If it succeed then just return true/false
+	timer.Simple(3, function() --The version fetch should be completed by then.
+		if result.success then --If it succeed then just return true/false
 			if result.newVer > result.curVer then
 				return true
 			else
 				return false
 			end
 
-		else //If it didn't succeed then we return the result table.
+		else --If it didn't succeed then we return the result table.
 			return result
 		end
 	end)
 end
 
-//Player utility functions.
+--Player utility functions.
 local plymeta = FindMetaTable( "Player" )
 
 if SERVER then
-
 	function plymeta:PlayerPrintTable(tbl)
 		utilx.PrintTableEx(tbl,nil,self)
 	end

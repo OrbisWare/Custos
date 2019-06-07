@@ -1,7 +1,7 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
@@ -9,7 +9,7 @@
 	~https://github.com/BadWolfGames/custos
 
 	Modular Group System
-	
+
 	Default Groups:
 		Custos.G.Groups["superadmin"] = {
 			display = "Super Admin",
@@ -63,8 +63,8 @@
 			perm = {
 			}
 		}
-*/
-Custos.Group = {} //All of our Group functions are housed here.
+]]
+Custos.Group = {} --All of our Group functions are housed here.
 Custos.G.Groups = {
 	["superadmin"] = {
 		display = "Super Admin",
@@ -94,7 +94,7 @@ Custos.G.Groups = {
 local userGroups = Custos.G.Groups
 
 function Custos.Group.Create(id, display, colorObj, inherit, immunity, perm)
-	local colorObj = utilx.CheckTypeStrict(colorObj, "table") 
+	local colorObj = utilx.CheckTypeStrict(colorObj, "table")
 	local immunity = utilx.CheckTypeStrict(immunity, "number")
 
 	if !utilx.CheckTypeStrict(perm, "table") then
@@ -129,13 +129,13 @@ function Custos.Group.CheckPerm(groupid, permi)
         end
 
         return false
-    end  
+    end
 
     return true
-end 
+end
 
 function Custos.Group.AddPerm(groupid, permi, value)
-	if !value then 
+	if !value then
 		value = true
 	end
 

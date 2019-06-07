@@ -1,7 +1,7 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
@@ -9,8 +9,8 @@
 	~https://github.com/BadWolfGames/custos
 
 	Modular Permission System
-*/
-Custos.Perm = {} //All of our Permission functions are housed here.
+]]
+Custos.Perm = {} --All of our Permission functions are housed here.
 local permissions = Custos.G.Permissions
 
 function Custos.Perm.Register(perm)
@@ -47,6 +47,6 @@ function Custos.Perm.Check(perm)
 			end
 		end
 	end
-	
+
 	return false
 end

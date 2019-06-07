@@ -1,7 +1,7 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
@@ -9,9 +9,8 @@
 	~https://github.com/BadWolfGames/custos
 
 	Shared chat.AddText() function
-*/
+]]
 if SERVER then
-
 	util.AddNetworkString("cu_AddText")
 	chat = {}
 
@@ -24,7 +23,7 @@ if SERVER then
 			ErrorNoHalt("chat.AddText Error: No player object given.")
 			return;
 		end
-		
+
 		table.remove(args, 1)
 
 		net.Start("cu_AddText")
@@ -45,7 +44,7 @@ if SERVER then
 	end
 
 else
-	
+
 	net.Receive("cu_AddText", function()
 		local numArgs = net.ReadUInt(8)
 		local args = {}

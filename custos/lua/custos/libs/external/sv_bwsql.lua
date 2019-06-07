@@ -1,8 +1,8 @@
-/*
-	______  _    _ _____  _____ _     
-	| ___ \| |  | /  ___||  _  | |    
-	| |_/ /| |  | \ `--. | | | | |    
-	| ___ \| |/\| |`--. \| | | | |    
+--[[
+	______  _    _ _____  _____ _
+	| ___ \| |  | /  ___||  _  | |
+	| |_/ /| |  | \ `--. | | | | |
+	| ___ \| |/\| |`--. \| | | | |
 	| |_/ /\  /\  /\__/ /\ \/' / |____
 	\____/  \/  \/\____/  \_/\_\_____/
 
@@ -10,7 +10,7 @@
 	Support for tMySQL, MySQLoo, SQLite
 
 	Warning: *Completely untested and unfinished*
-*/
+]]
 BWSQL = {}
 BWSQL.Module = nil
 
@@ -68,7 +68,7 @@ function BWSQL.SetModule(mod)
 	BWSQL.Module = mod
 end
 
-//Connect to a MySQL database.
+--Connect to a MySQL database.
 function sqlMeta:Connect(host, user, pass, db, port, sock)
 	local instance = self.Instance
 	local status = self.Status
@@ -112,10 +112,11 @@ function sqlMeta:Connect(host, user, pass, db, port, sock)
 
 	elseif _module == "sqlite" then
 		MsgN("[SQLite] Using SQLite.")
+		return
 	end
 end
 
-//Reset all information in the sqlMeta object.
+--Reset all information in the sqlMeta object.
 function sqlMeta:Reset()
 	self.Instance = nil
 	self.Status = nil
@@ -125,16 +126,16 @@ function sqlMeta:Reset()
 	self.Queue = nil
 end
 
-//Returns MySQL database connection status.
+--Returns MySQL database connection status.
 function sqlMeta:ConnectionStatus()
 	if _module == "sqlite" then
-		return true //Can't connect to SQLite, so just return true to make things simple.
+		return true --Can't connect to SQLite, so just return true to make things simple.
 	end
 
 	return self.Status
 end
 
-//Disconnect from the database.
+--Disconnect from the database.
 function sqlMeta:Disconnect()
 	if !self:ConnectionStatus() then return; end
 
@@ -143,9 +144,9 @@ function sqlMeta:Disconnect()
 	if _module == "tmysql" then
 		self.Instance:Disconnect()
 		self:Reset()
-	
+
 	elseif _module == "mysqloo" then
-		self:Reset() //Not sure how MySQLoo handles disconnecting, so I'd avoid it.
+		self:Reset() --Not sure how MySQLoo handles disconnecting, so I'd avoid it.
 		return
 
 	elseif _module =="sqlite" then
@@ -154,7 +155,7 @@ function sqlMeta:Disconnect()
 	end
 end
 
-//Escape a string using MySQL escape.
+--Escape a string using MySQL escape.
 function sqlMeta:Escape(str)
 	if !self:ConnectionStatus() then return; end
 
@@ -169,7 +170,7 @@ function sqlMeta:Escape(str)
 	end
 end
 
-//Runs SQL with callback and erroring.
+--Runs SQL with callback and erroring.
 function sqlMeta:SafeQuery(query, callback, retval, onfail)
 	if !self:ConnectionStatus() then return; end
 
@@ -196,7 +197,7 @@ function sqlMeta:SafeQuery(query, callback, retval, onfail)
 				self.Error = err
 
 				print("Query failure "..tostring(err))
-				
+
 			elseif callback then
 				self.num_rows = result.affected
 				self.last_id = result.lastid
@@ -236,7 +237,7 @@ function sqlMeta:SafeQuery(query, callback, retval, onfail)
 	end
 end
 
-//Easyquery that automatically escapes a string for you.
+--Easyquery that automatically escapes a string for you.
 function sqlMeta:EasyQuery(...)
 	if !self:ConnectionStatus() then return; end
 
@@ -254,26 +255,26 @@ function sqlMeta:EasyQuery(...)
 		fargs[#fargs+1] = self:Escape(varargs[i])
 	end
 
-	local callback = checktype(varargs[off], "function") //opttype
-	local retval = checktype(varargs[off+1], "number") //opttype
-	local onfail = checktype(varargs[off+2], "function") //opttype
+	local callback = checktype(varargs[off], "function") --opttype
+	local retval = checktype(varargs[off+1], "number") --opttype
+	local onfail = checktype(varargs[off+2], "function") --opttype
 
 	self:SafeQuery(string.format(query, unpack(fargs)), callback, retval, onfail)
 end
 
-//Queue a query.
+--Queue a query.
 function sqlMeta:Queue(query, callback)
 	if !self:ConnectionStatus() then return; end
 
 	self.Queue[#self.Queue+1] = {query, callback}
 end
 
-//Clear the queue.
+--Clear the queue.
 function sqlMeta:ClearQueue()
 	self.Queue = {}
 end
 
-//Commit queued queries.
+--Commit queued queries.
 function sqlMeta:Commit()
 	if !self:ConnectionStatus() then return; end
 
@@ -284,49 +285,49 @@ function sqlMeta:Commit()
 	end
 end
 
-//Last ID
+--Last ID
 function sqlMeta:LastID()
 	if !self:ConnectionStatus() then return; end
 
 	return self.last_id
 end
 
-//Returns the last error for the most recent function call.
+--Returns the last error for the most recent function call.
 function sqlMeta:LastError()
 	if !self:ConnectionStatus() then return; end
 
 	return self.Error[1]
 end
 
-//Number of rows affected by the last function call.
+--Number of rows affected by the last function call.
 function sqlMeta:NumRows()
 	if !self:ConnectionStatus() then return; end
 
 	return self.num_rows
 end
 
-//Cache error
+--Cache error
 function sqlMeta:CacheError(err)
 	if !self:ConnectionStatus() then return; end
 
 	self.ErrCache[#self.ErrCache+1] = err
 end
 
-//Clears the errors cache.
+--Clears the errors cache.
 function sqlMeta:ClearErrorCache()
 	if !self:ConnectionStatus() then return; end
 
 	self.ErrCache = nil
 end
 
-//Error list from the last function call.
+--Error list from the last function call.
 function sqlMeta:ErrorList()
 	if !self:ConnectionStatus() then return; end
-	
+
 	return self.ErrCache
 end
 
-//Error function
+--Error function
 function sqlMeta:SQLError(err)
 	if !self:ConnectionStatus() then return; end
 
@@ -341,7 +342,7 @@ function sqlMeta:SQLError(err)
 	self.Error = err
 end
 
-//Some repaircallback function that I have no idea what it does.
+--Some repaircallback function that I have no idea what it does.
 function sqlMeta:RepairCallback(res, stat, err)
 	if !self:ConnectionStatus() then return; end
 
@@ -358,7 +359,7 @@ function sqlMeta:RepairCallback(res, stat, err)
 	self:SQLError("Repair table crashed: "..endStr)
 end
 
-//some error callback function which i have no clue what it does.
+--some error callback function which i have no clue what it does.
 function sqlMeta:ErrorCheckCallback(origin, res, stat, err)
 	if !self:ConnectionStatus() then return; end
 
@@ -367,14 +368,14 @@ function sqlMeta:ErrorCheckCallback(origin, res, stat, err)
 	end
 end
 
-//Tells SQL to repair a specfic table.
+--Tells SQL to repair a specfic table.
 function sqlMeta:RepairTable(tbl)
 	if !self:ConnectionStatus() then return; end
 
 	self:SafeQuery("REPAIR TABLE `"..tbl.."`", self:RepairCallback())
 end
 
-//Logging function
+--Logging function
 function sqlMeta:SQLLog(typ, msg, serv)
 	if !typ or !err then return; end
 
@@ -393,7 +394,7 @@ function sqlMeta:SQLLog(typ, msg, serv)
 	end
 end
 
-//Returns the log table.
+--Returns the log table.
 function sqlMeta:ReadLog()
 	return self.Log
 end

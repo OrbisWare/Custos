@@ -1,13 +1,13 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
 
 	~https://github.com/BadWolfGames/custos
-*/
+]]
 local PLUGIN = Custos.DefinePlugin()
 
 PLUGIN.ID = 1
@@ -47,7 +47,7 @@ function PLUGIN:BanPlayer(admin, ply, time, reason)
 		_admin = "Console"
 	end
 
-	Custos.Query("INSERT INTO `cu_bans` (steamid32, steamid64, reason, startTime, endTime, admin) VALUES('%s', '%s', '%s', %i, %i, '%s')", 
+	Custos.Query("INSERT INTO `cu_bans` (steamid32, steamid64, reason, startTime, endTime, admin) VALUES('%s', '%s', '%s', %i, %i, '%s')",
 		steamid32, steamid64, reason, startTime, endTime, _admin)
 
 	Custos.G.Bans[steamid32] = {
@@ -58,7 +58,7 @@ function PLUGIN:BanPlayer(admin, ply, time, reason)
 		admin = _admin
 	}
 
-	Custos.WriteLog("ADMIN", "%s(%s) banned %s(%s) for %s until %s", 
+	Custos.WriteLog("ADMIN", "%s(%s) banned %s(%s) for %s until %s",
 		Custos.PlayerName(ply), _admin, Custos.PlayerName(target), steamid32, reason, string.NiceTime(endTime))
 
 	if utilx.CheckType(ply, "Player") then

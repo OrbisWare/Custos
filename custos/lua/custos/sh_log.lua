@@ -1,15 +1,15 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
-	 
+
 	~https://github.com/BadWolfGames/custos
 
-	Log system.
-*/
+	Log System
+]]
 if SERVER then
 	local logFile;
 	local date;
@@ -90,9 +90,10 @@ if SERVER then
 		local str = tbl[1]
 		local fArgs = {}
 
-		if date < os.date("%Y-%m-%d") then
+		--this doesn't make sense, why did i even do this.
+		--[[if date < os.date("%Y-%m-%d") then
 			NextLog()
-		end
+		end]]
 
 		if #tbl > 1 then
 			table.remove(tbl, 1)

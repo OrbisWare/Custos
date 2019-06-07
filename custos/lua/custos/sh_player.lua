@@ -1,15 +1,15 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
 
 	~https://github.com/BadWolfGames/custos
 
-	Shared player stuff.
-*/
+	Shared Player Functions
+]]
 local playerMeta = FindMetaTable("Player")
 
 function playerMeta:IsModerator()
@@ -28,12 +28,12 @@ function playerMeta:IsUser()
 	end
 end
 
-/*------------------
-Function: Custos.PlayerName
-Description: Our custom function to get a player's name.
-Arguments:
-	ply = Player object
---------------------*/
+--[[---------------------
+	Function: Custos.PlayerName
+	Description: Our custom function to get a player's name.
+	Arguments:
+		ply = Player object
+]]----------------------
 function Custos.PlayerName(ply)
 	if IsValid(ply) and utilx.CheckType(ply, "Player") then
 		return ply:Name()

@@ -1,7 +1,7 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
@@ -9,12 +9,12 @@
 	~https://github.com/BadWolfGames/custos
 
 	Group system - serverside. Group and Perm class functions.
-*/
+]]
 util.AddNetworkString("cu_SentGroups")
 util.AddNetworkString("cu_SentPermissions")
 
 function Custos.Group.Create(id, display, colorObj, inherit, perm, immunity)
-	local colorObj = utilx.CheckTypeStrict(colorObj, "table") 
+	local colorObj = utilx.CheckTypeStrict(colorObj, "table")
 	local immunity = utilx.CheckTypeStrict(immunity, "number")
 
 	if !utilx.CheckTypeStrict(perm, "table") then
@@ -132,10 +132,10 @@ function Custos.Group.Save()
 				local immunity = v.immunity
 
 				Custos.PrintDebug("updating group "..tostring(grpID))
-				
+
 				Custos.Query("UPDATE `cu_groups` SET display = '%s', colorHex = %i, inherit = '%s', perm = '%s', immunity = %i WHERE name = '%s'",
 					grpDisplay, grpColor, inherit, perm, immunity, grpID)
-				
+
 				table.insert(sqlContainer, grpID)
 			end
 		end
@@ -160,7 +160,7 @@ function Custos.Group.Save()
 
 			Custos.PrintDebug("inserting group "..tostring(k))
 
-			Custos.Query("INSERT INTO `cu_groups` (name, display, colorHex, inherit, perm, immunity) VALUES('%s', '%s', '%i', '%s', '%s', '%i')", 
+			Custos.Query("INSERT INTO `cu_groups` (name, display, colorHex, inherit, perm, immunity) VALUES('%s', '%s', '%i', '%s', '%s', '%i')",
 				k, grpDisplay, grpColor, inherit, perm, immunity)
 		end
 
@@ -170,19 +170,19 @@ function Custos.Group.Save()
 	hook.Call("CU_OnGroupsSaving")
 end
 
-function Custos.Group.CheckPerm(groupid, permi)  
-    if !Custos.G.Groups[groupid].perm[permi] then  
-        local bHasParent = !(Custos.G.Groups[groupid].parent == "")  
-        if bHasParent then  
-            return Custos.Group.CheckPerm(Custos.G.Groups[groupid].parent, permi)  
-        end  
-        return false  
-    end  
-    return true  
-end 
+function Custos.Group.CheckPerm(groupid, permi)
+    if !Custos.G.Groups[groupid].perm[permi] then
+        local bHasParent = !(Custos.G.Groups[groupid].parent == "")
+        if bHasParent then
+            return Custos.Group.CheckPerm(Custos.G.Groups[groupid].parent, permi)
+        end
+        return false
+    end
+    return true
+end
 
 function Custos.Group.AddPerm(groupid, permi, value)
-	if !value then 
+	if !value then
 		value = true
 	end
 
@@ -265,9 +265,9 @@ function Custos.Group.Send(ply)
 	net.Send(ply)
 end
 
-/*
+--[[---------------------
 	Permission System
-*/
+]]----------------------
 function Custos.Perm.Check(perm)
 	if utilx.CheckType(perm, "string") then
 		if Custos.G.Permissions[perm] then

@@ -1,15 +1,15 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
 
 	~https://github.com/BadWolfGames/custos
 
-	Plugin system.
-*/
+	Plugin System
+]]
 function Custos.Plugin.GetActivePlugins()
 	local pluginList = {}
 
@@ -57,8 +57,8 @@ end
 
 function pluginMeta:AddCommand(cmd, callback, perm, help, chatt)
 	self.Command[cmd] = {
-		callback = callback, 
-		perm = perm, 
+		callback = callback,
+		perm = perm,
 		help = help,
 		chat = chatt
 	}

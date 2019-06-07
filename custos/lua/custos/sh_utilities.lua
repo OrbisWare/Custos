@@ -1,20 +1,20 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
-	 
+
 	~https://github.com/BadWolfGames/custos
 
-	Shared utilities
-*/
+	Shared Utilities
+]]
 function Custos.PrintDebug(debug)
 	if Custos.G.Config.Debug then
 		if utilx.CheckType(debug, "string") then
 			Msg("Custos Debug: "..debug.."\n")
-			
+
 		elseif utilx.CheckType(debug, "table") then
 			utilx.PrintTableEx(debug)
 		end

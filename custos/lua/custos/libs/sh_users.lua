@@ -1,7 +1,7 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
@@ -9,15 +9,15 @@
 	~https://github.com/BadWolfGames/custos
 
 	Modular User System
-*/
-Custos.User = {} //All of our User functions are housed here.
+]]
+Custos.User = {} --All of our User functions are housed here.
 local users = Custos.G.Users
 
 function Custos.User.Add(ply, group, perms)
 	local sSteamid32
 	local sSteamid64
 	local perm
-	
+
 	if utilx.CheckType(ply, "Player") then
 		sSteamid32 = ply:SteamID()
 		sSteamid64 = ply:SteamID64()

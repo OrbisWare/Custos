@@ -1,7 +1,7 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
@@ -9,10 +9,13 @@
 	~https://github.com/BadWolfGames/custos
 
 	Loader System
-*/
+]]
+
+function GetFileFromFilename(path)
+	return path:match( "[\\/]([^/\\]+)$" ) or path
+end
 
 if SERVER then
-
 	function Custos.AddCSLuaFile(filee)
 		local stat, err = pcall(AddCSLuaFile, filee)
 
@@ -82,7 +85,7 @@ function Custos.LoadFile(filee)
 	if !filee then return; end
 
 	local loadedFile;
-	local actualFile = utilx.GetFileFromFilename(filee)
+	local actualFile = GetFileFromFilename(filee)
 	local prefix = string.sub(actualFile, 0, 3)
 
 	if string.GetExtensionFromFilename(filee) == "lua" then
@@ -132,7 +135,7 @@ function Custos.AutoLoad(dir)
 
 		for folder,f in pairs(f) do
 			path = dir.."/"..v.."/"..f
-			
+
 			if f == "sh_init" then
 				if SERVER then
 					Custos.AddCSLuaFile(path)

@@ -1,7 +1,7 @@
-/*
-	 _____           _            
-	/  __ \         | |           
-	| /  \/_   _ ___| |_ ___  ___ 
+--[[
+	 _____           _
+	/  __ \         | |
+	| /  \/_   _ ___| |_ ___  ___
 	| |   | | | / __| __/ _ \/ __|
 	| \__/\ |_| \__ \ || (_) \__ \
 	 \____/\__,_|___/\__\___/|___/
@@ -9,7 +9,7 @@
 	~https://github.com/BadWolfGames/custos
 
 	Server User class functions and player functions
-*/
+]]
 util.AddNetworkString("cu_SentUsers")
 local playerMeta = FindMetaTable("Player")
 
@@ -51,10 +51,10 @@ function Custos.User.Save()
 				local perm = von.serialize(v.perm)
 
 				Custos.PrintDebug("updating user "..tostring(v))
-				
+
 				Custos.Query("UPDATE `cu_users` SET steamid64 = '%s', groupid = '%s', added = %i, lastConnected = %i, perm = '%s' WHERE steamid32 = '%s'",
 					steamid64, groupid, added, lastConnected, perm, steamid32)
-				
+
 				table.insert(sqlContainer, steamid32)
 			end
 		end
@@ -79,7 +79,7 @@ function Custos.User.Save()
 
 			Custos.PrintDebug("inserting user "..tostring(k))
 
-			Custos.Query("INSERT INTO `cu_users` (steamid32, steamid64, groupid, added, lastConnected, perm) VALUES('%s', '%s', '%s', %i, %i, '%s')", 
+			Custos.Query("INSERT INTO `cu_users` (steamid32, steamid64, groupid, added, lastConnected, perm) VALUES('%s', '%s', '%s', %i, %i, '%s')",
 				k, steamid64, groupid, added, lastConnected, perm)
 		end
 
@@ -93,7 +93,7 @@ function Custos.User.Add(ply, group, perms)
 	local sSteamid32
 	local sSteamid64
 	local perm
-	
+
 	if utilx.CheckType(ply, "Player") then
 		sSteamid32 = ply:SteamID()
 		sSteamid64 = ply:SteamID64()
@@ -193,9 +193,9 @@ function Custos.User.Send(ply)
 	net.Send(ply)
 end
 
-/*
+--[[---------------------
 	Player Functions
-*/
+]]----------------------
 function playerMeta:HasPermission(perm)
 	local group = self:GetUserGroup()
 
@@ -247,7 +247,7 @@ function playerMeta:GetGroupColor()
 	return Custos.Group.GetColor(group)
 end
 
-//Author - https://facepunch.com/showthread.php?t=1508566&p=50357219&viewfull=1#post50357219
+--Author - https://facepunch.com/showthread.php?t=1508566&p=50357219&viewfull=1#post50357219
 function playerMeta:Stuck()
 	local pos = self:GetPos()
 
