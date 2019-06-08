@@ -65,7 +65,7 @@ local GroupModOptions = {
 
 Custos.AddConCommand("cu_modgroup", function(ply, raw, groupid, opt, args)
 	if !Custos.G.Groups[groupid] then
-		//some kind of error
+		--some kind of error
 		return
 	end
 

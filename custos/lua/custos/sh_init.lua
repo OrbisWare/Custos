@@ -29,6 +29,7 @@ Custos.G.Permissions = {} --All of our register permissions.
 if SERVER then
 	Custos.G.Commands = {} --All of our commands
 	Custos.G.SQLInfo = {} --Table for our SQL info.
+	Custos.SQLObj = nil
 end
 
 local cu_starttime = os.clock()
@@ -39,7 +40,7 @@ MsgN([[
 | |   | | | / __| __/ _ \/ __|
 | \__/\ |_| \__ \ || (_) \__ \
  \____/\__,_|___/\__\___/|___/
-Created by OrbisWare (c) 2019 - Version: ]]..Custos.Version..[[ (]]..Custos.InternalVersion..[[)]])
+Created by OrbisWare (c) 2019 - Version: ]]..Custos.Version..[[ (]]..Custos.InternalVersion..[[) ]])
 MsgN("////////////////////////////////")
 
 MsgN("//Loading External Libraries...")
@@ -88,8 +89,6 @@ if Custos.G.Config.LoadPlugins then
 	MsgN("//Loading Plugins...")
 	Custos.AutoLoad("plugins")
 end
-
-PrintTable(Custos.Plugin.GetActivePlugins())
 
 MsgN("//Loaded in "..os.clock() - cu_starttime.." seconds")
 MsgN("////////////////////////////////\n")

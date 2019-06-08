@@ -29,7 +29,7 @@ if SERVER then
 
 			local esp = os.time() - unix
 
-			if esp >= Custos.G.Config.OldLogs then //We delete logs older than 30 days.
+			if esp >= Custos.G.Config.OldLogs then --We delete logs older than 30 days.
 				file.Delete(dir.."/"..v)
 			end
 		end
@@ -90,10 +90,9 @@ if SERVER then
 		local str = tbl[1]
 		local fArgs = {}
 
-		--this doesn't make sense, why did i even do this.
-		--[[if date < os.date("%Y-%m-%d") then
-			NextLog()
-		end]]
+		-- if date < os.date("%Y-%m-%d") then
+		-- 	NextLog()
+		-- end
 
 		if #tbl > 1 then
 			table.remove(tbl, 1)

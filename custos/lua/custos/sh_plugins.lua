@@ -10,6 +10,9 @@
 
 	Plugin System
 ]]
+local pluginMeta = {}
+pluginMeta.__index = pluginMeta
+
 function Custos.Plugin.GetActivePlugins()
 	local pluginList = {}
 
@@ -28,7 +31,6 @@ function Custos.Plugin.Disable(id)
 	end
 end
 
-local pluginMeta = {}
 function Custos.DefinePlugin()
 	local object = {}
 
@@ -123,7 +125,7 @@ function pluginMeta:Register()
 
 	if self.Gamemodes then
 		if !table.HasValue(self.Gamemodes, gmod.GetGamemode().Name) then
-			return //Gamemode not loaded
+			return --Gamemode not loaded
 		end
 	end
 
@@ -149,5 +151,3 @@ function pluginMeta:Reload()
 	self:Unload()
 	self:Load()
 end
-
-pluginMeta.__index = pluginMeta

@@ -8,11 +8,12 @@
 
 	-Bad Wolf SQL - SQL wrapper for Garry's Mod.
 	Support for tMySQL, MySQLoo, SQLite
-
-	Warning: *Completely untested and unfinished*
 ]]
 BWSQL = {}
 BWSQL.Module = nil
+
+local sqlMeta = {}
+sqlMeta.__index = sqlMeta
 
 local _module = BWSQL.Module
 
@@ -42,24 +43,23 @@ local function ErrorMsg(str, ...)
 	end
 end
 
-local sqlMeta = {}
 function BWSQL.CreateInstance()
 	local object = {}
 
 	setmetatable(object, sqlMeta)
-		object.Instance = nil //tMySQL object
-		object.Status = nil //Connection status
-		object.Error = nil //Last Error
-		object.ErrCache = {} //Cache errors from last function call.
-		object.Log = {} //Log
-		object.Queue = {}
+	object.Instance = nil --tMySQL object
+	object.Status = nil --Connection status
+	object.Error = nil --Last Error
+	object.ErrCache = {} --Cache errors from last function call.
+	object.Log = {} --Log
+	object.Queue = {}
 
 	return object
 end
 
 function BWSQL.DestroyInstance()
 	if getmetatable(sqlMeta) then
-		sqlMeta:Disconnect() //make sure we disconnect before destroying the instance
+		sqlMeta:Disconnect() --make sure we disconnect before destroying the instance
 		sqlMeta = {}
 	end
 end
@@ -146,7 +146,7 @@ function sqlMeta:Disconnect()
 		self:Reset()
 
 	elseif _module == "mysqloo" then
-		self:Reset() --Not sure how MySQLoo handles disconnecting, so I'd avoid it.
+		self:Reset()
 		return
 
 	elseif _module =="sqlite" then

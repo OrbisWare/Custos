@@ -89,7 +89,7 @@ function Custos.Group.DefaultGroups()
 end
 
 function Custos.Group.Load()
-	Custos.Query("SELECT * FROM `cu_groups`", function(data, status, err)
+	Custos.SQLObj:EasyQuery("SELECT * FROM `cu_groups`", function(data, status, err)
 		if !data[1] then return end
 
 		Custos.PrintDebug(data)
@@ -104,6 +104,7 @@ function Custos.Group.Load()
 			}
 		end
 	end)
+
 	hook.Call("CU_OnGroupsLoad")
 end
 
@@ -117,7 +118,7 @@ function Custos.Group.Reload()
 end
 
 function Custos.Group.Save()
-	Custos.Query("SELECT * FROM `cu_groups`", function(_data, status, err)
+	Custos.SQLObj:EasyQuery("SELECT * FROM `cu_groups`", function(_data, status, err)
 		local sqlContainer = {}
 
 		for k,data in ipairs(_data) do
@@ -133,14 +134,14 @@ function Custos.Group.Save()
 
 				Custos.PrintDebug("updating group "..tostring(grpID))
 
-				Custos.Query("UPDATE `cu_groups` SET display = '%s', colorHex = %i, inherit = '%s', perm = '%s', immunity = %i WHERE name = '%s'",
+					Custos.SQLObj:EasyQuery("UPDATE `cu_groups` SET display = '%s', colorHex = %i, inherit = '%s', perm = '%s', immunity = %i WHERE name = '%s'",
 					grpDisplay, grpColor, inherit, perm, immunity, grpID)
 
 				table.insert(sqlContainer, grpID)
 			end
 		end
 
-		for k,g in pairs(Custos.G.Groups) do //Goes through all the groups
+		for k,g in pairs(Custos.G.Groups) do --Goes through all the groups
 			local exists = false
 
 			for _,v in ipairs(sqlContainer) do
@@ -160,7 +161,7 @@ function Custos.Group.Save()
 
 			Custos.PrintDebug("inserting group "..tostring(k))
 
-			Custos.Query("INSERT INTO `cu_groups` (name, display, colorHex, inherit, perm, immunity) VALUES('%s', '%s', '%i', '%s', '%s', '%i')",
+			Custos.SQLObj:EasyQuery("INSERT INTO `cu_groups` (name, display, colorHex, inherit, perm, immunity) VALUES('%s', '%s', '%i', '%s', '%s', '%i')",
 				k, grpDisplay, grpColor, inherit, perm, immunity)
 		end
 
@@ -206,6 +207,7 @@ function Custos.Group.SetImmunity(groupid, num)
 	if utilx.CheckTypeStrict(num, "number") then
 		local group = Custos.G.Groups[groupid]
 		group.immunity = num
+
 	else
 		return
 	end
@@ -233,6 +235,7 @@ function Custos.Group.SetParent(groupid, parent)
 
 	if tbl[parent] then
 		tbl[groupid].parent = parent
+
 	else
 		return
 	end
@@ -248,6 +251,7 @@ function Custos.Group.SetColor(groupid, obj)
 	if utilx.CheckTypeStrict(obj, "table") then
 		local group = Custos.G.Groups[groupid]
 		group.color = obj
+
 	else
 		return
 	end

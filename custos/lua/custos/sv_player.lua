@@ -14,7 +14,7 @@ util.AddNetworkString("cu_SentUsers")
 local playerMeta = FindMetaTable("Player")
 
 function Custos.User.Load()
-	Custos.Query("SELECT * FROM `cu_users`", function(data, status, err)
+	Custos.SQLObj:EasyQuery("SELECT * FROM `cu_users`", function(data, status, err)
 		if !data then return; end
 
 		for k,v in pairs(data) do
@@ -36,10 +36,10 @@ function Custos.User.Load()
 end
 
 function Custos.User.Save()
-	Custos.Query("SELECT * FROM `cu_users`", function(_data, status, err)
+	Custos.SQLObj:EasyQuery("SELECT * FROM `cu_users`", function(_data, status, err)
 		local sqlContainer = {}
 
-		for k,data in ipairs(_data) do
+		for k,data in pairs(_data) do --ipairs
 			local steamid32 = data.steamid32
 
 			if Custos.G.Users[steamid32] then
@@ -52,14 +52,14 @@ function Custos.User.Save()
 
 				Custos.PrintDebug("updating user "..tostring(v))
 
-				Custos.Query("UPDATE `cu_users` SET steamid64 = '%s', groupid = '%s', added = %i, lastConnected = %i, perm = '%s' WHERE steamid32 = '%s'",
+				Custos.SQLObj:EasyQuery("UPDATE `cu_users` SET steamid64 = '%s', groupid = '%s', added = %i, lastConnected = %i, perm = '%s' WHERE steamid32 = '%s'",
 					steamid64, groupid, added, lastConnected, perm, steamid32)
 
 				table.insert(sqlContainer, steamid32)
 			end
 		end
 
-		for k,u in pairs(Custos.G.Users) do //Goes through all the groups
+		for k,u in pairs(Custos.G.Users) do --Goes through all the groups
 			local exists = false
 
 			for _,v in ipairs(sqlContainer) do
@@ -79,7 +79,7 @@ function Custos.User.Save()
 
 			Custos.PrintDebug("inserting user "..tostring(k))
 
-			Custos.Query("INSERT INTO `cu_users` (steamid32, steamid64, groupid, added, lastConnected, perm) VALUES('%s', '%s', '%s', %i, %i, '%s')",
+			Custos.SQLObj:EasyQuery("INSERT INTO `cu_users` (steamid32, steamid64, groupid, added, lastConnected, perm) VALUES('%s', '%s', '%s', %i, %i, '%s')",
 				k, steamid64, groupid, added, lastConnected, perm)
 		end
 
@@ -103,6 +103,7 @@ function Custos.User.Add(ply, group, perms)
 	elseif utilx.IsValidSteamID(ply) then
 		sSteamid32 = ply
 		sSteamid64 = util.SteamIDTo64(ply)
+
 	else
 		return false
 	end
@@ -111,6 +112,7 @@ function Custos.User.Add(ply, group, perms)
 		if utilx.CheckTypeStrict(perms, "table") then
 			perm = perms
 		end
+
 	else
 		perm = {}
 	end
@@ -134,6 +136,7 @@ function Custos.User.AddPerm(ply, permission, value)
 
 	elseif utilx.IsValidSteamID(ply) then
 		sSteamid32 = ply
+
 	else
 		return false
 	end
@@ -284,6 +287,4 @@ hook.Add("PlayerAuthed", "cu_SetUserGroup", function(ply)
 	if userData then
 		ply:SetUserGroup(userData.groupid)
 	end
-
-	Custos.SendUserInfo(ply)
 end)

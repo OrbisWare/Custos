@@ -47,7 +47,7 @@ function PLUGIN:BanPlayer(admin, ply, time, reason)
 		_admin = "Console"
 	end
 
-	Custos.Query("INSERT INTO `cu_bans` (steamid32, steamid64, reason, startTime, endTime, admin) VALUES('%s', '%s', '%s', %i, %i, '%s')",
+	Custos.SQLObj:EasyQuery("INSERT INTO `cu_bans` (steamid32, steamid64, reason, startTime, endTime, admin) VALUES('%s', '%s', '%s', %i, %i, '%s')",
 		steamid32, steamid64, reason, startTime, endTime, _admin)
 
 	Custos.G.Bans[steamid32] = {
@@ -89,7 +89,7 @@ function PLUGIN:UnbanPlayer(steamid, ply)
 	end
 
 	if utilx.IsValidSteamID(steamid) then
-		Custos.Query("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", steamid, function(result, status, err)
+		Custos.SQLObj:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", steamid, function(result, status, err)
 			if result then
 				Custos.G.Bans[steamid] = nil
 			end
@@ -104,12 +104,12 @@ PLUGIN:AddCommand("cu_unban", function(ply, raw, str)
 end, "cu_unban", "cu_unban <steamid> - Unban players.", "unban")
 
 PLUGIN:AddHook("InitPostEntity", "cu_BanLoader", function()
-	Custos.Query("SELECT * FROM `cu_bans`", function(result, status, err)
+	Custos.SQLObj:EasyQuery("SELECT * FROM `cu_bans`", function(result, status, err)
 		if !result then return; end
 
 		for k,v in pairs(result) do
 			if (v.endTime != 0) and (v.endTime <= os.time()) then
-				Custos.Query("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", v.steamid32)
+				Custos.SQLObj:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", v.steamid32)
 			end
 
 			Custos.G.Bans[v.steamid32] = {
