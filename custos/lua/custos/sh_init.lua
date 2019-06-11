@@ -14,26 +14,27 @@
 --[[---------------------
 	Function Classes
 ]]----------------------
-cu.plugin = {} --Plugin functions
-cu.group = {} --Group functions
-cu.util = {} --Utility functions
-cu.user = {} --user functions
-cu.cmd = {} --Command functions
-cu.log = {} --Log functions
+cu.plugin = cu.plugin or {} --Plugin functions
+cu.group = cu.group or {} --Group functions
+cu.perm = cu.perm or {} --Permission functions
+cu.util = cu.util or {} --Utility functions
+cu.user = cu.user or {} --user functions
+cu.cmd = cu.cmd or {} --Command functions
+cu.log = cu.log or {} --Log functions
 
 --[[---------------------
 	Globals - We store variables and other things in these.
 ]]----------------------
-cu.g = {} --Table for our globals.
-cu.g.config = {} --Table for all of our config options.
-cu.g.plugins = {} --All our plugins and their data.
-cu.g.groups = {} --All of our user groups and their data.
-cu.g.users = {} --All of our user data.
-cu.g.permissions = {} --All of our register permissions.
-cu.g.commands = {} --Our command(s) data.
+cu.g = cu.g or {} --Table for our globals.
+cu.g.config = cu.g.config or {} --Table for all of our config options.
+cu.g.plugins = cu.g.plugins or {} --All our plugins and their data.
+cu.g.groups = cu.g.groups or {} --All of our user groups and their data.
+cu.g.users = cu.g.users or {} --All of our user data.
+cu.g.permissions = cu.g.permissions or {} --All of our register permissions.
+cu.g.commands = cu.g.commands or {} --Our command(s) data.
 if SERVER then
-	cu.g.sqlinfo = {} --Table for our SQL info.
-	cu.sqlobj = nil
+	cu.g.sqlinfo = cu.g.sqlinfo or {} --Table for our SQL info.
+	cu.sqlobj = cu.sqlobj or nil
 end
 
 local cu_starttime = os.clock()

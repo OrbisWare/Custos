@@ -11,6 +11,8 @@
 	Log System
 ]]
 if SERVER then
+	util.AddNetworkString("cu_WriteLog")
+
 	local logFile;
 	local date;
 	local logDir;
@@ -51,10 +53,10 @@ if SERVER then
 		if !file.Exists(logFile, "DATA") then
 			file.Write(logFile, "")
 		else
-			cu.WriteLog("\n\n")
+			cu.log.Write("\n\n")
 		end
 
-		cu.WriteLog("Loaded map: %s", game.GetMap())
+		cu.log.Write("Loaded map: %s", game.GetMap())
 	end)
 
 	local function NextLog()
@@ -70,10 +72,10 @@ if SERVER then
 		end
 
 		date = os.date("%Y-%m-%d")
-		cu.WriteLog("Continued logging in: %s", newLog)
+		cu.log.WriteLog("Continued logging in: %s", newLog)
 		logFile = newLog
 		file.Write(logFile, "")
-		cu.WriteLog("Continued logging in: %s", oldLog)
+		cu.log.WriteLog("Continued logging in: %s", oldLog)
 	end
 
 	local function Log(str)
@@ -83,7 +85,7 @@ if SERVER then
 		file.Append( logFile, string.format("[%02i:%02i:%02i] ", os.date("*t").hour, os.date("*t").min, os.date("*t").sec)..str )
 	end
 
-	function cu.WriteLog(prefix, ...)
+	function cu.log.Write(prefix, ...)
 		if !cu.g.config.Log then return end
 
 		local tbl = {...}
@@ -111,9 +113,9 @@ if SERVER then
 		if !cu.g.config.LogChat then return end
 
 		if t then
-			cu.WriteLog("CHAT", "(TEAM) %s: %s", ply:Nick(), text)
+			cu.log.Write("CHAT", "(TEAM) %s: %s", ply:Nick(), text)
 		else
-			cu.WriteLog("CHAT", "%s: %s", ply:Nick(), text)
+			cu.log.Write("CHAT", "%s: %s", ply:Nick(), text)
 		end
 	end)
 
@@ -121,14 +123,14 @@ if SERVER then
 		if !cu.g.config.Log then return end
 		if !cu.g.config.LogEvents then return end
 
-		cu.WriteLog("SERVER", "Client %s (%s) connected to the server.", ply:Name(), ply:SteamID())
+		cu.log.Write("SERVER", "Client %s (%s) connected to the server.", ply:Name(), ply:SteamID())
 	end)
 
 	hook.Add("PlayerDisconnected", "cu_LogDisconnections", function(ply)
 		if !cu.g.config.Log then return end
 		if !cu.g.config.LogEvents then return end
 
-		cu.WriteLog("SERVER", "Dropped %s (%s) from the server.", ply:Name(), ply:SteamID())
+		cu.log.Write("SERVER", "Dropped %s (%s) from the server.", ply:Name(), ply:SteamID())
 	end)
 
 	hook.Add("PlayerDeath", "cu_LogKillsDeaths", function(ply, wep, killer)
@@ -136,33 +138,32 @@ if SERVER then
 		if !cu.g.config.LogEvents then return end
 
 		if !killer:IsPlayer() then
-			cu.WriteLog("KILL", "%s was killed by %s", ply:Nick(), killer:GetClass())
+			cu.log.Write("KILL", "%s was killed by %s", ply:Nick(), killer:GetClass())
 
 		elseif !IsValid(wep) then
-			cu.WriteLog("KILL", "%s killed %s", killer:Nick(), ply:Nick())
+			cu.log.Write("KILL", "%s killed %s", killer:Nick(), ply:Nick())
 
 		elseif killer:IsPlayer() then
-			cu.WriteLog("KILL", "%s killed %s using %s", killer:Nick(), ply:Nick(), wep:GetClass())
+			cu.log.Write("KILL", "%s killed %s using %s", killer:Nick(), ply:Nick(), wep:GetClass())
 
 		elseif !killer and !wep then
-			cu.WriteLog("KILL", "%s suicided!", victim:Nick())
+			cu.log.Write("KILL", "%s suicided!", victim:Nick())
 		end
 	end)
 
 	hook.Add("ShutDown", "cu_LogServerShutdown", function()
-		cu.WriteLog("SERVER", "Server is shutting down/changing levels.")
+		cu.log.Write("SERVER", "Server is shutting down/changing levels.")
 	end)
 
-	util.AddNetworkString("cu_WriteLog")
 	net.Receive("cu_WriteLog", function()
 		local prefix = net.ReadString()
 		local str = net.ReadString()
 
-		cu.WriteLog(prefix, str)
+		cu.log.Write(prefix, str)
 	end)
 
 else
-	function cu.WriteLog(prefix, ...)
+	function cu.log.Write(prefix, ...)
 		if !cu.g.config.Log then return end
 
 		local tbl = {...}

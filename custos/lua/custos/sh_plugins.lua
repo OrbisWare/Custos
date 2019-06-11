@@ -78,7 +78,7 @@ function pluginMeta:Inject()
 
 	if SERVER then
 		for k,v in pairs(self.Perms) do
-			cu.Perm.Register({k, v})
+			cu.perm.Register({k, v})
 		end
 
 		for k,v in pairs(self.Command) do
@@ -99,7 +99,7 @@ function pluginMeta:Eject()
 
 	if SERVER then
 		for k,v in pairs(self.Perms) do
-			cu.Perm.Unregister(v)
+			cu.perm.Unregister(v)
 		end
 
 		for k,v in pairs(self.Command) do

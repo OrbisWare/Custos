@@ -25,7 +25,7 @@ function cu.util.Notify(ply, ...)
 	local args = {...}
 
 	if utilx.CheckType(ply, "Player") then
-		chat.AddText(ply, COLOR_TAG, "[cu] ", unpack(args))
+		chat.AddText(ply, COLOR_TAG, "[Custos] ", unpack(args))
 	else
 		MsgC(unpack(args))
 	end
@@ -46,7 +46,7 @@ function cu.util.Broadcast(...)
 end
 
 function cu.util.Error(prefix, err, trace)
-	ErrorNoHalt("cu: ["..prefix.."] "..err.."\n")
+	ErrorNoHalt("Custos: ["..prefix.."] "..err.."\n")
 
 	if trace then
 		debug.Trace()
@@ -54,7 +54,7 @@ function cu.util.Error(prefix, err, trace)
 end
 
 function cu.util.ErrorHalt(prefix, err, trace)
-	Error("cu: ["..prefix.."] "..err.."\n")
+	Error("Custos: ["..prefix.."] "..err.."\n")
 
 	if trace then
 		debug.Trace()

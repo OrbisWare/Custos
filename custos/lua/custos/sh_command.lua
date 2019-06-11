@@ -8,63 +8,138 @@
 
 	~https://github.com/BadWolfGames/custos
 
-	Command System
+	Loader System
+
+  data structure:
+    data.description
+    data.help
+    data.permission
+    data.OnRun
 ]]
---[[---------------------
-	Console Command System
-	-Based off Breakpoint's AddCmd function.
-]]----------------------
 if SERVER then
-  function cu.cmd.AddConCommand(name, callback, permi, help)
-  	if permi and !cu.g.permissions[permi] then
-  		cu.util.Error("CONCMD", "Permission not registered: "..permi, false)
-  		return false
-  	end
-
-  	cu.g.commands[name] = {
-  		callback = callback,
-  		perm = permi,
-  		help = help
-  	}
-
-  	concommand.Add(name, function(ply, cmd, args, raw)
-  		if !IsValid(ply) then
-  			ply = {
-  				GetUserGroup,IsUserGroup,IsAdmin,IsSuperAdmin = function() return true end,
-  				HasPermission = function() return true end,
-  				GetImmunity = function() return 0x3E8 end,
-  				CanTarget = function() return true end,
-  			}
-  		end
-
-  		if permi and !ply:HasPermission(permi) then
-  			cu.util.Notify(ply, COLOR_ERROR, "You don't have access to that command!")
-  			cu.WriteLog("COMMAND", "%s tried to run command %s", cu.PlayerName(ply), name)
-  			return
-  		end
-
-  		local run, err, msg = pcall(callback, ply, raw, unpack(args))
-  		if !run then
-  			cu.util.Notify(ply, COLOR_ERROR, "Command failed to run: "..err)
-  			cu.WriteLog("COMMAND", "%s tried to run command %s. Error %s", cu.PlayerName(ply), name, err)
-  			return
-  		end
-  	end, nil, help)
-  end
-
-  function cu.cmd.RemoveConCommand(cmd)
-  	if cu.g.commands[cmd] then
-  		cu.g.commands[cmd] = nil
-  		concommand.Remove(cmd)
-  	end
-  end
-
+  util.AddNetworkString("cu_Command")
   local ChatCommands = {}
-  function cu.cmd.AddChatCommand(chatcmd, cmd)
+
+  function cu.cmd.Add(command, data)
+    if not utilx.CheckType(data, "table") then return; end
+
+    local description = data.description or "None"
+    local help = data.help or "None"
+    local permission = data.permission or nil
+    local OnRun = data.OnRun
+
+    if permission and not cu.g.permissions[permission] then
+      cu.util.Error("CMD", permission.." has not be registered.", false)
+      return
+    end
+
+    if not utilx.CheckType(OnRun, "function") then
+      cu.util.Error("CMD", command.." doesn't have a callback, not adding.", false)
+      return
+    end
+
+    cu.g.commands[command] = {
+      desc = description,
+      help = help,
+      perm = permission,
+      OnRun = OnRun
+    }
+  end
+
+  function cu.cmd.Parse(ply, command, args)
+    local cmdData = cu.g.commands[command]
+
+    if cmdData then
+      local description = cmdData.description
+      local help = cmdData.help
+      local permission = cmdData.permission
+      local OnRun = cmdData.OnRun
+
+      if permission and not ply:HasPermission(permission) then
+        cu.log.Write("CMD", "%s tried to run command %s", cu.util.PlayerName(ply), command)
+        return false, "You don't have access to that command!"
+      end
+
+      local run, err, msg = pcall(OnRun, ply, unpack(args))
+      if !run then
+        cu.log.Write("CMD", "%s tried to run command %s. Error %s", cu.util.PlayerName(ply), command, err)
+        return false, "Command failed to run: "..err
+      end
+      return true
+    else
+      return false, "Invalid command entered."
+    end
+  end
+
+  concommand.Add("cu", function(ply, command, args, raw)
+    if !IsValid(ply) then
+      ply = {
+        GetUserGroup,IsUserGroup,IsAdmin,IsSuperAdmin = function() return true end,
+        HasPermission = function() return true end,
+        GetImmunity = function() return 0x3E7 end,
+        CanTarget = function() return true end,
+      }
+    end
+
+    local cmd = args[1]
+    args[1] = nil
+
+    if cmd then
+      if cmd != help then
+        cmd:lower()
+
+        local result, err = cu.cmd.Parse(ply, cmd, args, raw)
+        if not result then
+          cu.util.Notify(ply, COLOR_ERROR, err)
+        end
+
+      elseif ply.cuNextHelp or 0 < CurTime() then
+        ply.cuNextHelp = CurTime() + 5
+        local cmd = args[1] --The command is entered after "help"
+
+        if cmd and ply:HasPermission(cmd.perm) then
+          local cmdData = cu.g.commands[cmd]
+          cu.util.Notify(ply, COLOR_TEXT, "Help as been printed in via console.")
+          MsgN("\n\n [Custos] Command Help For: "..command)
+          MsgN(" \t• Name: "..cmdData.name)
+          MsgN(" \t• Description: "..cmdData.description)
+          MsgN(" \t• Help: "..cmdData.help)
+        else
+          cu.util.Notify(ply, COLOR_ERROR, "That command doesn't exist!")
+        end
+      end
+    else
+      --Print all commands here.
+    end
+  end)
+
+  function cu.cmd.Run(ply, command, args)
+    local cmdData = cu.g.commands[command]
+
+    if cmdData then
+      if cmdData.perm and not ply:HasPermission(cmdData.perm) then
+        cu.util.Notify(ply, COLOR_ERROR, "You don't have access to that command!")
+        return
+      end
+
+      concommand.Run(command, unpack(args))
+    else
+      cu.util.Notify(ply, COLOR_ERROR, "You have entered an invalid command.")
+      return
+    end
+  end
+
+  function cu.cmd.Remove(command)
+    if cu.g.commands[command] then
+      cu.g.commands[command] = nil
+    end
+  end
+
+  function cu.cmd.AddChat(chatcmd, cmd)
   	ChatCommands[chatcmd] = cmd
   end
 
-  function cu.cmd.RemoveChatCommand(chatcmd)
+  function cu.cmd.RemoveChat(chatcmd)
   	ChatCommands[chatcmd] = nil
   end
 
@@ -99,60 +174,23 @@ if SERVER then
   	end
   end
 
+  net.Receive("cu_Command", function(len, client)
+    local command = net.ReadString()
+    local args = netx.ReadTable()
+
+    cu.cmd.Run(client, command, args)
+  end)
+
   hook.Add("PlayerSay", "cu_ChatCommands", function(ply, text, team)
   	parseChatCmd(ply, text)
   end)
 
 else
-  --Do stuff here
+  --Request the server to run a command.
+  function cu.cmd.Send(command, ...)
+    net.Start("cu_Command")
+      net.WriteString(command)
+      netx.WriteTable({...})
+    net.SendToServer()
+  end
 end
-
---[[---------------------
-	Concept Console Command System
-	-Some concept for console command system.
-]]----------------------
---[[
-function cu.cmd.AddConCommand(cmd, callback, permi, help)
-	if permi and !table.HasValue(cu.g.permissions, permi) then
-		cu.util.Error("CONCMD", "Permission not registered: "..permi, false)
-		return false
-	end
-
-	cu.g.commands[cmd] = {
-		callback = callback,
-		permission = permi,
-		help = help
-	}
-end
-
-function cu.ProcessConCommand(cmd)
-	local cmds = cu.g.commands
-	local callback = cmds[cmd].callback
-	local permission = cmds[cmd].permission
-	local help = cmds[cmd].help
-
-	concommand.Add("cu "..cmd, function(ply, cmd, args, raw)
-		if !IsValid(ply) then
-			ply = {
-				GetUserGroup,IsUserGroup,IsAdmin,IsSuperAdmin = function() return true end,
-				HasPermission = function() return true end,
-				GetImmunity = function() return 0x3E8 end,
-				CanTarget = function() return true end,
-			}
-		end
-
-		if permission and !ply:HasPermission(permission) then
-			cu.util.Notify(ply, COLOR_ERROR, "You don't have access to that command!")
-			cu.WriteLog("COMMAND", "%s tried to run command %s", cu.PlayerName(ply), name)
-			return
-		end
-
-		local run, err, msg = pcall(callback, ply, raw, unpack(args))
-		if !run then
-			cu.util.Notify(ply, COLOR_ERROR, "Command failed to run: "..err)
-			cu.WriteLog("COMMAND", "%s tried to run command %s. Error %s", cu.PlayerName(ply), name, err)
-			return
-		end
-	end, nil, help)
-end
---]]

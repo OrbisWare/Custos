@@ -81,7 +81,7 @@ Version 0.1.6i (16)
 
 Version 0.1.5i (15)
 	Fixed ban/unban system
-	+Added cu.PlayerName(Player) function to get a player's name
+	+Added cu.util.PlayerName(Player) function to get a player's name
 
 Version 0.1.4i (14)
 	+Added group parenting

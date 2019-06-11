@@ -10,11 +10,10 @@
 
 	Modular Permission System
 ]]
-cu.Perm = {} --All of our Permission functions are housed here.
 local permissions = cu.g.permissions
 
-function cu.Perm.Register(perm)
-	if cu.Perm.Check(perm) then
+function cu.perm.Register(perm)
+	if cu.perm.Check(perm) then
 		return
 	end
 
@@ -26,7 +25,7 @@ function cu.Perm.Register(perm)
 	end
 end
 
-function cu.Perm.Unregister(perm)
+function cu.perm.Unregister(perm)
 	if utilx.CheckTypeStrict(perm, "table") then
 		for k,_ in pairs(perm) do
 			permissions[k] = nil
@@ -34,7 +33,7 @@ function cu.Perm.Unregister(perm)
 	end
 end
 
-function cu.Perm.Check(perm)
+function cu.perm.Check(perm)
 	if utilx.CheckType(perm, "string") then
 		if permissions[perm] then
 			return true

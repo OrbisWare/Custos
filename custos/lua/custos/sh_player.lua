@@ -29,12 +29,12 @@ function playerMeta:IsUser()
 end
 
 --[[---------------------
-	Function: cu.PlayerName
+	Function: cu.util.PlayerName
 	Description: Our custom function to get a player's name.
 	Arguments:
 		ply = Player object
 ]]----------------------
-function cu.PlayerName(ply)
+function cu.util.PlayerName(ply)
 	if IsValid(ply) and utilx.CheckType(ply, "Player") then
 		return ply:Name()
 	else
@@ -42,7 +42,7 @@ function cu.PlayerName(ply)
 	end
 end
 
-function cu.GetSteamID(ply)
+function cu.util.GetSteamID(ply)
 	if IsValid(ply) and utilx.CheckType(ply, "Player") then
 		return ply:SteamID()
 	else

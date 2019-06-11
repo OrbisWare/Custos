@@ -29,12 +29,12 @@ PLUGIN:AddCommand("cu_gag", function(ply, raw, name)
 
 	if target then
 		if !target.CanSpeak or target.CanSpeak == false then
-			cu.WriteLog("ADMIN", "%s(%s) gagged %s(%s)", cu.PlayerName(ply), cu.GetSteamID(ply), cu.PlayerName(target), target:SteamID())
-			cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " gagged ", COLOR_TARGET, cu.PlayerName(target))
+			cu.log.Write("ADMIN", "%s(%s) gagged %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
+			cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " gagged ", COLOR_TARGET, cu.util.PlayerName(target))
 			target.CanSpeak = true
 		else
-			cu.WriteLog("ADMIN", "%s(%s) ungagged %s(%s)", cu.PlayerName(ply), cu.GetSteamID(ply), cu.PlayerName(target), target:SteamID())
-			cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " ungagged ", COLOR_TARGET, cu.PlayerName(target))
+			cu.log.Write("ADMIN", "%s(%s) ungagged %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
+			cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " ungagged ", COLOR_TARGET, cu.util.PlayerName(target))
 			target.CanSpeak = false
 		end
 	end
@@ -55,12 +55,12 @@ PLUGIN:AddCommand("cu_mute", function(ply, raw, name)
 
 	if target then
 		if !target.CanType or target.CanType == false then
-			cu.WriteLog("ADMIN", "%s(%s) muted %s(%s)", cu.PlayerName(ply), cu.GetSteamID(ply), cu.PlayerName(target), target:SteamID())
-			cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " muted ", COLOR_TARGET, cu.PlayerName(target))
+			cu.log.Write("ADMIN", "%s(%s) muted %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
+			cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " muted ", COLOR_TARGET, cu.util.PlayerName(target))
 			target.CanType = true
 		else
-			cu.WriteLog("ADMIN", "%s(%s) unmuted %s(%s)", cu.PlayerName(ply), cu.GetSteamID(ply), cu.PlayerName(target), target:SteamID())
-			cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " unmuted ", COLOR_TARGET, cu.PlayerName(target))
+			cu.log.Write("ADMIN", "%s(%s) unmuted %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
+			cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " unmuted ", COLOR_TARGET, cu.util.PlayerName(target))
 			target.CanType = false
 		end
 	end

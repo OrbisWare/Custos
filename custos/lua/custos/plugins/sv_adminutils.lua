@@ -32,8 +32,8 @@ PLUGIN:AddCommand("cu_kick", function(ply, raw, name, reason)
 	local target = cu.util.FindPlayer(name, ply, true)
 
 	if target then
-		cu.WriteLog("ADMIN", "%s(%s) kicked %s(%s) for %s", cu.PlayerName(ply), cu.GetSteamID(ply), cu.PlayerName(target), target:SteamID(), reason)
-		cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " kicked ", COLOR_TARGET, cu.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
+		cu.log.Write("ADMIN", "%s(%s) kicked %s(%s) for %s", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID(), reason)
+		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " kicked ", COLOR_TARGET, cu.util.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
 		target:Kick(reason)
 	end
 end, "cu_kick", "cu_ban <player> <reason> - Kick a specfic player.", "kick")
@@ -47,12 +47,12 @@ PLUGIN:AddCommand("cu_freeze", function(ply, raw, name)
 
 	if target then
 		if !target:IsFlagSet(FL_FROZEN) then
-			cu.WriteLog("ADMIN", "%s(%s) froze %s(%s)", cu.PlayerName(ply), cu.GetSteamID(ply), cu.PlayerName(target), target:SteamID())
-			cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " froze ", COLOR_TARGET, cu.PlayerName(target))
+			cu.log.Write("ADMIN", "%s(%s) froze %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
+			cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " froze ", COLOR_TARGET, cu.util.PlayerName(target))
 			target:Freeze(true)
 		else
-			cu.WriteLog("ADMIN", "%s(%s) unfroze %s(%s)", cu.PlayerName(ply), cu.GetSteamID(ply), cu.PlayerName(target), target:SteamID())
-			cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " unfroze ", COLOR_TARGET, cu.PlayerName(target))
+			cu.log.Write("ADMIN", "%s(%s) unfroze %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
+			cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " unfroze ", COLOR_TARGET, cu.util.PlayerName(target))
 			target:Freeze(false)
 		end
 	end
@@ -69,7 +69,7 @@ PLUGIN:AddCommand("cu_rcon", function(ply, raw, command)
 	end
 
 	RunConsoleCommand(cmd[1], unpack(args))
-	cu.WriteLog("RCON", "%s(%s) ran %s with arguments %s", cu.PlayerName(ply), cu.GetSteamID(ply), cmd[1], unpack(args))
+	cu.log.Write("RCON", "%s(%s) ran %s with arguments %s", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cmd[1], unpack(args))
 	cu.util.Notify(ply, COLOR_TEXT, "Ran RCON command: "..cmd[1].." with arguments: "..unpack(args))
 end, "cu_rcon", "cu_rcon <command> - Run a console command through the server.", "rcon")
 
@@ -81,8 +81,8 @@ PLUGIN:AddCommand("cu_slay", function(ply, raw, name)
 	local target = cu.util.FindPlayer(name, ply, true)
 
 	if target then
-		cu.WriteLog("ADMIN", "%s(%s) slain %s(%s)", cu.PlayerName(ply), cu.GetSteamID(ply), cu.PlayerName(target), target:SteamID())
-		cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " slain ", COLOR_TARGET, cu.PlayerName(target))
+		cu.log.Write("ADMIN", "%s(%s) slain %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
+		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " slain ", COLOR_TARGET, cu.util.PlayerName(target))
 		target:Kill()
 	end
 end, "cu_slay", "cu_slay <player> - Slay the specified player.", "slay")

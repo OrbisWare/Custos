@@ -272,7 +272,7 @@ end
 --[[---------------------
 	Permission System
 ]]----------------------
-function cu.Perm.Check(perm)
+function cu.perm.Check(perm)
 	if utilx.CheckType(perm, "string") then
 		if cu.g.permissions[perm] then
 			return true
@@ -288,8 +288,8 @@ function cu.Perm.Check(perm)
 	return false
 end
 
-function cu.Perm.Register(perm)
-	if cu.Perm.Check(perm) then
+function cu.perm.Register(perm)
+	if cu.perm.Check(perm) then
 		return
 	end
 
@@ -301,7 +301,7 @@ function cu.Perm.Register(perm)
 	end
 end
 
-function cu.Perm.Unregister(perm)
+function cu.perm.Unregister(perm)
 	if utilx.CheckTypeStrict(perm, "table") then
 		for k,_ in pairs(perm) do
 			cu.g.permissions[k] = nil
@@ -309,7 +309,7 @@ function cu.Perm.Unregister(perm)
 	end
 end
 
-function cu.Perm.Send(ply)
+function cu.perm.Send(ply)
 	net.Start("cu_SentPermissions")
 		netx.WriteTable(cu.g.permissions)
 	net.Send(ply)

@@ -11,60 +11,6 @@
 	Modular group System
 
 	Default Groups:
-		cu.g.groups["superadmin"] = {
-			display = "Super Admin",
-			color = Color(0, 255, 0, 255),
-			parent = "admin",
-			immunity = 99,
-			perm = {
-				["cu_runlua"]=true,
-				["cu_setusergroup"]=true,
-				["cu_rcon"]=true,
-				["cu_modifygroup"]=true,
-				["cu_removegroup"]=true,
-				["cu_creategroup"]=true,
-				["cu_modifyuser"]=true,
-			}
-		}
-
-		cu.g.groups["admin"] = {
-			display = "Admin",
-			color = Color(255, 0, 0, 255),
-			parent = "moderator",
-			immunity = 20,
-			perm = {
-				["cu_ban"]=true,
-				["cu_unban"]=true,
-			}
-		}
-
-		cu.g.groups["moderator"] = {
-			display = "Moderator",
-			color = Color(255, 117, 0, 255),
-			parent = "user",
-			immunity = 10,
-			perm = {
-				["cu_kick"]=true,
-				["cu_freeze"]=true,
-				["cu_slay"]=true,
-				["cu_playerpickup"]=true,
-				["cu_mute"]=true,
-				["cu_gag"]=true,
-				["cu_playermenu"]=true,
-				["cu_adminecho"]=true,
-			}
-		}
-
-		cu.g.groups["user"] = {
-			display = "user",
-			color = Color(0, 0, 255, 255),
-			parent = "",
-			immunity = 0,
-			perm = {
-			}
-		}
-]]
-cu.g.groups = {
 	["superadmin"] = {
 		display = "Super Admin",
 		color = Color(0, 255, 0, 255),
@@ -89,7 +35,7 @@ cu.g.groups = {
 		parent = "",
 		immunity = 0,
 	}
-}
+]]
 
 local userGroups = cu.g.groups
 function cu.group.Create(id, display, colorObj, inherit, immunity, perm)

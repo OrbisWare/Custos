@@ -10,33 +10,14 @@
 
 	Default commands
 ]]
-cu.Perm.Register({
+cu.perm.Register({
 	["cu_setusergroup"] = "Set Usergroup",
 	["cu_modifygroup"] = "Modify group",
-	["cu_removegroup"] = "Remove group",
+	["cu_rmgroup"] = "Remove group",
 	["cu_creategroup"] = "Create group",
 	["cu_modifyuser"] = "Modify user",
 	["cu_adminecho"] = "Admin Echo"
 })
-
-cu.cmd.AddConCommand("cu_help", function(ply, raw, cmd)
-	if !cmd then
-		ply:PrintToConsole("List of Commands:")
-	end
-
-	for k,v in pairs(cu.g.commands) do
-		if k == cmd then
-			if ply:HasPermission(v.perm) then
-				ply:PrintToConsole(k..": "..v.help)
-			end
-
-		else
-			if ply:HasPermission(v.perm) then
-				ply:PrintToConsole(k..": "..v.help)
-			end
-		end
-	end
-end, nil, "cu_help <cmd> - Prints help on a certen command or lists available commands.")
 
 --[[---------------------
 	Creating/deleting/modifying Groups
@@ -63,39 +44,57 @@ local GroupModOptions = {
 	end
 }
 
-cu.cmd.AddConCommand("cu_modgroup", function(ply, raw, groupid, opt, args)
-	if !cu.g.groups[groupid] then
-		--some kind of error
-		return
+cu.cmd.Add("modgroup", {
+	description = "Modify a specific user group.",
+	help = "modgroup <groupid> <option> <args>",
+	permission = "cu_modifygroup",
+
+	OnRun = function(ply, groupid, opt, args)
+		if !cu.g.groups[groupid] then
+			--some kind of error
+			return
+		end
+
+		if opt then
+			GroupModOptions[opt](groupid, args)
+		end
 	end
+})
 
-	if opt then
-		GroupModOptions[opt](groupid, args)
+cu.cmd.Add("rmgroup", {
+	description = "Remove a specific user group.",
+	help = "rmgroup <groupid>",
+	permission = "cu_rmgroup",
+
+	OnRun = function(ply, groupid, opt, args)
+		local group = cu.g.groups[groupid]
+
+		if !group then
+			--some kind of error
+			return
+
+		else
+			group = nil
+		end
 	end
-end, "cu_modifygroup", "cu_modgroup <groupid> <option> <args> - Modify a specific group.")
+})
 
-cu.cmd.AddConCommand("cu_removegroup", function(ply, raw, groupid)
-	local group = cu.g.groups[groupid]
+cu.cmd.Add("creategroup", {
+	description = "Create a specific user group.",
+	help = "creategroup <groupid:string> <name:string> <color.r:int> <color.g:int> <color.b:int> <parent:string> <immunity:int> <permissions:table>",
+	permission = "cu_creategroup",
 
-	if !group then
-		--some kind of error
-		return
+	OnRun = function(ply, groupid, opt, args)
+		local group = cu.g.groups[groupid]
 
-	else
-		group = nil
+		if group then
+			--some kind of error
+			return
+		end
+
+		cu.group.Create(groupid, dname, Color(color_r, color_g, color_b, 255), parent, immunity, perms)
 	end
-end, "cu_removegroup", "cu_removegroup <groupid> - Remove a group.")
-
-cu.cmd.AddConCommand("cu_creategroup", function(ply, raw, groupid, dname, color_r, color_g, color_b, parent, immunity, perms)
-	local group = cu.g.groups[groupid]
-
-	if group then
-		--some kind of error
-		return
-	end
-
-	cu.group.Create(groupid, dname, Color(color_r, color_g, color_b, 255), parent, immunity, perms)
-end, "cu_creategroup", "cu_creategroup <groupid> <name> <color.r> <color.g> <color.b> <parent> <immunity> <permissions> - Create a group.")
+})
 
 --[[---------------------
 	Modifying user Data
@@ -110,20 +109,32 @@ local UserModOptions = {
 	end,
 }
 
-cu.cmd.AddConCommand("cu_moduser", function(ply, raw, name, opt, args)
-	local target = cu.util.FindPlayer(name, ply, false)
+cu.cmd.Add("moduser", {
+	description = "Modify a player's data.",
+	help = "moduser <player> <option> <args>",
+	permission = "cu_moduser",
 
-	if target and opt then
-		UserModOptions[opt](target, args)
-	end
-end, "cu_modifyuser", "cu_moduser <player> <option> - Modify a player's data")
+	OnRun = function(ply, groupid, opt, args)
+		local target = cu.util.FindPlayer(name, ply, false)
 
-cu.cmd.AddConCommand("cu_setgroup", function(ply, raw, name, group)
-	local target = cu.util.FindPlayer(name, ply, false)
-
-	if cu.g.groups[group] then
-		if target then
-			cu.user.Add(target, group)
+		if target and opt then
+			UserModOptions[opt](target, args)
 		end
 	end
-end, "cu_setusergroup", "cu_setgroup <player> <groupid> - Sets a player to that usergroup.")
+})
+
+cu.cmd.Add("setgroup", {
+	description = " Sets a player's usergroup.",
+	help = "setgroup <player> <groupid>",
+	permission = "cu_setusergroup",
+
+	OnRun = function(ply, groupid, opt, args)
+		local target = cu.util.FindPlayer(name, ply, false)
+
+		if cu.g.groups[group] then
+			if target then
+				cu.user.Add(target, group)
+			end
+		end
+	end
+})

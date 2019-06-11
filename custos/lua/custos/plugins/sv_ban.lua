@@ -58,8 +58,8 @@ function PLUGIN:BanPlayer(admin, ply, time, reason)
 		admin = _admin
 	}
 
-	cu.WriteLog("ADMIN", "%s(%s) banned %s(%s) for %s until %s",
-		cu.PlayerName(ply), _admin, cu.PlayerName(target), steamid32, reason, string.NiceTime(endTime))
+	cu.log.Write("ADMIN", "%s(%s) banned %s(%s) for %s until %s",
+		cu.util.PlayerName(ply), _admin, cu.util.PlayerName(target), steamid32, reason, string.NiceTime(endTime))
 
 	if utilx.CheckType(ply, "Player") then
 		ply:Kick( "Banned: "..reason.." for "..string.NiceTime(endTime) )
@@ -76,7 +76,7 @@ PLUGIN:AddCommand("cu_ban", function(ply, raw, name, time, reason)
 	local target = cu.util.FindPlayer(name, ply, false)
 
 	if target then
-		cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " banned ", COLOR_TARGET, cu.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
+		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " banned ", COLOR_TARGET, cu.util.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
 		PLUGIN:BanPlayer(ply, target, tonumber(time), reason)
 	end
 end, "cu_ban", "cu_ban <player|steamid> <time> <reason> - Ban a player for a specific amount of time (0 is permanent).", "ban")
@@ -85,7 +85,7 @@ function PLUGIN:UnbanPlayer(steamid, ply)
 	local steamid = utilx.CheckTypeStrict(steamid, "string")
 
 	if ply and IsValid(ply) then
-		cu.WriteLog("ADMIN", "%s(%s) unbanned %s", cu.PlayerName(ply), ply:SteamID(), str)
+		cu.log.Write("ADMIN", "%s(%s) unbanned %s", cu.util.PlayerName(ply), ply:SteamID(), str)
 	end
 
 	if utilx.IsValidSteamID(steamid) then
@@ -99,7 +99,7 @@ end
 
 PLUGIN:AddCommand("cu_unban", function(ply, raw, str)
 	if PLUGIN:UnbanPlayer(str, ply) then
-		cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " unbanned ", COLOR_TARGET, str)
+		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " unbanned ", COLOR_TARGET, str)
 	end
 end, "cu_unban", "cu_unban <steamid> - Unban players.", "unban")
 
