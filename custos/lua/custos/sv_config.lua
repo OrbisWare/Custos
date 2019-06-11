@@ -19,9 +19,9 @@
 ]]----------------------
 BWSQL.Module = "sqlite"
 
-Custos.G.SQLInfo.host = "localhost"
-Custos.G.SQLInfo.username = "user"
-Custos.G.SQLInfo.password = "user"
-Custos.G.SQLInfo.database = "database"
-Custos.G.SQLInfo.port = 3306 --3306 is default port.
-Custos.G.SQLInfo.socket = "" --Don't change this unless you know what you're doing.
+cu.g.sqlinfo.host = "localhost"
+cu.g.sqlinfo.username = "user"
+cu.g.sqlinfo.password = "user"
+cu.g.sqlinfo.database = "database"
+cu.g.sqlinfo.port = 3306 --3306 is default port.
+cu.g.sqlinfo.socket = "" --Don't change this unless you know what you're doing.

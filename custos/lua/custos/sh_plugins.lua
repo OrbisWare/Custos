@@ -13,25 +13,25 @@
 local pluginMeta = {}
 pluginMeta.__index = pluginMeta
 
-function Custos.Plugin.GetActivePlugins()
+function cu.plugin.GetActivePlugins()
 	local pluginList = {}
 
-	for k,v in pairs(Custos.G.Plugins) do
+	for k,v in pairs(cu.G.Plugins) do
 		pluginList[k] = v.Name
 	end
 
 	return pluginList
 end
 
-function Custos.Plugin.Disable(id)
-	local plugin = Custos.G.Plugins
+function cu.plugin.Disable(id)
+	local plugin = cu.G.Plugins
 
 	if plugin[id] then
 		plugin[id] = nil
 	end
 end
 
-function Custos.DefinePlugin()
+function cu.DefinePlugin()
 	local object = {}
 
 	setmetatable(object, pluginMeta)
@@ -78,13 +78,13 @@ function pluginMeta:Inject()
 
 	if SERVER then
 		for k,v in pairs(self.Perms) do
-			Custos.Perm.Register({k, v})
+			cu.Perm.Register({k, v})
 		end
 
 		for k,v in pairs(self.Command) do
-			Custos.AddConCommand(k, v.callback, v.perm, v.help)
+			cu.cmd.AddConCommand(k, v.callback, v.perm, v.help)
 			if v.chat then
-				Custos.AddChatCommand(v.chat, k)
+				cu.cmd.AddChatCommand(v.chat, k)
 			end
 		end
 	end
@@ -99,13 +99,13 @@ function pluginMeta:Eject()
 
 	if SERVER then
 		for k,v in pairs(self.Perms) do
-			Custos.Perm.Unregister(v)
+			cu.Perm.Unregister(v)
 		end
 
 		for k,v in pairs(self.Command) do
-			Custos.RemoveConCommand()
+			cu.cmd.RemoveConCommand()
 			if v.chat then
-				Custos.RemoveChatCommand(v.chat)
+				cu.cmd.RemoveChatCommand(v.chat)
 			end
 		end
 	end
@@ -119,7 +119,7 @@ function pluginMeta:Register()
 	local id = self.ID
 
 	if id == nil then
-		Custos.Error("PLUGIN","ID returned nil.\n", true)
+		cu.util.Error("PLUGIN","ID returned nil.\n", true)
 		return
 	end
 
@@ -131,7 +131,7 @@ function pluginMeta:Register()
 
 	table.remove(self, 1)
 
-	Custos.G.Plugins[id] = self
+	cu.G.Plugins[id] = self
 	self:Inject()
 
 	hook.Call("CU_PluginRegister")
@@ -140,7 +140,7 @@ end
 function pluginMeta:Unregister()
 	local id = self.ID
 
-	if Custos.G.Plugins[id] then
+	if cu.G.Plugins[id] then
 		self:Eject()
 	end
 

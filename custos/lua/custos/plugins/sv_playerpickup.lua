@@ -8,7 +8,7 @@
 
 	~https://github.com/BadWolfGames/custos
 ]]
-local PLUGIN = Custos.DefinePlugin()
+local PLUGIN = cu.DefinePlugin()
 
 PLUGIN.ID = 4
 PLUGIN.Name = "Player Pickup"

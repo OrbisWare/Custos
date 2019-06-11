@@ -8,7 +8,7 @@
 
 	~https://github.com/BadWolfGames/custos
 ]]
-local PLUGIN = Custos.DefinePlugin()
+local PLUGIN = cu.DefinePlugin()
 
 PLUGIN.ID = 1
 PLUGIN.Name = "Ban"
@@ -20,10 +20,10 @@ PLUGIN:AddPermissions({
 	["cu_unban"] = "Unban"
 })
 
-Custos.G.Bans = {}
+cu.G.Bans = {}
 
 PLUGIN:AddHook("CU_PluginUnregister", "cu_ClearBanTable", function()
-	Custos.G.Bans = nil
+	cu.G.Bans = nil
 end)
 
 function PLUGIN:BanPlayer(admin, ply, time, reason)
@@ -47,10 +47,10 @@ function PLUGIN:BanPlayer(admin, ply, time, reason)
 		_admin = "Console"
 	end
 
-	Custos.SQLObj:EasyQuery("INSERT INTO `cu_bans` (steamid32, steamid64, reason, startTime, endTime, admin) VALUES('%s', '%s', '%s', %i, %i, '%s')",
+	cu.sqlobj:EasyQuery("INSERT INTO `cu_bans` (steamid32, steamid64, reason, startTime, endTime, admin) VALUES('%s', '%s', '%s', %i, %i, '%s')",
 		steamid32, steamid64, reason, startTime, endTime, _admin)
 
-	Custos.G.Bans[steamid32] = {
+	cu.G.Bans[steamid32] = {
 		steamid64 = steamid64,
 		reason = reason,
 		startTime = startTime,
@@ -58,8 +58,8 @@ function PLUGIN:BanPlayer(admin, ply, time, reason)
 		admin = _admin
 	}
 
-	Custos.WriteLog("ADMIN", "%s(%s) banned %s(%s) for %s until %s",
-		Custos.PlayerName(ply), _admin, Custos.PlayerName(target), steamid32, reason, string.NiceTime(endTime))
+	cu.WriteLog("ADMIN", "%s(%s) banned %s(%s) for %s until %s",
+		cu.PlayerName(ply), _admin, cu.PlayerName(target), steamid32, reason, string.NiceTime(endTime))
 
 	if utilx.CheckType(ply, "Player") then
 		ply:Kick( "Banned: "..reason.." for "..string.NiceTime(endTime) )
@@ -73,10 +73,10 @@ PLUGIN:AddCommand("cu_ban", function(ply, raw, name, time, reason)
 
 	local time = tonumber(time) * 60
 
-	local target = Custos.FindPlayer(name, ply, false)
+	local target = cu.util.FindPlayer(name, ply, false)
 
 	if target then
-		Custos.Broadcast(COLOR_ADMIN, Custos.PlayerName(ply), COLOR_TEXT, " banned ", COLOR_TARGET, Custos.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
+		cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " banned ", COLOR_TARGET, cu.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
 		PLUGIN:BanPlayer(ply, target, tonumber(time), reason)
 	end
 end, "cu_ban", "cu_ban <player|steamid> <time> <reason> - Ban a player for a specific amount of time (0 is permanent).", "ban")
@@ -85,13 +85,13 @@ function PLUGIN:UnbanPlayer(steamid, ply)
 	local steamid = utilx.CheckTypeStrict(steamid, "string")
 
 	if ply and IsValid(ply) then
-		Custos.WriteLog("ADMIN", "%s(%s) unbanned %s", Custos.PlayerName(ply), ply:SteamID(), str)
+		cu.WriteLog("ADMIN", "%s(%s) unbanned %s", cu.PlayerName(ply), ply:SteamID(), str)
 	end
 
 	if utilx.IsValidSteamID(steamid) then
-		Custos.SQLObj:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", steamid, function(result, status, err)
+		cu.sqlobj:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", steamid, function(result, status, err)
 			if result then
-				Custos.G.Bans[steamid] = nil
+				cu.G.Bans[steamid] = nil
 			end
 		end)
 	end
@@ -99,20 +99,20 @@ end
 
 PLUGIN:AddCommand("cu_unban", function(ply, raw, str)
 	if PLUGIN:UnbanPlayer(str, ply) then
-		Custos.Broadcast(COLOR_ADMIN, Custos.PlayerName(ply), COLOR_TEXT, " unbanned ", COLOR_TARGET, str)
+		cu.util.Broadcast(COLOR_ADMIN, cu.PlayerName(ply), COLOR_TEXT, " unbanned ", COLOR_TARGET, str)
 	end
 end, "cu_unban", "cu_unban <steamid> - Unban players.", "unban")
 
 PLUGIN:AddHook("InitPostEntity", "cu_BanLoader", function()
-	Custos.SQLObj:EasyQuery("SELECT * FROM `cu_bans`", function(result, status, err)
+	cu.sqlobj:EasyQuery("SELECT * FROM `cu_bans`", function(result, status, err)
 		if !result then return; end
 
 		for k,v in pairs(result) do
 			if (v.endTime != 0) and (v.endTime <= os.time()) then
-				Custos.SQLObj:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", v.steamid32)
+				cu.sqlobj:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", v.steamid32)
 			end
 
-			Custos.G.Bans[v.steamid32] = {
+			cu.G.Bans[v.steamid32] = {
 				steamid64 = v.steamid64,
 				reason = v.reason,
 				startTime = v.startTime,
@@ -125,7 +125,7 @@ end)
 
 PLUGIN:AddHook("CheckPassword", "cu_BanCheck", function(steamid)
 	local steamid32 = util.SteamIDFrom64(steamid)
-	local data = Custos.G.Bans[steamid32]
+	local data = cu.G.Bans[steamid32]
 
 	if data then
 		if tonumber(data.endTime) != 0 then
@@ -142,7 +142,7 @@ PLUGIN:AddHook("CheckPassword", "cu_BanCheck", function(steamid)
 end)
 
 PLUGIN:AddHook("CU_PluginUnloaded", "cu_ClearBans", function()
-	Custos.G.Bans = nil
+	cu.G.Bans = nil
 end)
 
 PLUGIN:Register()

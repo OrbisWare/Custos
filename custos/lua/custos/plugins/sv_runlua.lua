@@ -8,7 +8,7 @@
 
 	~https://github.com/BadWolfGames/custos
 ]]
-local PLUGIN = Custos.DefinePlugin()
+local PLUGIN = cu.DefinePlugin()
 
 PLUGIN.ID = 2
 PLUGIN.Name = "Run Lua"

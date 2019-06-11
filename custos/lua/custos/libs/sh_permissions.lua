@@ -10,23 +10,23 @@
 
 	Modular Permission System
 ]]
-Custos.Perm = {} --All of our Permission functions are housed here.
-local permissions = Custos.G.Permissions
+cu.Perm = {} --All of our Permission functions are housed here.
+local permissions = cu.g.permissions
 
-function Custos.Perm.Register(perm)
-	if Custos.Perm.Check(perm) then
+function cu.Perm.Register(perm)
+	if cu.Perm.Check(perm) then
 		return
 	end
 
 	if utilx.CheckTypeStrict(perm, "table") then
 		for k,v in pairs(perm) do
 			permissions[k] = v
-			Custos.PrintDebug(v.." permissions sucessfully registered.")
+			cu.util.PrintDebug(v.." permissions sucessfully registered.")
 		end
 	end
 end
 
-function Custos.Perm.Unregister(perm)
+function cu.Perm.Unregister(perm)
 	if utilx.CheckTypeStrict(perm, "table") then
 		for k,_ in pairs(perm) do
 			permissions[k] = nil
@@ -34,7 +34,7 @@ function Custos.Perm.Unregister(perm)
 	end
 end
 
-function Custos.Perm.Check(perm)
+function cu.Perm.Check(perm)
 	if utilx.CheckType(perm, "string") then
 		if permissions[perm] then
 			return true

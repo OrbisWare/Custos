@@ -147,7 +147,7 @@ function PANEL:Init()
 				</button>
 			</div>
 			<div class="navbar-header">
-				<div class="navbar-brand" href="index.html">Custos</div>
+				<div class="navbar-brand" href="index.html">cu</div>
 			</div>
 
 			<div class="collapse navbar-collapse navbar-ex1-collapse">

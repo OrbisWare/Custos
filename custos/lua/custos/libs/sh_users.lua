@@ -8,12 +8,11 @@
 
 	~https://github.com/BadWolfGames/custos
 
-	Modular User System
+	Modular user System
 ]]
-Custos.User = {} --All of our User functions are housed here.
-local users = Custos.G.Users
+local users = cu.g.users
 
-function Custos.User.Add(ply, group, perms)
+function cu.user.Add(ply, group, perms)
 	local sSteamid32
 	local sSteamid64
 	local perm
@@ -50,7 +49,7 @@ function Custos.User.Add(ply, group, perms)
 	hook.Call("CU_OnAddUser", nil, ply)
 end
 
-function Custos.User.AddPerm(ply, permission, value)
+function cu.user.AddPerm(ply, permission, value)
 	local sSteamid32
 
 	if utilx.CheckType(ply, "Player") then
@@ -70,11 +69,11 @@ function Custos.User.AddPerm(ply, permission, value)
 	if user then
 		user.perm[permission]=value
 	else
-		Custos.User.Add(ply, "user", permission, value)
+		cu.user.Add(ply, "user", permission, value)
 	end
 end
 
-function Custos.User.RemovePerm(ply, permission)
+function cu.user.RemovePerm(ply, permission)
 	local sSteamid32
 
 	if utilx.CheckType(ply, "Player") then
@@ -92,7 +91,7 @@ function Custos.User.RemovePerm(ply, permission)
 	end
 end
 
-function Custos.User.CheckPerm(ply, permi)
+function cu.user.CheckPerm(ply, permi)
 	local user = users[ply:SteamID()]
 
 	if user then

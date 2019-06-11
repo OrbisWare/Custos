@@ -11,12 +11,12 @@
 	Loader System
 ]]
 
-function GetFileFromFilename(path)
+local function GetFileFromFilename(path)
 	return path:match( "[\\/]([^/\\]+)$" ) or path
 end
 
 if SERVER then
-	function Custos.AddCSLuaFile(filee)
+	function cu.AddCSLuaFile(filee)
 		local stat, err = pcall(AddCSLuaFile, filee)
 
 		if !stat then
@@ -24,10 +24,9 @@ if SERVER then
 			return false
 		end
 	end
-
 end
 
-function Custos.include(filee)
+function cu.include(filee)
 	local stat, err = pcall(include, filee)
 
 	if !stat then
@@ -36,7 +35,7 @@ function Custos.include(filee)
 	end
 end
 
-function Custos.LoadDir(dir)
+function cu.LoadDir(dir)
 	local loadedFile;
 	local newDir = "custos/"..dir.."/*"
 	local files = file.Find(newDir, "LUA")
@@ -48,24 +47,24 @@ function Custos.LoadDir(dir)
 		if string.GetExtensionFromFilename(v) == "lua" then
 			if prefix == "sv_" then
 				if SERVER then
-					Custos.include(path)
+					cu.include(path)
 					loadedFile = true
 				end
 
 			elseif prefix == "sh_" then
 				if SERVER then
-					Custos.AddCSLuaFile(path)
-					Custos.include(path)
+					cu.AddCSLuaFile(path)
+					cu.include(path)
 				else
-					Custos.include(path)
+					cu.include(path)
 				end
 				loadedFile = true
 
 			elseif prefix == "cl_" then
 				if SERVER then
-					Custos.AddCSLuaFile(path)
+					cu.AddCSLuaFile(path)
 				else
-					Custos.include(path)
+					cu.include(path)
 				end
 				loadedFile = true
 
@@ -81,7 +80,7 @@ function Custos.LoadDir(dir)
 	end
 end
 
-function Custos.LoadFile(filee)
+function cu.LoadFile(filee)
 	if !filee then return; end
 
 	local loadedFile;
@@ -91,24 +90,24 @@ function Custos.LoadFile(filee)
 	if string.GetExtensionFromFilename(filee) == "lua" then
 		if prefix == "sv_" then
 			if SERVER then
-				Custos.include(filee)
+				cu.include(filee)
 				loadedFile = true
 			end
 
 		elseif prefix == "sh_" then
 			if SERVER then
-				Custos.AddCSLuaFile(filee)
-				Custos.include(filee)
+				cu.AddCSLuaFile(filee)
+				cu.include(filee)
 			else
-				Custos.include(filee)
+				cu.include(filee)
 			end
 			loadedFile = true
 
 		elseif prefix == "cl_" then
 			if SERVER then
-				Custos.AddCSLuaFile(filee)
+				cu.AddCSLuaFile(filee)
 			else
-				Custos.include(filee)
+				cu.include(filee)
 			end
 			loadedFile = true
 
@@ -123,7 +122,7 @@ function Custos.LoadFile(filee)
 	end
 end
 
-function Custos.AutoLoad(dir)
+function cu.AutoLoad(dir)
 	local loadedFile;
 	local newDir = "custos/"..dir.."/*"
 	local files, folders = file.Find(newDir, "LUA")
@@ -138,13 +137,13 @@ function Custos.AutoLoad(dir)
 
 			if f == "sh_init" then
 				if SERVER then
-					Custos.AddCSLuaFile(path)
-					Custos.include(path)
+					cu.AddCSLuaFile(path)
+					cu.include(path)
 				else
-					Custos.include(path)
+					cu.include(path)
 				end
 			else
-				Error("Custos: [PLUGIN] Unable to load sh_init; file not found!\n")
+				Error("cu: [PLUGIN] Unable to load sh_init; file not found!\n")
 				return false
 			end
 		end
@@ -152,6 +151,6 @@ function Custos.AutoLoad(dir)
 
 	for k,v in pairs(files) do
 		path = dir.."/"..v
-		Custos.LoadFile(path)
+		cu.LoadFile(path)
 	end
 end

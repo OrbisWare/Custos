@@ -14,17 +14,17 @@
 --[[--------------------
 	Load plugins (true/false)
 ]]----------------------
-Custos.G.Config.LoadPlugins = true
+cu.g.config.LoadPlugins = true
 
 --[[--------------------
 	Activate debugging.
 ]]----------------------
-Custos.G.Config.Debug = true
+cu.g.config.Debug = true
 
 --[[--------------------
 	Enable Version Check - Check for a newer version when server starts up.
 ]]----------------------
-Custos.G.Config.UpdateCheck = false
+cu.g.config.UpdateCheck = false
 
 --[[--------------------
 	Color tags for colored text in via chatbox. (RGB format)
@@ -39,22 +39,22 @@ COLOR_TARGET = Color(0, 0, 0, 255) --Default: black
 --[[--------------------
 	Chat command prefixes
 ]]----------------------
-Custos.G.Config.ChatPrefixes = {
+cu.g.config.ChatPrefixes = {
 	"/",
 }
 
 --[[--------------------
 	Chat Echo
 ]]----------------------
-Custos.G.Config.ChatAdmin = false --Only echo to staff user groups.
-Custos.G.Config.ChatSilent = false --Don't echo at all.
+cu.g.config.ChatAdmin = false --Only echo to staff user groups.
+cu.g.config.ChatSilent = false --Don't echo at all.
 
 --[[--------------------
 	Logging System
 ]]----------------------
-Custos.G.Config.Log = true --Enable logging.
-Custos.G.Config.LogChat = true --Log Chat
-Custos.G.Config.LogEvents = true --Log server events ex. connections, disconnections, and server shutdowns.
-Custos.G.Config.LogDateFormat = "%Y-%m-%d" --The type of date format the log files will be saved in. The american system is %m-%d-%y
+cu.g.config.Log = true --Enable logging.
+cu.g.config.LogChat = true --Log Chat
+cu.g.config.LogEvents = true --Log server events ex. connections, disconnections, and server shutdowns.
+cu.g.config.LogDateFormat = "%Y-%m-%d" --The type of date format the log files will be saved in. The american system is %m-%d-%y
 										--Currently only %Y-%m-%d or %m-%d-%y any other format will prevent logs from deleting. Default: %Y-%m-%d
-Custos.G.Config.OldLogs = 2592000 --Delete logs that are older than this many seconds because they're consider old. Default: 2592000 (30 days)
+cu.g.config.OldLogs = 2592000 --Delete logs that are older than this many seconds because they're consider old. Default: 2592000 (30 days)

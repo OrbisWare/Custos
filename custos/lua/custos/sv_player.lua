@@ -8,13 +8,13 @@
 
 	~https://github.com/BadWolfGames/custos
 
-	Server User class functions and player functions
+	Server user class functions and player functions
 ]]
 util.AddNetworkString("cu_SentUsers")
 local playerMeta = FindMetaTable("Player")
 
-function Custos.User.Load()
-	Custos.SQLObj:EasyQuery("SELECT * FROM `cu_users`", function(data, status, err)
+function cu.user.Load()
+	cu.sqlobj:EasyQuery("SELECT * FROM `cu_users`", function(data, status, err)
 		if !data then return; end
 
 		for k,v in pairs(data) do
@@ -22,7 +22,7 @@ function Custos.User.Load()
 				permi = {}
 			end
 
-			Custos.G.Users[v.steamid32] = {
+			cu.g.users[v.steamid32] = {
 				steamid64 = v.steamid64,
 				groupid = v.groupid,
 				added = v.added,
@@ -35,31 +35,31 @@ function Custos.User.Load()
 	hook.Call("CU_OnUsersLoad")
 end
 
-function Custos.User.Save()
-	Custos.SQLObj:EasyQuery("SELECT * FROM `cu_users`", function(_data, status, err)
+function cu.user.Save()
+	cu.sqlobj:EasyQuery("SELECT * FROM `cu_users`", function(_data, status, err)
 		local sqlContainer = {}
 
 		for k,data in pairs(_data) do --ipairs
 			local steamid32 = data.steamid32
 
-			if Custos.G.Users[steamid32] then
-				local v = Custos.G.Users[steamid32]
+			if cu.g.users[steamid32] then
+				local v = cu.g.users[steamid32]
 				local steamid64 = v.steamid64
 				local groupid = v.groupid
 				local added = v.added
 				local lastConnected = v.lastConnected
 				local perm = von.serialize(v.perm)
 
-				Custos.PrintDebug("updating user "..tostring(v))
+				cu.util.PrintDebug("updating user "..tostring(v))
 
-				Custos.SQLObj:EasyQuery("UPDATE `cu_users` SET steamid64 = '%s', groupid = '%s', added = %i, lastConnected = %i, perm = '%s' WHERE steamid32 = '%s'",
+				cu.sqlobj:EasyQuery("UPDATE `cu_users` SET steamid64 = '%s', groupid = '%s', added = %i, lastConnected = %i, perm = '%s' WHERE steamid32 = '%s'",
 					steamid64, groupid, added, lastConnected, perm, steamid32)
 
 				table.insert(sqlContainer, steamid32)
 			end
 		end
 
-		for k,u in pairs(Custos.G.Users) do --Goes through all the groups
+		for k,u in pairs(cu.g.users) do --Goes through all the groups
 			local exists = false
 
 			for _,v in ipairs(sqlContainer) do
@@ -77,19 +77,19 @@ function Custos.User.Save()
 			local lastConnected = u.lastConnected
 			local perm = von.serialize(u.perm)
 
-			Custos.PrintDebug("inserting user "..tostring(k))
+			cu.util.PrintDebug("inserting user "..tostring(k))
 
-			Custos.SQLObj:EasyQuery("INSERT INTO `cu_users` (steamid32, steamid64, groupid, added, lastConnected, perm) VALUES('%s', '%s', '%s', %i, %i, '%s')",
+			cu.sqlobj:EasyQuery("INSERT INTO `cu_users` (steamid32, steamid64, groupid, added, lastConnected, perm) VALUES('%s', '%s', '%s', %i, %i, '%s')",
 				k, steamid64, groupid, added, lastConnected, perm)
 		end
 
-		table.Empty(Custos.G.Users)
+		table.Empty(cu.g.users)
 	end)
 
 	hook.Call("CU_OnUsersSaving")
 end
 
-function Custos.User.Add(ply, group, perms)
+function cu.user.Add(ply, group, perms)
 	local sSteamid32
 	local sSteamid64
 	local perm
@@ -117,7 +117,7 @@ function Custos.User.Add(ply, group, perms)
 		perm = {}
 	end
 
-	Custos.G.Users[sSteamid32] = {
+	cu.g.users[sSteamid32] = {
 		steamid64 = sSteamid64,
 		groupid = group,
 		added = os.time(),
@@ -128,7 +128,7 @@ function Custos.User.Add(ply, group, perms)
 	hook.Call("CU_OnAddUser")
 end
 
-function Custos.User.AddPerm(ply, permission, value)
+function cu.user.AddPerm(ply, permission, value)
 	local sSteamid32
 
 	if utilx.CheckType(ply, "Player") then
@@ -145,15 +145,15 @@ function Custos.User.AddPerm(ply, permission, value)
 		value = true
 	end
 
-	local user = Custos.G.Users[sSteamid32]
+	local user = cu.g.users[sSteamid32]
 	if user then
 		user.perm[permission]=value
 	else
-		Custos.User.Add(ply, "user", permission, value)
+		cu.user.Add(ply, "user", permission, value)
 	end
 end
 
-function Custos.User.RemovePerm(ply, permission)
+function cu.user.RemovePerm(ply, permission)
 	local sSteamid32
 
 	if utilx.CheckType(ply, "Player") then
@@ -165,14 +165,14 @@ function Custos.User.RemovePerm(ply, permission)
 		return false
 	end
 
-	local user = Custos.G.Users[sSteamid32]
+	local user = cu.g.users[sSteamid32]
 	if user and user.perm[permission] then
 		user.perm[permission]=nil
 	end
 end
 
-function Custos.User.CheckPerm(ply, permi)
-	local user = Custos.G.Users[ply:SteamID()]
+function cu.user.CheckPerm(ply, permi)
+	local user = cu.g.users[ply:SteamID()]
 
 	if user then
 		return user.perm[permi]
@@ -181,18 +181,18 @@ function Custos.User.CheckPerm(ply, permi)
 	return false
 end
 
-function Custos.User.Unload()
-	Custos.User.Save()
+function cu.user.Unload()
+	cu.user.Save()
 end
 
-function Custos.User.Reload()
-	Custos.User.Unload()
-	Custos.User.Load()
+function cu.user.Reload()
+	cu.user.Unload()
+	cu.user.Load()
 end
 
-function Custos.User.Send(ply)
+function cu.user.Send(ply)
 	net.Start("cu_SentUsers")
-		netx.WriteTable(Custos.G.Users)
+		netx.WriteTable(cu.g.users)
 	net.Send(ply)
 end
 
@@ -203,8 +203,8 @@ function playerMeta:HasPermission(perm)
 	local group = self:GetUserGroup()
 
 	if utilx.CheckType(perm, "string") then
-		local c = Custos.Group.CheckPerm(group, perm)
-		local u = Custos.User.CheckPerm(self, perm)
+		local c = cu.group.CheckPerm(group, perm)
+		local u = cu.user.CheckPerm(self, perm)
 
 		if c then
 			return c
@@ -214,8 +214,8 @@ function playerMeta:HasPermission(perm)
 
 	elseif utilx.CheckType(perm, "table") then
 		for _,v in pairs(perm) do
-			local c = Custos.Group.CheckPerm(group, v)
-			local u = Custos.User.CheckPerm(self, v)
+			local c = cu.group.CheckPerm(group, v)
+			local u = cu.user.CheckPerm(self, v)
 
 			if c then
 				return c
@@ -239,7 +239,7 @@ end
 
 function playerMeta:GetImmunity()
 	local group = self:GetUserGroup()
-	local immunity = Custos.Group.GetImmunity(group)
+	local immunity = cu.group.GetImmunity(group)
 
 	return immunity
 end
@@ -247,7 +247,7 @@ end
 function playerMeta:GetGroupColor()
 	local group = self:GetUserGroup()
 
-	return Custos.Group.GetColor(group)
+	return cu.group.GetColor(group)
 end
 
 --Author - https://facepunch.com/showthread.php?t=1508566&p=50357219&viewfull=1#post50357219
@@ -273,16 +273,16 @@ function playerMeta:Stuck()
 end
 
 hook.Add("ShutDown", "cu_SaveUsers", function()
-	Custos.User.Unload()
+	cu.user.Unload()
 end)
 
 hook.Add("InitPostEntity", "cu_LoadUsers", function()
-	Custos.User.Load()
+	cu.user.Load()
 end)
 
 hook.Add("PlayerAuthed", "cu_SetUserGroup", function(ply)
 	local steamid = ply:SteamID()
-	local userData = Custos.G.Users[steamid]
+	local userData = cu.g.users[steamid]
 
 	if userData then
 		ply:SetUserGroup(userData.groupid)

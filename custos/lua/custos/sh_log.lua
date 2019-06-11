@@ -20,28 +20,28 @@ if SERVER then
 			local unix;
 			local tbl = string.Explode(string.StripExtension(v), "-")
 
-			if Custos.G.Config.LogDateFormat == "%Y-%m-%d" then
+			if cu.g.config.LogDateFormat == "%Y-%m-%d" then
 				unix = os.time({year=tbl[1], month=tbl[2], day=tbl[3]})
 
-			elseif Custos.G.Config.LogDateFormat == "%m-%d-%y" then
+			elseif cu.g.config.LogDateFormat == "%m-%d-%y" then
 				unix = os.time({month=tbl[1], day=tbl[2], year=tbl[3]})
 			end
 
 			local esp = os.time() - unix
 
-			if esp >= Custos.G.Config.OldLogs then --We delete logs older than 30 days.
+			if esp >= cu.g.config.OldLogs then --We delete logs older than 30 days.
 				file.Delete(dir.."/"..v)
 			end
 		end
 	end
 
 	hook.Add("Initialize", "cu_StartLog", function()
-		if !Custos.G.Config.Log then return end
+		if !cu.g.config.Log then return end
 
 		logDir = gmod.GetGamemode().Name.."/logs"
 		DeleteOldLogs(logDir)
 
-		logFile = os.date(logDir.."/"..Custos.G.Config.LogDateFormat..".txt")
+		logFile = os.date(logDir.."/"..cu.g.config.LogDateFormat..".txt")
 		date = os.date("%Y-%m-%d")
 
 		if file.Exists(logDir, "DATA") then
@@ -51,16 +51,16 @@ if SERVER then
 		if !file.Exists(logFile, "DATA") then
 			file.Write(logFile, "")
 		else
-			Custos.WriteLog("\n\n")
+			cu.WriteLog("\n\n")
 		end
 
-		Custos.WriteLog("Loaded map: %s", game.GetMap())
+		cu.WriteLog("Loaded map: %s", game.GetMap())
 	end)
 
 	local function NextLog()
-		if !Custos.G.Config.Log then return end
+		if !cu.g.config.Log then return end
 
-		local newLog = os.date(logDir.."/"..Custos.G.Config.LogDateFormat..".txt")
+		local newLog = os.date(logDir.."/"..cu.g.config.LogDateFormat..".txt")
 		local oldLog;
 
 		if newLog == logFile then
@@ -70,21 +70,21 @@ if SERVER then
 		end
 
 		date = os.date("%Y-%m-%d")
-		Custos.WriteLog("Continued logging in: %s", newLog)
+		cu.WriteLog("Continued logging in: %s", newLog)
 		logFile = newLog
 		file.Write(logFile, "")
-		Custos.WriteLog("Continued logging in: %s", oldLog)
+		cu.WriteLog("Continued logging in: %s", oldLog)
 	end
 
 	local function Log(str)
-		if !Custos.G.Config.Log then return end
+		if !cu.g.config.Log then return end
 		if !logFile then return end
 
 		file.Append( logFile, string.format("[%02i:%02i:%02i] ", os.date("*t").hour, os.date("*t").min, os.date("*t").sec)..str )
 	end
 
-	function Custos.WriteLog(prefix, ...)
-		if !Custos.G.Config.Log then return end
+	function cu.WriteLog(prefix, ...)
+		if !cu.g.config.Log then return end
 
 		local tbl = {...}
 		local str = tbl[1]
@@ -107,50 +107,50 @@ if SERVER then
 	end
 
 	hook.Add("PlayerSay", "cu_LogChat", function(ply, text, t)
-		if !Custos.G.Config.Log then return end
-		if !Custos.G.Config.LogChat then return end
+		if !cu.g.config.Log then return end
+		if !cu.g.config.LogChat then return end
 
 		if t then
-			Custos.WriteLog("CHAT", "(TEAM) %s: %s", ply:Nick(), text)
+			cu.WriteLog("CHAT", "(TEAM) %s: %s", ply:Nick(), text)
 		else
-			Custos.WriteLog("CHAT", "%s: %s", ply:Nick(), text)
+			cu.WriteLog("CHAT", "%s: %s", ply:Nick(), text)
 		end
 	end)
 
 	hook.Add("PlayerConnected", "cu_LogConnections", function(ply)
-		if !Custos.G.Config.Log then return end
-		if !Custos.G.Config.LogEvents then return end
+		if !cu.g.config.Log then return end
+		if !cu.g.config.LogEvents then return end
 
-		Custos.WriteLog("SERVER", "Client %s (%s) connected to the server.", ply:Name(), ply:SteamID())
+		cu.WriteLog("SERVER", "Client %s (%s) connected to the server.", ply:Name(), ply:SteamID())
 	end)
 
 	hook.Add("PlayerDisconnected", "cu_LogDisconnections", function(ply)
-		if !Custos.G.Config.Log then return end
-		if !Custos.G.Config.LogEvents then return end
+		if !cu.g.config.Log then return end
+		if !cu.g.config.LogEvents then return end
 
-		Custos.WriteLog("SERVER", "Dropped %s (%s) from the server.", ply:Name(), ply:SteamID())
+		cu.WriteLog("SERVER", "Dropped %s (%s) from the server.", ply:Name(), ply:SteamID())
 	end)
 
 	hook.Add("PlayerDeath", "cu_LogKillsDeaths", function(ply, wep, killer)
-		if !Custos.G.Config.Log then return end
-		if !Custos.G.Config.LogEvents then return end
+		if !cu.g.config.Log then return end
+		if !cu.g.config.LogEvents then return end
 
 		if !killer:IsPlayer() then
-			Custos.WriteLog("KILL", "%s was killed by %s", ply:Nick(), killer:GetClass())
+			cu.WriteLog("KILL", "%s was killed by %s", ply:Nick(), killer:GetClass())
 
 		elseif !IsValid(wep) then
-			Custos.WriteLog("KILL", "%s killed %s", killer:Nick(), ply:Nick())
+			cu.WriteLog("KILL", "%s killed %s", killer:Nick(), ply:Nick())
 
 		elseif killer:IsPlayer() then
-			Custos.WriteLog("KILL", "%s killed %s using %s", killer:Nick(), ply:Nick(), wep:GetClass())
+			cu.WriteLog("KILL", "%s killed %s using %s", killer:Nick(), ply:Nick(), wep:GetClass())
 
 		elseif !killer and !wep then
-			Custos.WriteLog("KILL", "%s suicided!", victim:Nick())
+			cu.WriteLog("KILL", "%s suicided!", victim:Nick())
 		end
 	end)
 
 	hook.Add("ShutDown", "cu_LogServerShutdown", function()
-		Custos.WriteLog("SERVER", "Server is shutting down/changing levels.")
+		cu.WriteLog("SERVER", "Server is shutting down/changing levels.")
 	end)
 
 	util.AddNetworkString("cu_WriteLog")
@@ -158,12 +158,12 @@ if SERVER then
 		local prefix = net.ReadString()
 		local str = net.ReadString()
 
-		Custos.WriteLog(prefix, str)
+		cu.WriteLog(prefix, str)
 	end)
 
 else
-	function Custos.WriteLog(prefix, ...)
-		if !Custos.G.Config.Log then return end
+	function cu.WriteLog(prefix, ...)
+		if !cu.g.config.Log then return end
 
 		local tbl = {...}
 		local str = tbl[1]

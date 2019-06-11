@@ -8,10 +8,10 @@
 
 	~https://github.com/BadWolfGames/custos
 
-	Modular Group System
+	Modular group System
 
 	Default Groups:
-		Custos.G.Groups["superadmin"] = {
+		cu.g.groups["superadmin"] = {
 			display = "Super Admin",
 			color = Color(0, 255, 0, 255),
 			parent = "admin",
@@ -27,7 +27,7 @@
 			}
 		}
 
-		Custos.G.Groups["admin"] = {
+		cu.g.groups["admin"] = {
 			display = "Admin",
 			color = Color(255, 0, 0, 255),
 			parent = "moderator",
@@ -38,7 +38,7 @@
 			}
 		}
 
-		Custos.G.Groups["moderator"] = {
+		cu.g.groups["moderator"] = {
 			display = "Moderator",
 			color = Color(255, 117, 0, 255),
 			parent = "user",
@@ -55,8 +55,8 @@
 			}
 		}
 
-		Custos.G.Groups["user"] = {
-			display = "User",
+		cu.g.groups["user"] = {
+			display = "user",
 			color = Color(0, 0, 255, 255),
 			parent = "",
 			immunity = 0,
@@ -64,8 +64,7 @@
 			}
 		}
 ]]
-Custos.Group = {} --All of our Group functions are housed here.
-Custos.G.Groups = {
+cu.g.groups = {
 	["superadmin"] = {
 		display = "Super Admin",
 		color = Color(0, 255, 0, 255),
@@ -85,15 +84,15 @@ Custos.G.Groups = {
 		immunity = 10,
 	},
 	["user"] = {
-		display = "User",
+		display = "user",
 		color = Color(0, 0, 255, 255),
 		parent = "",
 		immunity = 0,
 	}
 }
-local userGroups = Custos.G.Groups
 
-function Custos.Group.Create(id, display, colorObj, inherit, immunity, perm)
+local userGroups = cu.g.groups
+function cu.group.Create(id, display, colorObj, inherit, immunity, perm)
 	local colorObj = utilx.CheckTypeStrict(colorObj, "table")
 	local immunity = utilx.CheckTypeStrict(immunity, "number")
 
@@ -112,7 +111,7 @@ function Custos.Group.Create(id, display, colorObj, inherit, immunity, perm)
 	hook.Call("CU_OnGroupCreation", nil, id)
 end
 
-function Custos.Group.Remove(id)
+function cu.group.Remove(id)
 	if !userGroups[id] then return false; end
 
 	userGroups[id] = nil
@@ -120,12 +119,12 @@ function Custos.Group.Remove(id)
 	hook.Call("CU_OnGroupRemove", nil, id)
 end
 
-function Custos.Group.CheckPerm(groupid, permi)
+function cu.group.CheckPerm(groupid, permi)
     if !userGroups[groupid].perm[permi] then
         local bHasParent = !(userGroups[groupid].parent == "")
 
         if bHasParent then
-            return Custos.Group.CheckPerm(userGroups[groupid].parent, permi)
+            return cu.group.CheckPerm(userGroups[groupid].parent, permi)
         end
 
         return false
@@ -134,7 +133,7 @@ function Custos.Group.CheckPerm(groupid, permi)
     return true
 end
 
-function Custos.Group.AddPerm(groupid, permi, value)
+function cu.group.AddPerm(groupid, permi, value)
 	if !value then
 		value = true
 	end
@@ -143,19 +142,19 @@ function Custos.Group.AddPerm(groupid, permi, value)
 	group.perm[permi] = value
 end
 
-function Custos.Group.RemovePerm(groupid, permi)
+function cu.group.RemovePerm(groupid, permi)
 	local group = userGroups[groupid]
 
 	group.perm[permi] = nil
 end
 
-function Custos.Group.GetPerms(groupid)
+function cu.group.GetPerms(groupid)
 	local group = userGroups[groupid]
 
 	return group.perm
 end
 
-function Custos.Group.SetImmunity(groupid, num)
+function cu.group.SetImmunity(groupid, num)
 	if utilx.CheckTypeStrict(num, "number") then
 		local group = userGroups[groupid]
 		group.immunity = num
@@ -164,24 +163,24 @@ function Custos.Group.SetImmunity(groupid, num)
 	end
 end
 
-function Custos.Group.GetImmunity(groupid)
+function cu.group.GetImmunity(groupid)
 	local group = userGroups[groupid]
 
 	return group.immunity
 end
 
-function Custos.Group.SetDisplay(groupid, name)
+function cu.group.SetDisplay(groupid, name)
 	local group = userGroups[groupid]
 	group.display = tostring(name)
 end
 
-function Custos.Group.GetDisplay(groupid)
+function cu.group.GetDisplay(groupid)
 	local group = userGroups[groupid]
 
 	return group.display
 end
 
-function Custos.Group.SetParent(groupid, parent)
+function cu.group.SetParent(groupid, parent)
 	local tbl = userGroups
 
 	if tbl[parent] then
@@ -191,13 +190,13 @@ function Custos.Group.SetParent(groupid, parent)
 	end
 end
 
-function Custos.Group.GetParent(groupid)
+function cu.group.GetParent(groupid)
 	local group = userGroups[groupid]
 
 	return group.parent
 end
 
-function Custos.Group.SetColor(groupid, obj)
+function cu.group.SetColor(groupid, obj)
 	if utilx.CheckTypeStrict(obj, "table") then
 		local group = userGroups[groupid]
 		group.color = obj
@@ -206,7 +205,7 @@ function Custos.Group.SetColor(groupid, obj)
 	end
 end
 
-function Custos.Group.GetColor(groupid)
+function cu.group.GetColor(groupid)
 	local group = userGroups[groupid]
 
 	return group.color

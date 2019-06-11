@@ -10,16 +10,16 @@
 
 	We load the core files here.
 ]]
-Custos = {}
-Custos.Version = 0
-Custos.InternalVersion = 0
+cu = {}
+cu.version = 0
+cu.internalversion = 0
 
 if file.Exists("data/version.txt", "GAME") then
 	local data = file.Read("data/version.txt", "GAME")
 	local lines = string.Explode("\n", data)
 
-	Custos.Version = lines[1]
-	Custos.InternalVersion = lines[2]
+	cu.version = lines[1]
+	cu.iversion = lines[2]
 end
 
 if SERVER then

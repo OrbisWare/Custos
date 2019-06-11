@@ -120,7 +120,7 @@ function utilx.UpdateCheck()
 		error = nil
 	}
 
-	http.Fetch("https://raw.github.com/BadWolfGames/Custos/master/version.txt",
+	http.Fetch("https://raw.github.com/BadWolfGames/cu/master/version.txt",
 		function(content)
 			result.newVer = tonumber(content[2])
 			result.success = true

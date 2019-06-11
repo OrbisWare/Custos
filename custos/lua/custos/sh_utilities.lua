@@ -10,10 +10,10 @@
 
 	Shared Utilities
 ]]
-function Custos.PrintDebug(debug)
-	if Custos.G.Config.Debug then
+function cu.util.PrintDebug(debug)
+	if cu.g.config.Debug then
 		if utilx.CheckType(debug, "string") then
-			Msg("Custos Debug: "..debug.."\n")
+			Msg("cu Debug: "..debug.."\n")
 
 		elseif utilx.CheckType(debug, "table") then
 			utilx.PrintTableEx(debug)
@@ -21,42 +21,108 @@ function Custos.PrintDebug(debug)
 	end
 end
 
-function Custos.Notify(ply, ...)
+function cu.util.Notify(ply, ...)
 	local args = {...}
 
 	if utilx.CheckType(ply, "Player") then
-		chat.AddText(ply, COLOR_TAG, "[Custos] ", unpack(args))
+		chat.AddText(ply, COLOR_TAG, "[cu] ", unpack(args))
 	else
 		MsgC(unpack(args))
 	end
 end
 
-function Custos.Broadcast(...)
+function cu.util.Broadcast(...)
 	local args = {...}
 
 	for k,v in pairs(player.GetAll()) do
-		if Custos.G.Config.ChatSilent then
+		if cu.g.config.ChatSilent then
 			return
-		elseif Custos.G.Config.ChatAdmin and ply:HasPermission("cu_adminecho") then
-			Custos.Notify(v, unpack(args))
+		elseif cu.g.config.ChatAdmin and ply:HasPermission("cu_adminecho") then
+			cu.util.Notify(v, unpack(args))
 		else
-			Custos.Notify(v, unpack(args))
+			cu.util.Notify(v, unpack(args))
 		end
 	end
 end
 
-function Custos.Error(prefix, err, trace)
-	ErrorNoHalt("Custos: ["..prefix.."] "..err.."\n")
+function cu.util.Error(prefix, err, trace)
+	ErrorNoHalt("cu: ["..prefix.."] "..err.."\n")
 
 	if trace then
 		debug.Trace()
 	end
 end
 
-function Custos.ErrorHalt(prefix, err, trace)
-	Error("Custos: ["..prefix.."] "..err.."\n")
+function cu.util.ErrorHalt(prefix, err, trace)
+	Error("cu: ["..prefix.."] "..err.."\n")
 
 	if trace then
 		debug.Trace()
+	end
+end
+
+if SERVER then
+	function cu.util.FindPlayer(str, ply, unrestr)
+		local sL = string.lower
+
+		if utilx.IsValidSteamID(str) then
+			return str
+		end
+
+		local playerOutput = {}
+
+		if utilx.CheckTypeStrict(str, "string") then
+			if IsValid(ply) then
+				if str == "#me" then
+					return ply
+				end
+			end
+
+			for _,t in pairs(player.GetAll()) do
+				if unrestr then
+					if str == "#alive" then
+						if t:Alive() then
+							return t
+						end
+
+					elseif str == "#dead" then
+						if !t:Alive() then
+							return t
+						end
+
+					elseif str == "#all" then
+						return t
+					end
+				end
+
+				if string.find( sL(t:GetName()), sL(str) ) then
+					table.insert(playerOutput, t)
+				end
+			end
+		end
+
+		if #playerOutput <= 0 then
+			cu.util.Notify(ply, COLOR_ERROR, "There's no player by that name currently online.")
+			return false
+
+		elseif #playerOutput > 1 then
+			for _,v in pairs(playerOutput) do
+				cu.util.Notify(ply, COLOR_TEXT, "Did you mean: "..v:Name().."?")
+			end
+
+			return false
+
+		else
+			local plyImmunity = ply:GetImmunity()
+			local targetImmunity = playerOutput[1]:GetImmunity()
+
+			if plyImmunity < targetImmunity then
+				cu.util.Notify(ply, COLOR_ERROR, "That player has more immunity than you.")
+				return false
+
+			elseif plyImmunity >= targetImmunity then
+				return playerOutput[1]
+			end
+		end
 	end
 end

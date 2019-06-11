@@ -65,7 +65,7 @@ Version 0.1.8i (18)
 		You can now have multiple files for a single plugin.
 	+Added user permissions
 		You can now give specific users permissions.
-	+Added global table for command (Custos.G.Commands)
+	+Added global table for command (cu.g.commands)
 	Improved plugin system.
 
 Version 0.1.7i (17)
@@ -81,14 +81,14 @@ Version 0.1.6i (16)
 
 Version 0.1.5i (15)
 	Fixed ban/unban system
-	+Added Custos.PlayerName(Player) function to get a player's name
+	+Added cu.PlayerName(Player) function to get a player's name
 
 Version 0.1.4i (14)
 	+Added group parenting
 	Fixed console commands
-	Fixed Custos.FindPlayer - it should now work properly.
+	Fixed cu.util.FindPlayer - it should now work properly.
 	Fixed a few other things here and there.
-	Fixed Custos.Notify
+	Fixed cu.util.Notify
 	Improved RunLua plugin.
 	Simplified group permission check.
 
@@ -120,15 +120,15 @@ Version 0.1.1i
 Version 0.1.0i
 	+Added changelog
 	+Added group immunity
-	+Added get functions to get group data. (Ex. Custos.GetGroupPerms(groupid))
+	+Added get functions to get group data. (Ex. cu.GetGroupPerms(groupid))
 	+Added group and user loading on server start up.
 	+Added help command.
 	+Added permissions table where all permissions have to be registered.
-		You can register permissions with Custos.Perms.Register(permission)
+		You can register permissions with cu.Perms.Register(permission)
 	+Added chat commands.
 	+Added chat command arguement to pluginMeta:AddCommand
 	+Added Logging
-	Renamed Custos.CreatePlugin to Custos.DefinePlugin
+	Renamed cu.CreatePlugin to cu.DefinePlugin
 	Override IsAdmin, IsSuperAdmin, Nick, and Name functions to use our group system.
 	Changed config around a bit
 	Modified Plugin Permission function (pluginMeta:AddPermissions())
@@ -145,7 +145,7 @@ Version 0.0.7i
 	Modified everything basically.
 
 Version 0.0.6i
-	+Added Group System
+	+Added group System
 	+Added VON module (https://github.com/vercas/vON)
 	Renamed sv_core to sv_init
 	Modified a bunch of stuff

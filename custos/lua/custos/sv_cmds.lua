@@ -8,23 +8,23 @@
 
 	~https://github.com/BadWolfGames/custos
 
-	Command System
+	Default commands
 ]]
-Custos.Perm.Register({
+cu.Perm.Register({
 	["cu_setusergroup"] = "Set Usergroup",
-	["cu_modifygroup"] = "Modify Group",
-	["cu_removegroup"] = "Remove Group",
-	["cu_creategroup"] = "Create Group",
-	["cu_modifyuser"] = "Modify User",
+	["cu_modifygroup"] = "Modify group",
+	["cu_removegroup"] = "Remove group",
+	["cu_creategroup"] = "Create group",
+	["cu_modifyuser"] = "Modify user",
 	["cu_adminecho"] = "Admin Echo"
 })
 
-Custos.AddConCommand("cu_help", function(ply, raw, cmd)
+cu.cmd.AddConCommand("cu_help", function(ply, raw, cmd)
 	if !cmd then
 		ply:PrintToConsole("List of Commands:")
 	end
 
-	for k,v in pairs(Custos.G.Commands) do
+	for k,v in pairs(cu.g.commands) do
 		if k == cmd then
 			if ply:HasPermission(v.perm) then
 				ply:PrintToConsole(k..": "..v.help)
@@ -44,27 +44,27 @@ end, nil, "cu_help <cmd> - Prints help on a certen command or lists available co
 ]]----------------------
 local GroupModOptions = {
 	["cname"] = function(grp, args)
-		Custos.Group.SetDisplay(grp, args[1])
+		cu.group.SetDisplay(grp, args[1])
 	end,
 	["ccolor"] = function(grp, args)
-		Custos.Group.SetColor(grp, Color(args[1], args[2], args[3], 255))
+		cu.group.SetColor(grp, Color(args[1], args[2], args[3], 255))
 	end,
 	["cparent"] = function(grp, args)
-		Custos.Group.SetParent(grp, args[1])
+		cu.group.SetParent(grp, args[1])
 	end,
 	["cimmune"] = function(grp, args)
-		Custos.Group.SetImmunity(grp, args[1])
+		cu.group.SetImmunity(grp, args[1])
 	end,
 	["aperm"] = function(grp, args)
-		Custos.Group.AddPerm(grp, args[1], true)
+		cu.group.AddPerm(grp, args[1], true)
 	end,
 	["rperm"] = function(grp, args)
-		Custos.Group.RemovePerm(grp, args[1])
+		cu.group.RemovePerm(grp, args[1])
 	end
 }
 
-Custos.AddConCommand("cu_modgroup", function(ply, raw, groupid, opt, args)
-	if !Custos.G.Groups[groupid] then
+cu.cmd.AddConCommand("cu_modgroup", function(ply, raw, groupid, opt, args)
+	if !cu.g.groups[groupid] then
 		--some kind of error
 		return
 	end
@@ -74,8 +74,8 @@ Custos.AddConCommand("cu_modgroup", function(ply, raw, groupid, opt, args)
 	end
 end, "cu_modifygroup", "cu_modgroup <groupid> <option> <args> - Modify a specific group.")
 
-Custos.AddConCommand("cu_removegroup", function(ply, raw, groupid)
-	local group = Custos.G.Groups[groupid]
+cu.cmd.AddConCommand("cu_removegroup", function(ply, raw, groupid)
+	local group = cu.g.groups[groupid]
 
 	if !group then
 		--some kind of error
@@ -86,44 +86,44 @@ Custos.AddConCommand("cu_removegroup", function(ply, raw, groupid)
 	end
 end, "cu_removegroup", "cu_removegroup <groupid> - Remove a group.")
 
-Custos.AddConCommand("cu_creategroup", function(ply, raw, groupid, dname, color_r, color_g, color_b, parent, immunity, perms)
-	local group = Custos.G.Groups[groupid]
+cu.cmd.AddConCommand("cu_creategroup", function(ply, raw, groupid, dname, color_r, color_g, color_b, parent, immunity, perms)
+	local group = cu.g.groups[groupid]
 
 	if group then
 		--some kind of error
 		return
 	end
 
-	Custos.Group.Create(groupid, dname, Color(color_r, color_g, color_b, 255), parent, immunity, perms)
+	cu.group.Create(groupid, dname, Color(color_r, color_g, color_b, 255), parent, immunity, perms)
 end, "cu_creategroup", "cu_creategroup <groupid> <name> <color.r> <color.g> <color.b> <parent> <immunity> <permissions> - Create a group.")
 
 --[[---------------------
-	Modifying User Data
+	Modifying user Data
 	-Instead of having to network the stuff from client to via server, we're just going have console commands do everything for us.
 ]]----------------------
 local UserModOptions = {
 	["aperm"] = function(user, args)
-		Custos.User.AddPerm(user, args[1], true)
+		cu.user.AddPerm(user, args[1], true)
 	end,
 	["rperm"] = function(user, args)
-		Custos.User.RemovePerm(user, args[1])
+		cu.user.RemovePerm(user, args[1])
 	end,
 }
 
-Custos.AddConCommand("cu_moduser", function(ply, raw, name, opt, args)
-	local target = Custos.FindPlayer(name, ply, false)
+cu.cmd.AddConCommand("cu_moduser", function(ply, raw, name, opt, args)
+	local target = cu.util.FindPlayer(name, ply, false)
 
 	if target and opt then
 		UserModOptions[opt](target, args)
 	end
 end, "cu_modifyuser", "cu_moduser <player> <option> - Modify a player's data")
 
-Custos.AddConCommand("cu_setgroup", function(ply, raw, name, group)
-	local target = Custos.FindPlayer(name, ply, false)
+cu.cmd.AddConCommand("cu_setgroup", function(ply, raw, name, group)
+	local target = cu.util.FindPlayer(name, ply, false)
 
-	if Custos.G.Groups[group] then
+	if cu.g.groups[group] then
 		if target then
-			Custos.User.Add(target, group)
+			cu.user.Add(target, group)
 		end
 	end
 end, "cu_setusergroup", "cu_setgroup <player> <groupid> - Sets a player to that usergroup.")
