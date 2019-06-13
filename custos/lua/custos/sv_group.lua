@@ -10,27 +10,6 @@
 
 	group system - serverside. group and Perm class functions.
 ]]
-util.AddNetworkString("cu_SentGroups")
-util.AddNetworkString("cu_SentPermissions")
-
-function cu.group.Create(id, display, colorObj, inherit, perm, immunity)
-	local colorObj = utilx.CheckTypeStrict(colorObj, "table")
-	local immunity = utilx.CheckTypeStrict(immunity, "number")
-
-	if !utilx.CheckTypeStrict(perm, "table") then
-		return
-	end
-
-	cu.g.groups[id] = {
-		display = display,
-		color = colorObj,
-		parent = inherit,
-		immunity = immunity,
-		perm = perm
-	}
-	hook.Call("CU_OnGroupCreation")
-end
-
 function cu.group.DefaultGroups()
 	if cu.g.groups["user"] then return end
 
@@ -86,6 +65,25 @@ function cu.group.DefaultGroups()
 		perm = {
 		}
 	}
+end
+
+function cu.group.Create(id, display, colorObj, inherit, perm, immunity)
+	local colorObj = utilx.CheckTypeStrict(colorObj, "table")
+	local immunity = utilx.CheckTypeStrict(immunity, "number")
+
+	if !utilx.CheckTypeStrict(perm, "table") then
+		return
+	end
+
+	cu.g.groups[id] = {
+		display = display,
+		color = colorObj,
+		parent = inherit,
+		immunity = immunity,
+		perm = perm
+	}
+
+	hook.Call("CU_OnGroupCreation")
 end
 
 function cu.group.Load()
@@ -207,7 +205,6 @@ function cu.group.SetImmunity(groupid, num)
 	if utilx.CheckTypeStrict(num, "number") then
 		local group = cu.g.groups[groupid]
 		group.immunity = num
-
 	else
 		return
 	end
@@ -235,7 +232,6 @@ function cu.group.SetParent(groupid, parent)
 
 	if tbl[parent] then
 		tbl[groupid].parent = parent
-
 	else
 		return
 	end
@@ -251,7 +247,6 @@ function cu.group.SetColor(groupid, obj)
 	if utilx.CheckTypeStrict(obj, "table") then
 		local group = cu.g.groups[groupid]
 		group.color = obj
-
 	else
 		return
 	end
@@ -263,11 +258,11 @@ function cu.group.GetColor(groupid)
 	return group.color
 end
 
-function cu.group.Send(ply)
-	net.Start("cu_SentGroups")
-		netx.WriteTable(cu.g.groups)
-	net.Send(ply)
-end
+-- function cu.group.Send(ply)
+-- 	net.Start("cu_SentGroups")
+-- 		netx.WriteTable(cu.g.groups)
+-- 	net.Send(ply)
+-- end
 
 --[[---------------------
 	Permission System
@@ -309,17 +304,17 @@ function cu.perm.Unregister(perm)
 	end
 end
 
-function cu.perm.Send(ply)
-	net.Start("cu_SentPermissions")
-		netx.WriteTable(cu.g.permissions)
-	net.Send(ply)
-end
+-- function cu.perm.Send(ply)
+-- 	net.Start("cu_SentPermissions")
+-- 		netx.WriteTable(cu.g.permissions)
+-- 	net.Send(ply)
+-- end
 
 hook.Add("ShutDown", "cu_SaveGroups", function()
 	cu.group.Unload()
 end)
 
-hook.Add("InitPostEntity", "cu_LoadGroups", function()
+hook.Add("CU_Initialized", "cu_LoadGroups", function()
 	cu.group.DefaultGroups()
 	cu.group.Load()
 end)

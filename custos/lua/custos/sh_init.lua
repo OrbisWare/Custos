@@ -10,8 +10,8 @@
 
 	Shared Initial File
 ]]
-cu.config = cu.config or {} --Confic functions
 cu.data = cu.data or {} --Data functions
+cu.config = cu.config or {} --Confic functions
 cu.plugin = cu.plugin or {} --Plugin functions
 cu.group = cu.group or {} --Group functions
 cu.perm = cu.perm or {} --Permission functions
@@ -43,7 +43,7 @@ MsgN(\n[[
 | |   | | | / __| __/ _ \/ __|
 | \__/\ |_| \__ \ || (_) \__ \
  \____/\__,_|___/\__\___/|___/
-Created by OrbisWare (c) 2019 - Version: ]]..cu.version..[[ (]]..cu.iversion..[[) ]])
+Created by SaintWish - Version: ]]..cu.version..[[ (]]..cu.iversion..[[) ]])
 MsgN("////////////////////////////////")
 
 MsgN("//Loading External Libraries...")
@@ -52,11 +52,11 @@ cu.LoadDir("libs/external")
 MsgN("//Loading Libraries...")
 cu.LoadDir("libs")
 
-MsgN("//Loading Config...")
+MsgN("//Loading Config System...")
 cu.LoadFile("sh_config.lua")
 cu.LoadFile("sv_config.lua")
 
-MsgN("//Loading Database Init...")
+MsgN("//Loading Database...")
 cu.LoadFile("sv_dbinit.lua")
 
 MsgN("//Loading Utilities...")
@@ -68,7 +68,7 @@ cu.LoadFile("sh_command.lua")
 MsgN("//Loading Log System...")
 cu.LoadFile("sh_log.lua")
 
-MsgN("//Loading group System...")
+MsgN("//Loading Group System...")
 cu.LoadFile("sv_group.lua")
 
 MsgN("//Loading Player Scripts...")
@@ -88,3 +88,5 @@ end
 
 MsgN("//Loaded in "..os.clock() - cu_starttime.." seconds")
 MsgN("////////////////////////////////\n")
+
+hook.Call("CU_Initialized")

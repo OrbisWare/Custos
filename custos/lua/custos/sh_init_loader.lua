@@ -16,24 +16,24 @@ local function GetFileFromFilename(path)
 end
 
 if SERVER then
-	function cu.AddCSLuaFile(filee)
+	--[[function cu.AddCSLuaFile(filee)
 		local stat, err = pcall(AddCSLuaFile, filee)
 
 		if !stat then
 			ErrorNoHalt(filee.." failed to add clientside file: "..err)
 			return false
 		end
-	end
+	end]]
 end
 
-function cu.include(filee)
+--[[function cu.include(filee)
 	local stat, err = pcall(include, filee)
 
 	if !stat then
 		ErrorNoHalt(filee.." failed to include file: "..err)
 		return false
 	end
-end
+end]]
 
 function cu.LoadDir(dir, echo)
 	local echo = echo or true
@@ -48,24 +48,24 @@ function cu.LoadDir(dir, echo)
 		if string.GetExtensionFromFilename(v) == "lua" then
 			if prefix == "sv_" then
 				if SERVER then
-					cu.include(path)
+					include(path)
 					loadedFile = true
 				end
 
 			elseif prefix == "sh_" then
 				if SERVER then
-					cu.AddCSLuaFile(path)
-					cu.include(path)
+					AddCSLuaFile(path)
+					include(path)
 				else
-					cu.include(path)
+					include(path)
 				end
 				loadedFile = true
 
 			elseif prefix == "cl_" then
 				if SERVER then
-					cu.AddCSLuaFile(path)
+					AddCSLuaFile(path)
 				else
-					cu.include(path)
+					include(path)
 				end
 				loadedFile = true
 
@@ -92,24 +92,24 @@ function cu.LoadFile(filee, echo)
 	if string.GetExtensionFromFilename(filee) == "lua" then
 		if prefix == "sv_" then
 			if SERVER then
-				cu.include(filee)
+				include(filee)
 				loadedFile = true
 			end
 
 		elseif prefix == "sh_" then
 			if SERVER then
-				cu.AddCSLuaFile(filee)
-				cu.include(filee)
+				AddCSLuaFile(filee)
+				include(filee)
 			else
-				cu.include(filee)
+				include(filee)
 			end
 			loadedFile = true
 
 		elseif prefix == "cl_" then
 			if SERVER then
-				cu.AddCSLuaFile(filee)
+				AddCSLuaFile(filee)
 			else
-				cu.include(filee)
+				include(filee)
 			end
 			loadedFile = true
 

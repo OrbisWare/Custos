@@ -20,7 +20,7 @@ function cu.perm.Register(perm)
 	if utilx.CheckTypeStrict(perm, "table") then
 		for k,v in pairs(perm) do
 			permissions[k] = v
-			cu.util.PrintDebug(v.." permissions sucessfully registered.")
+			cu.util.PrintDebug(v.." permission sucessfully registered.")
 		end
 	end
 end

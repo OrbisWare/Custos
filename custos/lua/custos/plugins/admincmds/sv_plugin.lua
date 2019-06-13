@@ -122,7 +122,7 @@ PLUGIN:AddHook("CU_PluginUnregister", "cu_ClearBanTable", function()
 	bans = nil
 end)
 
-PLUGIN:AddHook("InitPostEntity", "cu_BanLoader", function()
+PLUGIN:AddHook("CU_Initialized", "cu_BanLoader", function()
 	cu.sqlobj:EasyQuery("SELECT * FROM `cu_bans`", function(result, status, err)
 		if !result then return; end
 
