@@ -10,6 +10,8 @@
 
 	Shared Initial File
 ]]
+cu.config = cu.config or {} --Confic functions
+cu.data = cu.data or {} --Data functions
 cu.plugin = cu.plugin or {} --Plugin functions
 cu.group = cu.group or {} --Group functions
 cu.perm = cu.perm or {} --Permission functions

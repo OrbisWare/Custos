@@ -64,10 +64,10 @@ function PLUGIN:UnbanPlayer(steamid, ply)
 end
 
 PLUGIN:AddCommand("ban", {
-  description = "Ban a player."
-  help = "Ban <player> <time> <reason>"
-  permission = "cu_ban"
-  chat = "ban"
+  description = "Ban a player.",
+  help = "Ban <player> <time> <reason>",
+  permission = "cu_ban",
+  chat = "ban",
   OnRun = function(ply, name, time, reason)
     if !utilx.CheckType(name, "string") or !CheckType(tonumber(time), "number") then
   		return false, "Usage: <player|steamid> <time in minutes> <reason>"
@@ -85,15 +85,37 @@ PLUGIN:AddCommand("ban", {
 })
 
 PLUGIN:AddCommand("unban", {
-  description = "Unban a player."
-  help = "Unban <steamid>"
-  permission = "cu_unban"
-  chat = "unban"
+  description = "Unban a player.",
+  help = "Unban <steamid>",
+  permission = "cu_unban",
+  chat = "unban",
   OnRun = function(ply, str)
     if PLUGIN:UnbanPlayer(str, ply) then
   		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " unbanned ", COLOR_TARGET, str)
   	end
   end
+})
+
+PLUGIN:AddCommand("kick", {
+	description = "Kick a specfic player.",
+	help = "Kick <player> <reason>",
+	permission = "cu_kick",
+	chat = "kick",
+	OnRun = function(ply, name, reason)
+		if utilx.IsValidSteamID(name) then
+			return false, "Usage: <player> <reason>"
+		end
+
+		local reason = reason or "No reason specified."
+
+		local target = cu.util.FindPlayer(name, ply, true)
+
+		if target then
+			cu.log.Write("ADMIN", "%s(%s) kicked %s(%s) for %s", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID(), reason)
+			cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " kicked ", COLOR_TARGET, cu.util.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
+			target:Kick(reason)
+		end
+	end
 })
 
 PLUGIN:AddHook("CU_PluginUnregister", "cu_ClearBanTable", function()

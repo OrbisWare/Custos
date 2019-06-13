@@ -11,6 +11,10 @@
 	Config file.
 ]]
 
+function cu.config.Add()
+
+end
+
 --[[--------------------
 	Load plugins (true/false)
 ]]----------------------
