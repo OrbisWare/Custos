@@ -1,30 +1,11 @@
---[[
-	 _____           _
-	/  __ \         | |
-	| /  \/_   _ ___| |_ ___  ___
-	| |   | | | / __| __/ _ \/ __|
-	| \__/\ |_| \__ \ || (_) \__ \
-	 \____/\__,_|___/\__\___/|___/
+local PLUGIN = PLUGIN
 
-	~https://github.com/BadWolfGames/custos
-]]
-local PLUGIN = cu.DefinePlugin()
-
-PLUGIN.ID = 1
-PLUGIN.Name = "Ban"
-PLUGIN.Author = "Wishbone"
-PLUGIN.Desc = "Ban people."
+local bans = {}
 
 PLUGIN:AddPermissions({
 	["cu_ban"] = "Ban",
 	["cu_unban"] = "Unban"
 })
-
-cu.G.Bans = {}
-
-PLUGIN:AddHook("CU_PluginUnregister", "cu_ClearBanTable", function()
-	cu.G.Bans = nil
-end)
 
 function PLUGIN:BanPlayer(admin, ply, time, reason)
 	local time = utilx.CheckTypeStrict(time, "number")
@@ -50,7 +31,7 @@ function PLUGIN:BanPlayer(admin, ply, time, reason)
 	cu.sqlobj:EasyQuery("INSERT INTO `cu_bans` (steamid32, steamid64, reason, startTime, endTime, admin) VALUES('%s', '%s', '%s', %i, %i, '%s')",
 		steamid32, steamid64, reason, startTime, endTime, _admin)
 
-	cu.G.Bans[steamid32] = {
+	bans[steamid32] = {
 		steamid64 = steamid64,
 		reason = reason,
 		startTime = startTime,
@@ -65,21 +46,6 @@ function PLUGIN:BanPlayer(admin, ply, time, reason)
 		ply:Kick( "Banned: "..reason.." for "..string.NiceTime(endTime) )
 	end
 end
-
-PLUGIN:AddCommand("cu_ban", function(ply, raw, name, time, reason)
-	if !utilx.CheckType(name, "string") or !CheckType(tonumber(time), "number") then
-		return false, "Usage: <player|steamid> <time in minutes> <reason>"
-	end
-
-	local time = tonumber(time) * 60
-
-	local target = cu.util.FindPlayer(name, ply, false)
-
-	if target then
-		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " banned ", COLOR_TARGET, cu.util.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
-		PLUGIN:BanPlayer(ply, target, tonumber(time), reason)
-	end
-end, "cu_ban", "cu_ban <player|steamid> <time> <reason> - Ban a player for a specific amount of time (0 is permanent).", "ban")
 
 function PLUGIN:UnbanPlayer(steamid, ply)
 	local steamid = utilx.CheckTypeStrict(steamid, "string")
@@ -97,11 +63,42 @@ function PLUGIN:UnbanPlayer(steamid, ply)
 	end
 end
 
-PLUGIN:AddCommand("cu_unban", function(ply, raw, str)
-	if PLUGIN:UnbanPlayer(str, ply) then
-		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " unbanned ", COLOR_TARGET, str)
-	end
-end, "cu_unban", "cu_unban <steamid> - Unban players.", "unban")
+PLUGIN:AddCommand("ban", {
+  description = "Ban a player."
+  help = "Ban <player> <time> <reason>"
+  permission = "cu_ban"
+  chat = "ban"
+  OnRun = function(ply, name, time, reason)
+    if !utilx.CheckType(name, "string") or !CheckType(tonumber(time), "number") then
+  		return false, "Usage: <player|steamid> <time in minutes> <reason>"
+  	end
+
+  	local time = tonumber(time) * 60
+
+  	local target = cu.util.FindPlayer(name, ply, false)
+
+  	if target then
+  		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " banned ", COLOR_TARGET, cu.util.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
+  		PLUGIN:BanPlayer(ply, target, tonumber(time), reason)
+  	end
+  end
+})
+
+PLUGIN:AddCommand("unban", {
+  description = "Unban a player."
+  help = "Unban <steamid>"
+  permission = "cu_unban"
+  chat = "unban"
+  OnRun = function(ply, str)
+    if PLUGIN:UnbanPlayer(str, ply) then
+  		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " unbanned ", COLOR_TARGET, str)
+  	end
+  end
+})
+
+PLUGIN:AddHook("CU_PluginUnregister", "cu_ClearBanTable", function()
+	bans = nil
+end)
 
 PLUGIN:AddHook("InitPostEntity", "cu_BanLoader", function()
 	cu.sqlobj:EasyQuery("SELECT * FROM `cu_bans`", function(result, status, err)
@@ -112,7 +109,7 @@ PLUGIN:AddHook("InitPostEntity", "cu_BanLoader", function()
 				cu.sqlobj:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", v.steamid32)
 			end
 
-			cu.G.Bans[v.steamid32] = {
+			bans[v.steamid32] = {
 				steamid64 = v.steamid64,
 				reason = v.reason,
 				startTime = v.startTime,
@@ -140,9 +137,3 @@ PLUGIN:AddHook("CheckPassword", "cu_BanCheck", function(steamid)
 		end
 	end
 end)
-
-PLUGIN:AddHook("CU_PluginUnloaded", "cu_ClearBans", function()
-	cu.G.Bans = nil
-end)
-
-PLUGIN:Register()

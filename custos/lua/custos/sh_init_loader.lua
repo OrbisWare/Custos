@@ -35,7 +35,8 @@ function cu.include(filee)
 	end
 end
 
-function cu.LoadDir(dir)
+function cu.LoadDir(dir, echo)
+	local echo = echo or true
 	local loadedFile;
 	local newDir = "custos/"..dir.."/*"
 	local files = file.Find(newDir, "LUA")
@@ -69,20 +70,21 @@ function cu.LoadDir(dir)
 				loadedFile = true
 
 			else
-				ErrorNoHalt("Unable to load files: "..v.." - most likely missing prefix.\n")
+				ErrorNoHalt("Unable to load files: "..v.."; most likely missing prefix.\n")
 				return false
 			end
 		end
 
-		if loadedFile then
+		if loadedFile and echo then
 			Msg("\tLoaded file: "..path.."\n")
 		end
 	end
 end
 
-function cu.LoadFile(filee)
+function cu.LoadFile(filee, echo)
 	if !filee then return; end
 
+	local echo = echo or true
 	local loadedFile;
 	local actualFile = GetFileFromFilename(filee)
 	local prefix = string.sub(actualFile, 0, 3)
@@ -112,45 +114,12 @@ function cu.LoadFile(filee)
 			loadedFile = true
 
 		else
-			ErrorNoHalt("Unable to load file: "..filee.." - most likely missing prefix.\n")
+			ErrorNoHalt("Unable to load file: "..filee.."; most likely missing prefix.\n")
 			return false
 		end
 	end
 
-	if loadedFile then
+	if loadedFile and echo then
 		Msg("\tLoaded file: "..filee.."\n")
-	end
-end
-
-function cu.AutoLoad(dir)
-	local loadedFile;
-	local newDir = "custos/"..dir.."/*"
-	local files, folders = file.Find(newDir, "LUA")
-	local path
-
-	for k,v in pairs(folders) do
-		path = "custos/"..dir.."/"..v
-		local f = file.Find(path.."/*", "LUA")
-
-		for folder,f in pairs(f) do
-			path = dir.."/"..v.."/"..f
-
-			if f == "sh_init" then
-				if SERVER then
-					cu.AddCSLuaFile(path)
-					cu.include(path)
-				else
-					cu.include(path)
-				end
-			else
-				Error("cu: [PLUGIN] Unable to load sh_init; file not found!\n")
-				return false
-			end
-		end
-	end
-
-	for k,v in pairs(files) do
-		path = dir.."/"..v
-		cu.LoadFile(path)
 	end
 end

@@ -8,7 +8,7 @@
 
 	~https://github.com/BadWolfGames/custos
 
-	Loader System
+	Command System
 
   data structure:
     data.description
@@ -26,6 +26,7 @@ if SERVER then
     local description = data.description or "None"
     local help = data.help or "None"
     local permission = data.permission or nil
+    local chat = data.chat or nil
     local OnRun = data.OnRun
 
     if permission and not cu.g.permissions[permission] then
@@ -42,6 +43,7 @@ if SERVER then
       desc = description,
       help = help,
       perm = permission,
+      chat = chat
       OnRun = OnRun
     }
   end
@@ -135,15 +137,7 @@ if SERVER then
     end
   end
 
-  function cu.cmd.AddChat(chatcmd, cmd)
-  	ChatCommands[chatcmd] = cmd
-  end
-
-  function cu.cmd.RemoveChat(chatcmd)
-  	ChatCommands[chatcmd] = nil
-  end
-
-  local function parseChatCmd(ply, text)
+  local function parseChatCmds(ply, text)
   	if !IsValid(ply) then return; end
 
   	local prefix = string.sub(text, 1, 1)
@@ -151,27 +145,29 @@ if SERVER then
   	local trimText = string.Trim(lowerText)
   	local afterPrefix = string.sub(trimText, 2)
 
-  	if table.HasValue(cu.g.config.ChatPrefixes, prefix) then
-  		local args = string.Explode(" ", afterPrefix)
-  		local command = args[1]
+    if table.HasValue(cu.g.config.ChatPrefixes, prefix) then
+      local args = string.Explode(" ", afterPrefix)
+      local command = args[1]
 
-  		if ChatCommands[command] then
-  			local cmdArgs = args or {}
-  			local _cmdstr = ""
+      for k,_ in pairs(cu.g.commands) do
+        if k["chat"][command] then
+          local cmdArgs = args or {}
+    			local _cmdstr = ""
 
-  			for i=2, #cmdArgs do
-  				_cmdstr = _cmdstr.." "..cmdArgs[i]
-  			end
+    			for i=2, #cmdArgs do
+    				_cmdstr = _cmdstr.." "..cmdArgs[i]
+    			end
 
-  			if #cmdArgs-1 > 0 then
-  				ply:ConCommand(ChatCommands[command].._cmdstr)
-  			else
-  				ply:ConCommand(ChatCommands[command])
-  			end
+    			if #cmdArgs-1 > 0 then
+    				ply:ConCommand(k.._cmdstr)
+    			else
+    				ply:ConCommand(k)
+    			end
 
-  			return ""
-  		end
-  	end
+    			return ""
+        end
+      end
+    end
   end
 
   net.Receive("cu_Command", function(len, client)

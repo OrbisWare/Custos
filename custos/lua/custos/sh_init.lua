@@ -10,10 +10,6 @@
 
 	Shared Initial File
 ]]
-
---[[---------------------
-	Function Classes
-]]----------------------
 cu.plugin = cu.plugin or {} --Plugin functions
 cu.group = cu.group or {} --Group functions
 cu.perm = cu.perm or {} --Permission functions
@@ -26,8 +22,8 @@ cu.log = cu.log or {} --Log functions
 	Globals - We store variables and other things in these.
 ]]----------------------
 cu.g = cu.g or {} --Table for our globals.
+cu.g.plugins = cu.g.plugins or {}
 cu.g.config = cu.g.config or {} --Table for all of our config options.
-cu.g.plugins = cu.g.plugins or {} --All our plugins and their data.
 cu.g.groups = cu.g.groups or {} --All of our user groups and their data.
 cu.g.users = cu.g.users or {} --All of our user data.
 cu.g.permissions = cu.g.permissions or {} --All of our register permissions.
@@ -78,14 +74,14 @@ cu.LoadFile("sh_player.lua")
 cu.LoadFile("sv_player.lua")
 
 MsgN("//Loading Plugin System...")
-cu.LoadFile("sh_plugins.lua")
+cu.LoadFile("sh_plugin.lua")
 
 MsgN("//Loading Default Commands...")
 cu.LoadFile("sv_cmds.lua")
 
 if cu.g.config.LoadPlugins then
 	MsgN("//Loading Plugins...")
-	cu.AutoLoad("plugins")
+	cu.plugin.LoadDir("plugins")
 end
 
 MsgN("//Loaded in "..os.clock() - cu_starttime.." seconds")

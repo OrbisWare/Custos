@@ -1,22 +1,34 @@
---[[
-	 _____           _
-	/  __ \         | |
-	| /  \/_   _ ___| |_ ___  ___
-	| |   | | | / __| __/ _ \/ __|
-	| \__/\ |_| \__ \ || (_) \__ \
-	 \____/\__,_|___/\__\___/|___/
-
-	~https://github.com/BadWolfGames/custos
-
-	Plugin System
-]]
 local pluginMeta = {}
 pluginMeta.__index = pluginMeta
+
+function cu.plugin.Load(id, path, singleFile)
+	local PLUGIN = {}
+	setmetatable(PLUGIN, pluginMeta)
+
+	PLUGIN.Hooks = {}
+	PLUGIN.Commands = {}
+	PLUGIN.Permissions = {}
+
+	PLUGIN.Path = path
+	PLUGIN.ID = id
+	PLUGIN.Name = "Name"
+	PLUGIN.Author = "Author"
+	PLUGIN.Desc = "Description"
+	PLUGIN.Gamemodes = nil
+
+	_G["PLUGIN"] = PLUGIN
+
+  if not singleFile then
+    cu.LoadFile(path.."/sh_plugin.lua", false)
+  else
+    cu.LoadFile(path, false)
+  end
+end
 
 function cu.plugin.GetActivePlugins()
 	local pluginList = {}
 
-	for k,v in pairs(cu.G.Plugins) do
+	for k,v in pairs(cu.g.plugins) do
 		pluginList[k] = v.Name
 	end
 
@@ -24,50 +36,41 @@ function cu.plugin.GetActivePlugins()
 end
 
 function cu.plugin.Disable(id)
-	local plugin = cu.G.Plugins
+	local plugin = cu.g.plugins
 
 	if plugin[id] then
 		plugin[id] = nil
 	end
 end
 
-function cu.DefinePlugin()
-	local object = {}
+function cu.plugin.LoadDir(dir)
+  local files, folders = file.Find(dir.."/*", "LUA")
 
-	setmetatable(object, pluginMeta)
+  for k,v in pairs(folders)
+    Msg("\tLoaded Plugin: "..v.."\n")
+    cu.plugin.Load(v, directory.."/"..v, false)
+  end
 
-	object.Command = {}
-	object.Hook = {}
-	object.Perms = {}
-
-	object.ID = nil
-	object.Name = "Name"
-	object.Author = "Author"
-	object.Desc = "Description"
-	object.Gamemodes = nil
-
-	return object
+  for k,v in pairs(files) do
+    MsgN("\tLoaded Plugin: "..string.StringExtension(v).."\n")
+    cu.plugin.Load(string.StripExtension(v), dir.."/"..v, false)
+  end
 end
 
 function pluginMeta:AddPermissions(perm)
 	if utilx.CheckTypeStrict(perm, "table") then
 		for k,v in pairs(perm) do
-			self.Perms[k] = v
+			self.Permissions[k] = v
 		end
 	end
 end
 
-function pluginMeta:AddCommand(cmd, callback, perm, help, chatt)
-	self.Command[cmd] = {
-		callback = callback,
-		perm = perm,
-		help = help,
-		chat = chatt
-	}
+function pluginMeta:AddCommand(command, data)
+	self.Commands[command] = data
 end
 
 function pluginMeta:AddHook(name, id, callback)
-	self.Hook[id] = {
+	self.Hooks[id] = {
 		name = name,
 		func = callback
 	}
@@ -77,19 +80,16 @@ function pluginMeta:Inject()
 	hook.Call("CU_PluginLoaded")
 
 	if SERVER then
-		for k,v in pairs(self.Perms) do
+		for k,v in pairs(self.Permissions) do
 			cu.perm.Register({k, v})
 		end
 
-		for k,v in pairs(self.Command) do
-			cu.cmd.AddConCommand(k, v.callback, v.perm, v.help)
-			if v.chat then
-				cu.cmd.AddChatCommand(v.chat, k)
-			end
+		for k,v in pairs(self.Commands) do
+			cu.cmd.Add(k, v)
 		end
 	end
 
-	for k,v in pairs(self.Hook) do
+	for k,v in pairs(self.Hooks) do
 		hook.Add(v.name, k, v.func)
 	end
 end
@@ -98,11 +98,11 @@ function pluginMeta:Eject()
 	hook.Call("CU_PluginUnloaded")
 
 	if SERVER then
-		for k,v in pairs(self.Perms) do
+		for k,v in pairs(self.Permissions) do
 			cu.perm.Unregister(v)
 		end
 
-		for k,v in pairs(self.Command) do
+		for k,v in pairs(self.Commands) do
 			cu.cmd.RemoveConCommand()
 			if v.chat then
 				cu.cmd.RemoveChatCommand(v.chat)
@@ -116,16 +116,11 @@ function pluginMeta:Eject()
 end
 
 function pluginMeta:Register()
-	local id = self.ID
-
-	if id == nil then
-		cu.util.Error("PLUGIN","ID returned nil.\n", true)
-		return
-	end
+	local id = self.name
 
 	if self.Gamemodes then
 		if !table.HasValue(self.Gamemodes, gmod.GetGamemode().Name) then
-			return --Gamemode not loaded
+			return
 		end
 	end
 
@@ -133,6 +128,8 @@ function pluginMeta:Register()
 
 	cu.G.Plugins[id] = self
 	self:Inject()
+
+	_G["PLUGIN"] = nil
 
 	hook.Call("CU_PluginRegister")
 end
