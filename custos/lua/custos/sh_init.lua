@@ -25,7 +25,6 @@ cu.log = cu.log or {} --Log functions
 ]]----------------------
 cu.g = cu.g or {} --Table for our globals.
 cu.g.plugins = cu.g.plugins or {}
-cu.g.config = cu.g.config or {} --Table for all of our config options.
 cu.g.groups = cu.g.groups or {} --All of our user groups and their data.
 cu.g.users = cu.g.users or {} --All of our user data.
 cu.g.permissions = cu.g.permissions or {} --All of our register permissions.
@@ -81,7 +80,11 @@ cu.LoadFile("sh_plugin.lua")
 MsgN("//Loading Default Commands...")
 cu.LoadFile("sv_cmds.lua")
 
-if cu.g.config.LoadPlugins then
+MsgN("//Loading Miscellaneous...")
+cu.LoadFile("sv_cmds.lua")
+cu.LoadFile("sh_misc.lua")
+
+if cu.config.Get("LoadPlugins") then
 	MsgN("//Loading Plugins...")
 	cu.plugin.LoadDir("plugins")
 end

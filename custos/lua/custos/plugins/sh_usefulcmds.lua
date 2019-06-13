@@ -28,7 +28,7 @@ if SERVER then
 
       RunConsoleCommand(cmd[1], unpack(args))
       cu.log.Write("RCON", "%s(%s) ran %s with arguments %s", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cmd[1], unpack(args))
-      cu.util.Notify(ply, COLOR_TEXT, "Ran RCON command: "..cmd[1].." with arguments: "..unpack(args))
+      cu.util.Notify(ply, cu.color_text, "Ran RCON command: "..cmd[1].." with arguments: "..unpack(args))
     end
   })
 
@@ -47,11 +47,11 @@ if SERVER then
       if target then
         if !target:IsFlagSet(FL_FROZEN) then
           cu.log.Write("ADMIN", "%s(%s) froze %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-          cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " froze ", COLOR_TARGET, cu.util.PlayerName(target))
+          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " froze ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
           target:Freeze(true)
         else
           cu.log.Write("ADMIN", "%s(%s) unfroze %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-          cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " unfroze ", COLOR_TARGET, cu.util.PlayerName(target))
+          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " unfroze ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
           target:Freeze(false)
         end
       end
@@ -72,7 +72,7 @@ if SERVER then
 
       if target then
         cu.log.Write("ADMIN", "%s(%s) slain %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-        cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " slain ", COLOR_TARGET, cu.util.PlayerName(target))
+        cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " slain ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
         target:Kill()
       end
     end

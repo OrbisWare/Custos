@@ -11,9 +11,9 @@
 	Shared Utilities
 ]]
 function cu.util.PrintDebug(debug)
-	if cu.g.config.Debug then
+	if cu.config.Get("Debug") then
 		if utilx.CheckType(debug, "string") then
-			Msg("cu Debug: "..debug.."\n")
+			Msg("Custos Debug: "..debug.."\n")
 
 		elseif utilx.CheckType(debug, "table") then
 			utilx.PrintTableEx(debug)
@@ -25,7 +25,7 @@ function cu.util.Notify(ply, ...)
 	local args = {...}
 
 	if utilx.CheckType(ply, "Player") then
-		chat.AddText(ply, COLOR_TAG, "[Custos] ", unpack(args))
+		chat.AddText(ply, cu.color_tag, "[Custos] ", unpack(args))
 	else
 		MsgC(unpack(args))
 	end
@@ -35,9 +35,9 @@ function cu.util.Broadcast(...)
 	local args = {...}
 
 	for k,v in pairs(player.GetAll()) do
-		if cu.g.config.ChatSilent then
+		if cu.config.Get("ChatSilent") then
 			return
-		elseif cu.g.config.ChatAdmin and ply:HasPermission("cu_adminecho") then
+		elseif cu.config.Get("ChatAdmin") and ply:HasPermission("cu_adminecho") then
 			cu.util.Notify(v, unpack(args))
 		else
 			cu.util.Notify(v, unpack(args))
@@ -63,8 +63,6 @@ end
 
 if SERVER then
 	function cu.util.FindPlayer(str, ply, unrestr)
-		local sL = string.lower
-
 		if utilx.IsValidSteamID(str) then
 			return str
 		end
@@ -102,12 +100,12 @@ if SERVER then
 		end
 
 		if #playerOutput <= 0 then
-			cu.util.Notify(ply, COLOR_ERROR, "There's no player by that name currently online.")
+			cu.util.Notify(ply, cu.color_error, "There's no player by that name currently online.")
 			return false
 
 		elseif #playerOutput > 1 then
 			for _,v in pairs(playerOutput) do
-				cu.util.Notify(ply, COLOR_TEXT, "Did you mean: "..v:Name().."?")
+				cu.util.Notify(ply, cu.color_text, "Did you mean: "..v:Name().."?")
 			end
 
 			return false
@@ -117,7 +115,7 @@ if SERVER then
 			local targetImmunity = playerOutput[1]:GetImmunity()
 
 			if plyImmunity < targetImmunity then
-				cu.util.Notify(ply, COLOR_ERROR, "That player has more immunity than you.")
+				cu.util.Notify(ply, cu.color_error, "That player has more immunity than you.")
 				return false
 
 			elseif plyImmunity >= targetImmunity then

@@ -30,6 +30,16 @@ function utilx.CheckType(arg, tp)
 	end
 end
 
+function utilx.ToType(value, type)
+	if type == "boolean" then
+		return tobool(value)
+	elseif type == "number" then
+		return tonumber(value)
+	else
+		return value
+	end
+end
+
 --http://lua-users.org/wiki/SwitchStatement
 function switch(t)
   t.case = function (self,x)

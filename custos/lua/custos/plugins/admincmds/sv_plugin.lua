@@ -78,7 +78,7 @@ PLUGIN:AddCommand("ban", {
   	local target = cu.util.FindPlayer(name, ply, false)
 
   	if target then
-  		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " banned ", COLOR_TARGET, cu.util.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
+  		cu.util.Broadcast(ply:GetGroupColor(), cu.util.PlayerName(ply), cu.color_text, " banned ", target:GetGroupColor(), cu.util.PlayerName(target), cu.color_text, " for ", cu.color_reason, reason)
   		PLUGIN:BanPlayer(ply, target, tonumber(time), reason)
   	end
   end
@@ -91,7 +91,7 @@ PLUGIN:AddCommand("unban", {
   chat = "unban",
   OnRun = function(ply, str)
     if PLUGIN:UnbanPlayer(str, ply) then
-  		cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " unbanned ", COLOR_TARGET, str)
+  		cu.util.Broadcast(ply:GetGroupColor(), cu.util.PlayerName(ply), cu.color_text, " unbanned ", cu.color_player, str)
   	end
   end
 })
@@ -112,7 +112,7 @@ PLUGIN:AddCommand("kick", {
 
 		if target then
 			cu.log.Write("ADMIN", "%s(%s) kicked %s(%s) for %s", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID(), reason)
-			cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " kicked ", COLOR_TARGET, cu.util.PlayerName(target), COLOR_TEXT, " for ", COLOR_REASON, reason)
+			cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " kicked ", cu.util.GetGroupColor(target), cu.util.PlayerName(target), cu.color_text, " for ", cu.color_reason, reason)
 			target:Kick(reason)
 		end
 	end

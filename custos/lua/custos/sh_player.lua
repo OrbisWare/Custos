@@ -28,6 +28,11 @@ function playerMeta:IsUser()
 	end
 end
 
+function playerMeta:GetGroupColor()
+	local group = self:GetUserGroup()
+	return cu.group.GetColor(group)
+end
+
 --[[---------------------
 	Function: cu.util.PlayerName
 	Description: Our custom function to get a player's name.
@@ -47,5 +52,13 @@ function cu.util.GetSteamID(ply)
 		return ply:SteamID()
 	else
 		return "Console"
+	end
+end
+
+function cu.util.GetGroupColor(ply)
+	if IsValid(ply) and utilx.CheckType(ply, "Player") then
+		cu.group.GetColor(ply:GetUserGroup())
+	else
+		return cu.color_player
 	end
 end

@@ -17,6 +17,7 @@ cu.perm.Register({
 	["cu_creategroup"] = "Create group",
 	["cu_modifyuser"] = "Modify user",
 	["cu_adminecho"] = "Admin Echo"
+	["cu_modconfig"] = "Modify via config."
 })
 
 --[[---------------------
@@ -124,7 +125,7 @@ cu.cmd.Add("moduser", {
 })
 
 cu.cmd.Add("setgroup", {
-	description = " Sets a player's usergroup.",
+	description = "Sets a player's usergroup.",
 	help = "setgroup <player> <groupid>",
 	permission = "cu_setusergroup",
 
@@ -136,5 +137,16 @@ cu.cmd.Add("setgroup", {
 				cu.user.Add(target, group)
 			end
 		end
+	end
+})
+
+cu.cmd.Add("setconfig" {
+	description = "Set a value for a config option.",
+	help = "setconfig <key> <value>",
+	permission = "cu_modconfig",
+
+	OnRun = function(ply, key, value)
+		local nVal = utilx.ToType(value, cu.config.Type(key))
+		cu.config.Set(key, nVal)
 	end
 })

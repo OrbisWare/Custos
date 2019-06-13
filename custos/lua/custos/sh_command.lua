@@ -92,7 +92,7 @@ if SERVER then
 
         local result, err = cu.cmd.Parse(ply, cmd, args, raw)
         if not result then
-          cu.util.Notify(ply, COLOR_ERROR, err)
+          cu.util.Notify(ply, cu.color_error, err)
         end
 
       elseif ply.cuNextHelp or 0 < CurTime() then
@@ -101,13 +101,13 @@ if SERVER then
 
         if cmd and ply:HasPermission(cmd.perm) then
           local cmdData = cu.g.commands[cmd]
-          cu.util.Notify(ply, COLOR_TEXT, "Help as been printed in via console.")
+          cu.util.Notify(ply, cu.color_text, "Help as been printed in via console.")
           MsgN("\n\n [Custos] Command Help For: "..command)
           MsgN(" \t• Name: "..cmdData.name)
           MsgN(" \t• Description: "..cmdData.description)
           MsgN(" \t• Help: "..cmdData.help)
         else
-          cu.util.Notify(ply, COLOR_ERROR, "That command doesn't exist!")
+          cu.util.Notify(ply, cu.color_error, "That command doesn't exist!")
         end
       end
     else
@@ -120,13 +120,13 @@ if SERVER then
 
     if cmdData then
       if cmdData.perm and not ply:HasPermission(cmdData.perm) then
-        cu.util.Notify(ply, COLOR_ERROR, "You don't have access to that command!")
+        cu.util.Notify(ply, cu.color_error, "You don't have access to that command!")
         return
       end
 
       concommand.Run(command, unpack(args))
     else
-      cu.util.Notify(ply, COLOR_ERROR, "You have entered an invalid command.")
+      cu.util.Notify(ply, cu.color_error, "You have entered an invalid command.")
       return
     end
   end
@@ -145,7 +145,7 @@ if SERVER then
   	local trimText = string.Trim(lowerText)
   	local afterPrefix = string.sub(trimText, 2)
 
-    if table.HasValue(cu.g.config.ChatPrefixes, prefix) then
+    if table.HasValue(cu.chatprefixes, prefix) then
       local args = string.Explode(" ", afterPrefix)
       local command = args[1]
 

@@ -26,6 +26,7 @@ function cu.group.DefaultGroups()
 			["cu_removegroup"]=true,
 			["cu_creategroup"]=true,
 			["cu_modifyuser"]=true,
+			["cu_modconfig"]=true
 		}
 	}
 
@@ -49,7 +50,7 @@ function cu.group.DefaultGroups()
 			["cu_kick"]=true,
 			["cu_freeze"]=true,
 			["cu_slay"]=true,
-			["cu_playerpickup"]=true,
+			["cu_plypickup"]=true,
 			["cu_mute"]=true,
 			["cu_gag"]=true,
 			["cu_playermenu"]=true,

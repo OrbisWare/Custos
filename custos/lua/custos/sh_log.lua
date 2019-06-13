@@ -21,29 +21,31 @@ if SERVER then
 		for k,v in pairs(file.Find(dir.."/*", "DATA")) do
 			local unix;
 			local tbl = string.Explode(string.StripExtension(v), "-")
+			local dateFormat = cu.config.Get("LogDateFormat")
+			local oldLogs = cu.config.Get("LogDeleteOld")
 
-			if cu.g.config.LogDateFormat == "%Y-%m-%d" then
+			if dateFormat == "%Y-%m-%d" then
 				unix = os.time({year=tbl[1], month=tbl[2], day=tbl[3]})
 
-			elseif cu.g.config.LogDateFormat == "%m-%d-%y" then
+			elseif dateFormat == "%m-%d-%y" then
 				unix = os.time({month=tbl[1], day=tbl[2], year=tbl[3]})
 			end
 
 			local esp = os.time() - unix
 
-			if esp >= cu.g.config.OldLogs then --We delete logs older than 30 days.
+			if esp >= oldLogs then --We delete logs older than 30 days.
 				file.Delete(dir.."/"..v)
 			end
 		end
 	end
 
 	hook.Add("Initialize", "cu_StartLog", function()
-		if !cu.g.config.Log then return end
+		if not cu.config.Get("LogEnabled") then return end
 
 		logDir = gmod.GetGamemode().Name.."/logs"
 		DeleteOldLogs(logDir)
 
-		logFile = os.date(logDir.."/"..cu.g.config.LogDateFormat..".txt")
+		logFile = os.date(logDir.."/"..cu.config.Get("LogDateFormat")..".txt")
 		date = os.date("%Y-%m-%d")
 
 		if file.Exists(logDir, "DATA") then
@@ -60,9 +62,9 @@ if SERVER then
 	end)
 
 	local function NextLog()
-		if !cu.g.config.Log then return end
+		if not cu.config.Get("LogEnabled") then return end
 
-		local newLog = os.date(logDir.."/"..cu.g.config.LogDateFormat..".txt")
+		local newLog = os.date(logDir.."/"..cu.config.Get("LogDateFormat")..".txt")
 		local oldLog;
 
 		if newLog == logFile then
@@ -79,22 +81,22 @@ if SERVER then
 	end
 
 	local function Log(str)
-		if !cu.g.config.Log then return end
+		if not cu.config.Get("LogEnabled") then return end
 		if !logFile then return end
 
 		file.Append( logFile, string.format("[%02i:%02i:%02i] ", os.date("*t").hour, os.date("*t").min, os.date("*t").sec)..str )
 	end
 
 	function cu.log.Write(prefix, ...)
-		if !cu.g.config.Log then return end
+		if not cu.config.Get("LogEnabled") then return end
 
 		local tbl = {...}
 		local str = tbl[1]
 		local fArgs = {}
 
-		-- if date < os.date("%Y-%m-%d") then
-		-- 	NextLog()
-		-- end
+		if date < os.date("%Y-%m-%d") then
+			NextLog()
+		end
 
 		if #tbl > 1 then
 			table.remove(tbl, 1)
@@ -109,8 +111,8 @@ if SERVER then
 	end
 
 	hook.Add("PlayerSay", "cu_LogChat", function(ply, text, t)
-		if !cu.g.config.Log then return end
-		if !cu.g.config.LogChat then return end
+		if not cu.config.Get("LogEnabled") then return end
+		if not cu.config.Get("LogChat") then return end
 
 		if t then
 			cu.log.Write("CHAT", "(TEAM) %s: %s", ply:Nick(), text)
@@ -120,22 +122,22 @@ if SERVER then
 	end)
 
 	hook.Add("PlayerConnected", "cu_LogConnections", function(ply)
-		if !cu.g.config.Log then return end
-		if !cu.g.config.LogEvents then return end
+		if not cu.config.Get("LogEnabled") then return end
+		if not cu.config.Get("LogEvents") then return end
 
 		cu.log.Write("SERVER", "Client %s (%s) connected to the server.", ply:Name(), ply:SteamID())
 	end)
 
 	hook.Add("PlayerDisconnected", "cu_LogDisconnections", function(ply)
-		if !cu.g.config.Log then return end
-		if !cu.g.config.LogEvents then return end
+		if not cu.config.Get("LogEnabled") then return end
+		if not cu.config.Get("LogEvents") then return end
 
 		cu.log.Write("SERVER", "Dropped %s (%s) from the server.", ply:Name(), ply:SteamID())
 	end)
 
 	hook.Add("PlayerDeath", "cu_LogKillsDeaths", function(ply, wep, killer)
-		if !cu.g.config.Log then return end
-		if !cu.g.config.LogEvents then return end
+		if not cu.config.Get("LogEnabled") then return end
+		if not cu.config.Get("LogEvents") then return end
 
 		if !killer:IsPlayer() then
 			cu.log.Write("KILL", "%s was killed by %s", ply:Nick(), killer:GetClass())
@@ -152,6 +154,9 @@ if SERVER then
 	end)
 
 	hook.Add("ShutDown", "cu_LogServerShutdown", function()
+		if not cu.config.Get("LogEnabled") then return end
+		if not cu.config.Get("LogEvents") then return end
+
 		cu.log.Write("SERVER", "Server is shutting down/changing levels.")
 	end)
 
@@ -164,7 +169,7 @@ if SERVER then
 
 else
 	function cu.log.Write(prefix, ...)
-		if !cu.g.config.Log then return end
+		if not cu.config.Get("LogEnabled") then return end
 
 		local tbl = {...}
 		local str = tbl[1]

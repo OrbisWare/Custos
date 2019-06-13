@@ -27,11 +27,11 @@ if SERVER then
       if target then
         if !target.CanSpeak or target.CanSpeak == false then
           cu.log.Write("ADMIN", "%s(%s) gagged %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-          cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " gagged ", COLOR_TARGET, cu.util.PlayerName(target))
+          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " gagged ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
           target.CanSpeak = true
         else
           cu.log.Write("ADMIN", "%s(%s) ungagged %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-          cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " ungagged ", COLOR_TARGET, cu.util.PlayerName(target))
+          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " ungagged ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
           target.CanSpeak = false
         end
       end
@@ -53,11 +53,11 @@ if SERVER then
       if target then
         if !target.CanType or target.CanType == false then
           cu.log.Write("ADMIN", "%s(%s) muted %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-          cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " muted ", COLOR_TARGET, cu.util.PlayerName(target))
+          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " muted ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
           target.CanType = true
         else
           cu.log.Write("ADMIN", "%s(%s) unmuted %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-          cu.util.Broadcast(COLOR_ADMIN, cu.util.PlayerName(ply), COLOR_TEXT, " unmuted ", COLOR_TARGET, cu.util.PlayerName(target))
+          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " unmuted ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
           target.CanType = false
         end
       end

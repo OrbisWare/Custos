@@ -7,14 +7,22 @@ Version number:
 
 ::::::::::::::::::::::::::::::::::::
 ToDo:
-	-Add plugin disable/enable.
-	-[DONE] Rewrite SQL wrapper to work for MySQLoo, SQLite, and tMysql
-
-	-Finish HTML based menu.
-	-Rewrite player permissions and groups as modules.
-	-Add Queue command plugin.
-	-Work on plugin system.
+	-Come up with a simple menu to manage groups and plugins.
 	-Add some other useless plugins to make some people happy.
+
+Version 0.3.0i (24)
+	[ADDED] A proper config system so now the config can be changed in game on the fly.
+	[ADDED] A data library to read and write simple data from/to via disk.
+	[REWRITE] The plugin system to allow for multi file and single file plugins and the ID is now auto assigned.
+		Plugins no longer are defined by cu.PluginDefine, now you simply have to do local PLUGIN = PLUGIN in each file.
+		Plugins ID are assigned by the file/folder name of the plugin instead of using an integer.
+	[REWRITE] The command system, so now commands are more simple to make and we now only create a single console command.
+		Each command is now done with the prefix cu Ex. cu kick <player>
+		Also chat commands are now auto done with a simple "chat" option.
+	[CHANGE] All of the global tables are now lower case and are now in the cu table instead of Custos
+	[CHANGE] All of the main functions are now stored in their appropriate tables.
+	[CHANGE] Colors are now stored in cu table.
+	[FIX] Fix'd the SQL wrapper to actually work now.
 
 Version 0.2.3i (23)
 	[ADDED] Server side config file for config options that shouldn't be sent to the client.
