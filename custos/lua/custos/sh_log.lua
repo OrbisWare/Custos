@@ -39,28 +39,6 @@ if SERVER then
 		end
 	end
 
-	hook.Add("Initialize", "cu_StartLog", function()
-		if not cu.config.Get("LogEnabled") then return end
-
-		logDir = gmod.GetGamemode().Name.."/logs"
-		DeleteOldLogs(logDir)
-
-		logFile = os.date(logDir.."/"..cu.config.Get("LogDateFormat")..".txt")
-		date = os.date("%Y-%m-%d")
-
-		if file.Exists(logDir, "DATA") then
-			file.CreateDir(logDir)
-		end
-
-		if !file.Exists(logFile, "DATA") then
-			file.Write(logFile, "")
-		else
-			cu.log.Write("\n\n")
-		end
-
-		cu.log.Write("Loaded map: %s", game.GetMap())
-	end)
-
 	local function NextLog()
 		if not cu.config.Get("LogEnabled") then return end
 
@@ -87,6 +65,27 @@ if SERVER then
 		file.Append( logFile, string.format("[%02i:%02i:%02i] ", os.date("*t").hour, os.date("*t").min, os.date("*t").sec)..str )
 	end
 
+	function cu.log.Initialize()
+		print("log lcaeed")
+		logDir = gmod.GetGamemode().Name.."/logs"
+		DeleteOldLogs(logDir)
+
+		logFile = os.date(logDir.."/"..cu.config.Get("LogDateFormat")..".txt")
+		date = os.date("%Y-%m-%d")
+
+		if file.Exists(logDir, "DATA") then
+			file.CreateDir(logDir)
+		end
+
+		if !file.Exists(logFile, "DATA") then
+			file.Write(logFile, "")
+		else
+			cu.log.Write("\n\n")
+		end
+
+		cu.log.Write("Loaded map: %s", game.GetMap())
+	end
+
 	function cu.log.Write(prefix, ...)
 		if not cu.config.Get("LogEnabled") then return end
 
@@ -109,56 +108,6 @@ if SERVER then
 			Log("["..prefix.."] "..str)
 		end
 	end
-
-	hook.Add("PlayerSay", "cu_LogChat", function(ply, text, t)
-		if not cu.config.Get("LogEnabled") then return end
-		if not cu.config.Get("LogChat") then return end
-
-		if t then
-			cu.log.Write("CHAT", "(TEAM) %s: %s", ply:Nick(), text)
-		else
-			cu.log.Write("CHAT", "%s: %s", ply:Nick(), text)
-		end
-	end)
-
-	hook.Add("PlayerConnected", "cu_LogConnections", function(ply)
-		if not cu.config.Get("LogEnabled") then return end
-		if not cu.config.Get("LogEvents") then return end
-
-		cu.log.Write("SERVER", "Client %s (%s) connected to the server.", ply:Name(), ply:SteamID())
-	end)
-
-	hook.Add("PlayerDisconnected", "cu_LogDisconnections", function(ply)
-		if not cu.config.Get("LogEnabled") then return end
-		if not cu.config.Get("LogEvents") then return end
-
-		cu.log.Write("SERVER", "Dropped %s (%s) from the server.", ply:Name(), ply:SteamID())
-	end)
-
-	hook.Add("PlayerDeath", "cu_LogKillsDeaths", function(ply, wep, killer)
-		if not cu.config.Get("LogEnabled") then return end
-		if not cu.config.Get("LogEvents") then return end
-
-		if !killer:IsPlayer() then
-			cu.log.Write("KILL", "%s was killed by %s", ply:Nick(), killer:GetClass())
-
-		elseif !IsValid(wep) then
-			cu.log.Write("KILL", "%s killed %s", killer:Nick(), ply:Nick())
-
-		elseif killer:IsPlayer() then
-			cu.log.Write("KILL", "%s killed %s using %s", killer:Nick(), ply:Nick(), wep:GetClass())
-
-		elseif !killer and !wep then
-			cu.log.Write("KILL", "%s suicided!", victim:Nick())
-		end
-	end)
-
-	hook.Add("ShutDown", "cu_LogServerShutdown", function()
-		if not cu.config.Get("LogEnabled") then return end
-		if not cu.config.Get("LogEvents") then return end
-
-		cu.log.Write("SERVER", "Server is shutting down/changing levels.")
-	end)
 
 	net.Receive("cu_WriteLog", function()
 		local prefix = net.ReadString()

@@ -4,13 +4,13 @@ PLUGIN.Name = "Useful Commands"
 PLUGIN.Author = "Wishbone"
 PLUGIN.Description = "Adds rcon, freeze, and slay commands."
 
-if SERVER then
-  PLUGIN:AddPermissions({
-    ["cu_freeze"] = "Freeze",
-    ["cu_rcon"] = "RCON",
-    ["cu_slay"] = "Slay"
-  })
+PLUGIN:AddPermissions({
+  ["cu_freeze"] = "Freeze",
+  ["cu_rcon"] = "RCON",
+  ["cu_slay"] = "Slay"
+})
 
+if SERVER then
   PLUGIN:AddCommand("rcon", {
     description = "Run a console command through the server.",
     help = "rcon <command>",
@@ -38,7 +38,7 @@ if SERVER then
     permission = "cu_freeze",
     chat = "freeze",
     OnRun = function(ply, name)
-      if utilx.IsValidSteamID(name) then
+      if name == nil then
         return false, "Usage: <player>"
       end
 
@@ -47,11 +47,11 @@ if SERVER then
       if target then
         if !target:IsFlagSet(FL_FROZEN) then
           cu.log.Write("ADMIN", "%s(%s) froze %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " froze ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
+          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " has froze ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
           target:Freeze(true)
         else
           cu.log.Write("ADMIN", "%s(%s) unfroze %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " unfroze ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
+          cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " has unfroze ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
           target:Freeze(false)
         end
       end
@@ -64,7 +64,7 @@ if SERVER then
     permission = "cu_slay",
     chat = "slay",
     OnRun = function(ply, name)
-      if utilx.IsValidSteamID(name) then
+      if name == nil then
         return false, "Usage: <player>"
       end
 
@@ -72,7 +72,7 @@ if SERVER then
 
       if target then
         cu.log.Write("ADMIN", "%s(%s) slain %s(%s)", cu.util.PlayerName(ply), cu.util.GetSteamID(ply), cu.util.PlayerName(target), target:SteamID())
-        cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " slain ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
+        cu.util.Broadcast(cu.util.GetGroupColor(ply), cu.util.PlayerName(ply), cu.color_text, " has slain ", cu.util.GetGroupColor(target), cu.util.PlayerName(target))
         target:Kill()
       end
     end

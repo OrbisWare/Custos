@@ -57,7 +57,7 @@ end
 
 function cu.util.GetGroupColor(ply)
 	if IsValid(ply) and utilx.CheckType(ply, "Player") then
-		cu.group.GetColor(ply:GetUserGroup())
+		return cu.group.GetColor(ply:GetUserGroup())
 	else
 		return cu.color_player
 	end

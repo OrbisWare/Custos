@@ -12,8 +12,8 @@
 ]]
 if SERVER then
 	util.AddNetworkString("cu_AddText")
-	chat = {}
 
+	chat = {}
 	function chat.AddText(...)
 		local args = {...}
 

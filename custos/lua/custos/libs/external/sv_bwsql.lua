@@ -9,19 +9,11 @@
 	-Bad Wolf SQL - SQL wrapper for Garry's Mod.
 	Support for tMySQL, MySQLoo, SQLite
 ]]
-BWSQL = {}
+BWSQL = BWSQL or {}
 BWSQL.Module = nil
 
 local sqlMeta = {}
 sqlMeta.__index = sqlMeta
-
-local _module = BWSQL.Module
-
-if _module == "tmysql" then
-	require("tmysql4")
-elseif _module == "mysqloo" then
-	require("mysqloo")
-end
 
 local function checktype(var, typee)
 	local _var = type(typ)
@@ -47,6 +39,7 @@ function BWSQL.CreateInstance()
 	local object = {}
 
 	setmetatable(object, sqlMeta)
+	object.Module = BWSQL.Module
 	object.Instance = nil --tMySQL object
 	object.Status = nil --Connection status
 	object.Error = nil --Last Error
@@ -64,10 +57,6 @@ function BWSQL.DestroyInstance()
 	end
 end
 
-function BWSQL.SetModule(mod)
-	BWSQL.Module = mod
-end
-
 --Connect to a MySQL database.
 function sqlMeta:Connect(host, user, pass, db, port, sock)
 	local instance = self.Instance
@@ -79,7 +68,9 @@ function sqlMeta:Connect(host, user, pass, db, port, sock)
 		return
 	end
 
-	if _module == "tmysql" then
+	if self.Module == "tmysql" then
+		if not checktype(tmysql, "table") then require("tmysql") end
+
 		local instance, err = tmysql.initialize(host, user, pass, db, port, sock)
 
 		if instance then
@@ -93,7 +84,9 @@ function sqlMeta:Connect(host, user, pass, db, port, sock)
 			ErrorMsg("[MySQL] Unable to connect to database! (%s)", err)
 		end
 
-	elseif _module == "mysqloo" then
+	elseif self.Module == "mysqloo" then
+		if not checktype(tmysql, "table") then require("mysqloo") end
+
 		local instance = mysqloo.connect(host, user, pass, db, port, sock)
 
 		function instance:onConnected()
@@ -110,7 +103,7 @@ function sqlMeta:Connect(host, user, pass, db, port, sock)
 
 		instance:connect()
 
-	elseif _module == "sqlite" then
+	elseif self.Module == "sqlite" then
 		MsgN("[SQLite] Using SQLite.")
 		return
 	end
@@ -128,7 +121,7 @@ end
 
 --Returns MySQL database connection status.
 function sqlMeta:ConnectionStatus()
-	if _module == "sqlite" then
+	if self.Module == "sqlite" then
 		return true --Can't connect to SQLite, so just return true to make things simple.
 	end
 
@@ -141,15 +134,15 @@ function sqlMeta:Disconnect()
 
 	hook.Call("BWSQL_Disconnected")
 
-	if _module == "tmysql" then
+	if self.Module == "tmysql" then
 		self.Instance:Disconnect()
 		self:Reset()
 
-	elseif _module == "mysqloo" then
+	elseif self.Module == "mysqloo" then
 		self:Reset()
 		return
 
-	elseif _module =="sqlite" then
+	elseif self.Module =="sqlite" then
 		self:Reset()
 		return
 	end
@@ -159,13 +152,13 @@ end
 function sqlMeta:Escape(str)
 	if !self:ConnectionStatus() then return; end
 
-	if _module == "sqlite" then
+	if self.Module == "sqlite" then
 		return sql.SQLStr(str, false)
 
-	elseif _module == "tmysql" then
+	elseif self.Module == "tmysql" then
 		return self.Instance:Escape(str)
 
-	elseif _module == "mysqloo" then
+	elseif self.Module == "mysqloo" then
 		return self.Instance:escape(str)
 	end
 end
@@ -189,7 +182,7 @@ function sqlMeta:SafeQuery(query, callback, retval, onfail)
 	self.last_id = 0
 	self:ClearErrorCache()
 
-	if _module == "tmysql" then
+	if self.Module == "tmysql" then
 		self:RawQuery(query, function(result)
 			if !result[1].status then
 				local err = result[1].error
@@ -206,7 +199,7 @@ function sqlMeta:SafeQuery(query, callback, retval, onfail)
 			end
 		end)
 
-	elseif _module == "mysqloo" then
+	elseif self.Module == "mysqloo" then
 		local q = self.Instance:query(query)
 
 		function q:onSuccess(data)
@@ -220,7 +213,7 @@ function sqlMeta:SafeQuery(query, callback, retval, onfail)
 
 		q:start()
 
-	elseif _module == "sqlite" then
+	elseif self.Module == "sqlite" then
 		local res = sql.Query(query)
 
 		if !res then

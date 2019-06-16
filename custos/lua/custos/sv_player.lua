@@ -112,7 +112,6 @@ function cu.user.Add(ply, group, perms)
 		if utilx.CheckTypeStrict(perms, "table") then
 			perm = perms
 		end
-
 	else
 		perm = {}
 	end
@@ -203,6 +202,8 @@ function playerMeta:HasPermission(perm)
 	local group = self:GetUserGroup()
 
 	if utilx.CheckType(perm, "string") then
+		if perm == "root" then return true; end
+
 		local c = cu.group.CheckPerm(group, perm)
 		local u = cu.user.CheckPerm(self, perm)
 
@@ -271,20 +272,3 @@ function playerMeta:Stuck()
 
 	return false
 end
-
-hook.Add("ShutDown", "cu_SaveUsers", function()
-	cu.user.Unload()
-end)
-
-hook.Add("InitPostEntity", "cu_LoadUsers", function()
-	cu.user.Load()
-end)
-
-hook.Add("PlayerAuthed", "cu_SetUserGroup", function(ply)
-	local steamid = ply:SteamID()
-	local userData = cu.g.users[steamid]
-
-	if userData then
-		ply:SetUserGroup(userData.groupid)
-	end
-end)

@@ -5,8 +5,9 @@ CREATE TABLE `cu_bans` (
   `reason` text NOT NULL,
   `startTime` int(11) NOT NULL,
   `endtime` int(11) NOT NULL,
-  `admin` char(255) NOT NULL
-) ENGINE=InnoDB;
+  `admin` char(255) NOT NULL,
+  PRIMARY KEY(`steamid32`)
+);
 
 CREATE TABLE `cu_groups` (
   `name` char(255) NOT NULL UNIQUE,
@@ -14,8 +15,9 @@ CREATE TABLE `cu_groups` (
   `colorHex` int(11) NOT NULL,
   `inherit` char(255) NOT NULL,
   `perm` text NOT NULL,
-  `immunity` int(11) NOT NULL
-) ENGINE=InnoDB;
+  `immunity` int(11) NOT NULL,
+  PRIMARY KEY(`name`)
+);
 
 CREATE TABLE `cu_users` (
   `steamid32` char(255) NOT NULL UNIQUE,
@@ -24,4 +26,5 @@ CREATE TABLE `cu_users` (
   `added` int(11) NOT NULL,
   `lastConnected` int(11) NOT NULL,
   `perm` text NOT NULL,
-) ENGINE=InnoDB;
+  PRIMARY KEY(`steamid32`)
+);

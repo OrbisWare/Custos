@@ -2,11 +2,6 @@ local PLUGIN = PLUGIN
 
 local bans = {}
 
-PLUGIN:AddPermissions({
-	["cu_ban"] = "Ban",
-	["cu_unban"] = "Unban"
-})
-
 function PLUGIN:BanPlayer(admin, ply, time, reason)
 	local time = utilx.CheckTypeStrict(time, "number")
 
@@ -144,7 +139,7 @@ end)
 
 PLUGIN:AddHook("CheckPassword", "cu_BanCheck", function(steamid)
 	local steamid32 = util.SteamIDFrom64(steamid)
-	local data = cu.G.Bans[steamid32]
+	local data = bans[steamid32]
 
 	if data then
 		if tonumber(data.endTime) != 0 then

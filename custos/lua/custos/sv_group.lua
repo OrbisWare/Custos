@@ -19,14 +19,15 @@ function cu.group.DefaultGroups()
 		parent = "admin",
 		immunity = 99,
 		perm = {
-			["cu_runlua"]=true,
-			["cu_setusergroup"]=true,
-			["cu_rcon"]=true,
-			["cu_modifygroup"]=true,
-			["cu_removegroup"]=true,
-			["cu_creategroup"]=true,
-			["cu_modifyuser"]=true,
-			["cu_modconfig"]=true
+			["root"]=true
+			-- ["cu_runlua"]=true,
+			-- ["cu_setusergroup"]=true,
+			-- ["cu_rcon"]=true,
+			-- ["cu_modifygroup"]=true,
+			-- ["cu_removegroup"]=true,
+			-- ["cu_creategroup"]=true,
+			-- ["cu_modifyuser"]=true,
+			-- ["cu_modconfig"]=true
 		}
 	}
 
@@ -310,12 +311,3 @@ end
 -- 		netx.WriteTable(cu.g.permissions)
 -- 	net.Send(ply)
 -- end
-
-hook.Add("ShutDown", "cu_SaveGroups", function()
-	cu.group.Unload()
-end)
-
-hook.Add("CU_Initialized", "cu_LoadGroups", function()
-	cu.group.DefaultGroups()
-	cu.group.Load()
-end)

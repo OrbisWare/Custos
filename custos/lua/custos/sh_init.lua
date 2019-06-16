@@ -35,14 +35,16 @@ if SERVER then
 end
 
 local cu_starttime = os.clock()
-MsgN(\n[[
+Msg([[
  _____           _
 /  __ \         | |
 | /  \/_   _ ___| |_ ___  ___
 | |   | | | / __| __/ _ \/ __|
 | \__/\ |_| \__ \ || (_) \__ \
  \____/\__,_|___/\__\___/|___/
-Created by SaintWish - Version: ]]..cu.version..[[ (]]..cu.iversion..[[) ]])
+]])
+--MsgN("Created by SaintWish - Version: "..cu.version.." ("..cu.iversion..")")
+MsgN("Created by SaintWish - Version: "..cu.version)
 MsgN("////////////////////////////////")
 
 MsgN("//Loading External Libraries...")
@@ -88,6 +90,9 @@ if cu.config.Get("LoadPlugins") then
 	MsgN("//Loading Plugins...")
 	cu.plugin.LoadDir("plugins")
 end
+
+MsgN("//Loading Core Hooks...")
+cu.LoadFile("sv_hooks.lua")
 
 MsgN("//Loaded in "..os.clock() - cu_starttime.." seconds")
 MsgN("////////////////////////////////\n")

@@ -16,9 +16,25 @@
     data.permission
     data.OnRun
 ]]
+local function CleanTable(tbl)
+  local newTbl = {}
+  for k,v in pairs(tbl) do
+    table.insert(newTbl, v)
+  end
+  return newTbl
+end
+
+local function TrimTableValues(tbl)
+  local newTbl = {}
+  for k,v in pairs(tbl) do
+    local str = string.Trim(v)
+    table.insert(newTbl, str)
+  end
+  return newTbl
+end
+
 if SERVER then
   util.AddNetworkString("cu_Command")
-  local ChatCommands = {}
 
   function cu.cmd.Add(command, data)
     if not utilx.CheckType(data, "table") then return; end
@@ -43,7 +59,7 @@ if SERVER then
       desc = description,
       help = help,
       perm = permission,
-      chat = chat
+      chat = chat,
       OnRun = OnRun
     }
   end
@@ -62,12 +78,23 @@ if SERVER then
         return false, "You don't have access to that command!"
       end
 
-      local run, err, msg = pcall(OnRun, ply, unpack(args))
+      /*local run, err, msg = pcall(OnRun, unpack(args))
       if !run then
         cu.log.Write("CMD", "%s tried to run command %s. Error %s", cu.util.PlayerName(ply), command, err)
         return false, "Command failed to run: "..err
       end
-      return true
+      if not err then
+        return err, msg
+      end
+      return true*/
+
+      local succ, msg = OnRun(ply, unpack(args))
+      if not succ then
+        return succ, msg
+      else
+        return true
+      end
+
     else
       return false, "Invalid command entered."
     end
@@ -85,13 +112,14 @@ if SERVER then
 
     local cmd = args[1]
     args[1] = nil
+    local newArgs = CleanTable(args)
 
     if cmd then
       if cmd != help then
         cmd:lower()
 
-        local result, err = cu.cmd.Parse(ply, cmd, args, raw)
-        if not result then
+        local result, err = cu.cmd.Parse(ply, cmd, newArgs)
+        if not result and err then
           cu.util.Notify(ply, cu.color_error, err)
         end
 
@@ -124,7 +152,12 @@ if SERVER then
         return
       end
 
-      concommand.Run(command, unpack(args))
+      print(unpack(args))
+      if utilx.CheckType(args, "table") then
+        ply:ConCommand("cu "..command.." "..unpack(args))
+      else
+        ply:ConCommand("cu "..command)
+      end
     else
       cu.util.Notify(ply, cu.color_error, "You have entered an invalid command.")
       return
@@ -137,7 +170,7 @@ if SERVER then
     end
   end
 
-  local function parseChatCmds(ply, text)
+  function cu.cmd.ParseChat(ply, text)
   	if !IsValid(ply) then return; end
 
   	local prefix = string.sub(text, 1, 1)
@@ -148,20 +181,21 @@ if SERVER then
     if table.HasValue(cu.chatprefixes, prefix) then
       local args = string.Explode(" ", afterPrefix)
       local command = args[1]
+      args[1] = nil
+      local newArgs = CleanTable(args)
 
-      for k,_ in pairs(cu.g.commands) do
-        if k["chat"][command] then
-          local cmdArgs = args or {}
-    			local _cmdstr = ""
+      for k,v in pairs(cu.g.commands) do
+        if v["chat"] == command then
+    			//local _cmdstr = ""
 
-    			for i=2, #cmdArgs do
-    				_cmdstr = _cmdstr.." "..cmdArgs[i]
-    			end
+    			//for i=2, #cmdArgs do
+    				//_cmdstr = _cmdstr.." "..cmdArgs[i]
+    			//end
 
-    			if #cmdArgs-1 > 0 then
-    				ply:ConCommand(k.._cmdstr)
+    			if newArgs[1] then
+            cu.cmd.Run(ply, k, newArgs)
     			else
-    				ply:ConCommand(k)
+    				cu.cmd.Run(ply, k)
     			end
 
     			return ""
@@ -175,10 +209,6 @@ if SERVER then
     local args = netx.ReadTable()
 
     cu.cmd.Run(client, command, args)
-  end)
-
-  hook.Add("PlayerSay", "cu_ChatCommands", function(ply, text, team)
-  	parseChatCmd(ply, text)
   end)
 
 else

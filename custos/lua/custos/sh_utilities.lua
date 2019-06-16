@@ -13,34 +13,10 @@
 function cu.util.PrintDebug(debug)
 	if cu.config.Get("Debug") then
 		if utilx.CheckType(debug, "string") then
-			Msg("Custos Debug: "..debug.."\n")
+			MsgN("Custos Debug: "..debug)
 
 		elseif utilx.CheckType(debug, "table") then
 			utilx.PrintTableEx(debug)
-		end
-	end
-end
-
-function cu.util.Notify(ply, ...)
-	local args = {...}
-
-	if utilx.CheckType(ply, "Player") then
-		chat.AddText(ply, cu.color_tag, "[Custos] ", unpack(args))
-	else
-		MsgC(unpack(args))
-	end
-end
-
-function cu.util.Broadcast(...)
-	local args = {...}
-
-	for k,v in pairs(player.GetAll()) do
-		if cu.config.Get("ChatSilent") then
-			return
-		elseif cu.config.Get("ChatAdmin") and ply:HasPermission("cu_adminecho") then
-			cu.util.Notify(v, unpack(args))
-		else
-			cu.util.Notify(v, unpack(args))
 		end
 	end
 end
@@ -62,7 +38,41 @@ function cu.util.ErrorHalt(prefix, err, trace)
 end
 
 if SERVER then
+	function cu.util.Notify(ply, ...)
+		local args = {...}
+
+		if utilx.CheckType(ply, "Player") then
+			chat.AddText(ply, cu.color_tag, "[Custos] ", unpack(args))
+		else
+			MsgC(unpack(args))
+		end
+	end
+
+	function cu.util.Broadcast(...)
+		local args = {...}
+
+		if cu.config.Get("ChatSilent") then
+			return
+		end
+
+		if cu.config.Get("ChatAdmin") then
+			for k,v in pairs(player.GetAll()) do
+				if ply:HasPermission("cu_adminecho") then
+					cu.util.Notify(v, unpack(args))
+				end
+			end
+			return
+		end
+
+		for k,v in pairs(player.GetAll()) do
+			cu.util.Notify(v, unpack(args))
+		end
+		return
+	end
+
 	function cu.util.FindPlayer(str, ply, unrestr)
+		local sL = string.lower
+
 		if utilx.IsValidSteamID(str) then
 			return str
 		end

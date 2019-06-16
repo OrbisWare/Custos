@@ -56,16 +56,17 @@ function cu.plugin.Disable(id)
 end
 
 function cu.plugin.LoadDir(dir)
-  local files, folders = file.Find(dir.."/*", "LUA")
+	local newDir = "custos/"..dir.."/*"
+  local files, folders = file.Find(newDir, "LUA")
 
-  for k,v in pairs(folders)
+  for k,v in pairs(folders) do
     Msg("\tLoaded Plugin: "..v.."\n")
-    cu.plugin.Load(v, directory.."/"..v, false)
+    cu.plugin.Load(v, dir.."/"..v, false)
   end
 
   for k,v in pairs(files) do
-    MsgN("\tLoaded Plugin: "..string.StringExtension(v).."\n")
-    cu.plugin.Load(string.StripExtension(v), dir.."/"..v, false)
+    Msg("\tLoaded Plugin: "..string.StripExtension(v).."\n")
+    cu.plugin.Load(string.StripExtension(v), dir.."/"..v, true)
   end
 end
 
@@ -91,18 +92,18 @@ end
 function pluginMeta:Inject()
 	hook.Call("CU_PluginLoaded")
 
-	if SERVER then
-		for k,v in pairs(self.Permissions) do
-			cu.perm.Register({k, v})
-		end
-
-		for k,v in pairs(self.Commands) do
-			cu.cmd.Add(k, v)
-		end
+	for k,v in pairs(self.Permissions) do
+		cu.perm.Register({[k] = v})
 	end
 
 	for k,v in pairs(self.Hooks) do
 		hook.Add(v.name, k, v.func)
+	end
+
+	if SERVER then
+		for k,v in pairs(self.Commands) do
+			cu.cmd.Add(k, v)
+		end
 	end
 end
 
@@ -122,23 +123,23 @@ function pluginMeta:Eject()
 		end
 	end
 
-	for k,v in pairs(self.Hook) do
+	for k,v in pairs(self.Hooks) do
 		hook.Remove(v.name, k)
 	end
 end
 
 function pluginMeta:Register()
-	local id = self.name
+	local id = self.ID
 
 	if self.Gamemodes then
-		if !table.HasValue(self.Gamemodes, gmod.GetGamemode().Name) then
+		if not table.HasValue(self.Gamemodes, gmod.GetGamemode().Name) then
 			return
 		end
 	end
 
 	table.remove(self, 1)
 
-	cu.G.Plugins[id] = self
+	cu.g.plugins[id] = self
 	self:Inject()
 
 	_G["PLUGIN"] = nil
@@ -149,7 +150,7 @@ end
 function pluginMeta:Unregister()
 	local id = self.ID
 
-	if cu.G.Plugins[id] then
+	if cu.g.plugins[id] then
 		self:Eject()
 	end
 

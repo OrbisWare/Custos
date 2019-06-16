@@ -12,7 +12,6 @@
 ]]
 
 local config = {}
-
 function cu.config.Add(key, default, desc, type)
 	config[key] = {
 		type = type,
@@ -51,7 +50,7 @@ function cu.config.Load()
 end
 
 cu.config.Add("LoadPlugins", true, "Enable loading of plugins.", "boolean")
-cu.config.Add("Debug", true, "Enable debug messages.", "boolean")
+cu.config.Add("Debug", false, "Enable debug messages.", "boolean")
 cu.config.Add("UpdateCheck", false, "Have the system check for a new update.", "boolean")
 cu.config.Add("ChatAdmin", false, "Only echo commands ran to staff members.", "boolean")
 cu.config.Add("ChatSilent", false, "Don't echo commands ran at all.", "boolean")

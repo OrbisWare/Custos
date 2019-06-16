@@ -16,8 +16,9 @@ cu.perm.Register({
 	["cu_rmgroup"] = "Remove group",
 	["cu_creategroup"] = "Create group",
 	["cu_modifyuser"] = "Modify user",
-	["cu_adminecho"] = "Admin Echo"
-	["cu_modconfig"] = "Modify via config."
+	["cu_adminecho"] = "Admin Echo",
+	["cu_modconfig"] = "Modify via config.",
+	["cu_moduser"] = "Modify a user."
 })
 
 --[[---------------------
@@ -140,7 +141,7 @@ cu.cmd.Add("setgroup", {
 	end
 })
 
-cu.cmd.Add("setconfig" {
+cu.cmd.Add("setconfig", {
 	description = "Set a value for a config option.",
 	help = "setconfig <key> <value>",
 	permission = "cu_modconfig",

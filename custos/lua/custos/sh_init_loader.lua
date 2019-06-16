@@ -119,7 +119,7 @@ function cu.LoadFile(filee, echo)
 		end
 	end
 
-	if loadedFile and echo then
-		Msg("\tLoaded file: "..filee.."\n")
+	if echo and loadedFile then
+		//Msg("\tLoaded file: "..filee.."\n")
 	end
 end

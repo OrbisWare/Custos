@@ -22,9 +22,3 @@ if BWSQL.Module == "tmysql" or BWSQL.Module == "mysqloo" then
 
 	cu.sqlobj:Connect(host, user, pass, db, port, socket)
 end
-
---cu.Query = cSQL:EasyQuery --Access to the EasyQuery function.
-
-hook.Add("ShutDown", "cu_ShutdownSQL", function()
-	BWSQL.DestroyInstance() --We destroy the SQL instance since the server is shutting down.
-end)

@@ -14,11 +14,11 @@ PLUGIN.Name = "Run Lua"
 PLUGIN.Author = "Wishbone"
 PLUGIN.Description = "Run lua code."
 
-if SERVER then
-  PLUGIN:AddPermissions({
-  	["cu_runlua"] = "Run Lua"
-  })
+PLUGIN:AddPermissions({
+  ["cu_runlua"] = "Run Lua"
+})
 
+if SERVER then
   PLUGIN:AddCommand("runlua", {
     description = "Allows users to run lua code.",
     help = "runlua <lua>",
