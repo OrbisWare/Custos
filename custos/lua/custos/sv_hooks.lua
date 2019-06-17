@@ -10,12 +10,15 @@
 
   Server Hooks
 ]]
-hook.Add("InitPostEntity", "CustosInit", function()
-  cu.group.DefaultGroups()
+hook.Add("CU_Initialized", "CustosInit", function()
 	cu.group.Load()
+  cu.group.Default()
+
+  cu.group.Save()
+
   cu.user.Load()
 
-  if not cu.config.Get("LogEnabled") then
+  if cu.config.Get("LogEnabled") then
     cu.log.Initialize()
   end
 end)
@@ -34,19 +37,19 @@ hook.Add("PlayerAuthed", "CU_PlayerAuthed", function(ply)
 end)
 
 hook.Add("PlayerConnected", "CU_Connected", function(ply)
-  if not (cu.config.Get("LogEnabled") or cu.config.Get("LogEvents")) then
+  if (cu.config.Get("LogEnabled") and cu.config.Get("LogEvents")) then
     cu.log.Write("SERVER", "Client %s (%s) connected to the server.", ply:Name(), ply:SteamID())
   end
 end)
 
 hook.Add("PlayerDisconnected", "CU_Disconnected", function(ply)
-  if not (cu.config.Get("LogEnabled") or cu.config.Get("LogEvents")) then
+  if (cu.config.Get("LogEnabled") and cu.config.Get("LogEvents")) then
     cu.log.Write("SERVER", "Dropped %s (%s) from the server.", ply:Name(), ply:SteamID())
   end
 end)
 
 hook.Add("PlayerDeath", "CU_PlayerDeath", function(ply, wep, killer)
-  if not (cu.config.Get("LogEnabled") or cu.config.Get("LogEvents")) then
+  if (cu.config.Get("LogEnabled") and cu.config.Get("LogEvents")) then
     if !killer:IsPlayer() then
       cu.log.Write("KILL", "%s was killed by %s", ply:Nick(), killer:GetClass())
 
@@ -65,7 +68,7 @@ end)
 hook.Add("PlayerSay", "CU_PlayerChat", function(ply, text, team)
   cu.cmd.ParseChat(ply, text)
 
-  if not (cu.config.Get("LogEnabled") or cu.config.Get("LogChat")) then
+  if (cu.config.Get("LogEnabled") and cu.config.Get("LogChat")) then
     if team then
       cu.log.Write("CHAT", "(TEAM) %s: %s", ply:Nick(), text)
     else
@@ -78,7 +81,7 @@ hook.Add("ShutDown", "CU_ServerShutdown", function()
     cu.group.Unload()
     cu.user.Unload()
 
-    if not (cu.config.Get("LogEnabled") or cu.config.Get("LogEvents")) then
+    if (cu.config.Get("LogEnabled") and cu.config.Get("LogEvents")) then
       cu.log.Write("SERVER", "Server is shutting down/changing levels.")
     end
 

@@ -20,7 +20,7 @@ function cu.data.Set(key, value, ignoreMap)
   local path = "custos/"..(ignoreMap and "" or game.GetMap().."/")
 
   file.CreateDir(path)
-  file.Write(path..key..".txt", von.encode({value}))
+  file.Write(path..key..".txt", von.serialize({value}))
   dataCache[key] = value
 end
 
@@ -29,7 +29,7 @@ function cu.data.SetTable(key, table, ignoreMap)
   local path = "custos/"..(ignoreMap and "" or game.GetMap().."/")
 
   file.CreateDir(path)
-  file.Write(path..key..".txt", von.encode(table))
+  file.Write(path..key..".txt", von.serialize(table))
   dataCache[key] = table
 end
 
@@ -47,7 +47,7 @@ function cu.data.GetTable(key, default, ignoreMap, refresh)
 
   local data = file.Read(path..key..".txt", DATA)
   if data and data != "" then
-    local decode = von.decode(data)
+    local decode = von.deserialize(data)
 
     if decode then
       return decode
@@ -73,7 +73,7 @@ function cu.data.Get(key, default, ignoreMap, refresh)
 
   local data = file.Read(path..key..".txt", DATA)
   if data and data != "" then
-    local decode = von.decode(data)
+    local decode = von.deserialize(data)
 
     if decode then
       return decode[1]

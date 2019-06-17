@@ -10,6 +10,9 @@
 
 	Plugin System
 ]]
+local setmetatable = setmetatable
+local Msg = Msg
+
 local pluginMeta = {}
 pluginMeta.__index = pluginMeta
 

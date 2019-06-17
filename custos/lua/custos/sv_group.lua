@@ -10,7 +10,7 @@
 
 	group system - serverside. group and Perm class functions.
 ]]
-function cu.group.DefaultGroups()
+function cu.group.Default()
 	if cu.g.groups["user"] then return end
 
 	cu.g.groups["superadmin"] = {
@@ -110,6 +110,7 @@ end
 
 function cu.group.Unload()
 	cu.group.Save()
+	cu.g.groups = nil
 end
 
 function cu.group.Reload()
@@ -119,6 +120,7 @@ end
 
 function cu.group.Save()
 	cu.sqlobj:EasyQuery("SELECT * FROM `cu_groups`", function(_data, status, err)
+		print("sql connected")
 		local sqlContainer = {}
 
 		for k,data in ipairs(_data) do
@@ -134,8 +136,8 @@ function cu.group.Save()
 
 				cu.util.PrintDebug("updating group "..tostring(grpID))
 
-					cu.sqlobj:EasyQuery("UPDATE `cu_groups` SET display = '%s', colorHex = %i, inherit = '%s', perm = '%s', immunity = %i WHERE name = '%s'",
-					grpDisplay, grpColor, inherit, perm, immunity, grpID)
+				cu.sqlobj:EasyQuery("UPDATE `cu_groups` SET display = '%s', colorHex = %i, inherit = '%s', perm = '%s', immunity = %i WHERE name = '%s'",
+				grpDisplay, grpColor, inherit, perm, immunity, grpID)
 
 				table.insert(sqlContainer, grpID)
 			end
@@ -151,7 +153,8 @@ function cu.group.Save()
 				end
 			end
 
-			if exists == true then continue; end
+			--if the group is already in the db don't insert a new one.
+			if exists == true then return; end
 
 			local grpDisplay = g.display
 			local grpColor = colorx.rgbtohex(g.color)
@@ -159,13 +162,9 @@ function cu.group.Save()
 			local perm = von.serialize(g.perm)
 			local immunity = g.immunity
 
-			cu.util.PrintDebug("inserting group "..tostring(k))
-
 			cu.sqlobj:EasyQuery("INSERT INTO `cu_groups` (name, display, colorHex, inherit, perm, immunity) VALUES('%s', '%s', '%i', '%s', '%s', '%i')",
 				k, grpDisplay, grpColor, inherit, perm, immunity)
 		end
-
-		table.Empty(cu.g.groups)
 	end)
 
 	hook.Call("CU_OnGroupsSaving")

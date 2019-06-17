@@ -16,21 +16,14 @@
     data.permission
     data.OnRun
 ]]
-local function CleanTable(tbl)
-  local newTbl = {}
-  for k,v in pairs(tbl) do
-    table.insert(newTbl, v)
-  end
-  return newTbl
-end
+function cu.cmd.GetArgs(args)
+  local res = {}
 
-local function TrimTableValues(tbl)
-  local newTbl = {}
-  for k,v in pairs(tbl) do
-    local str = string.Trim(v)
-    table.insert(newTbl, str)
+  for i=2, #args do
+    table.insert(res, args[i])
   end
-  return newTbl
+
+  return res
 end
 
 if SERVER then
@@ -111,8 +104,7 @@ if SERVER then
     end
 
     local cmd = args[1]
-    args[1] = nil
-    local newArgs = CleanTable(args)
+    local newArgs = cu.cmd.GetArgs(args)
 
     if cmd then
       if cmd != help then
@@ -181,16 +173,10 @@ if SERVER then
     if table.HasValue(cu.chatprefixes, prefix) then
       local args = string.Explode(" ", afterPrefix)
       local command = args[1]
-      args[1] = nil
-      local newArgs = CleanTable(args)
+      local newArgs = cu.cmd.GetArgs(args)
 
       for k,v in pairs(cu.g.commands) do
         if v["chat"] == command then
-    			//local _cmdstr = ""
-
-    			//for i=2, #cmdArgs do
-    				//_cmdstr = _cmdstr.." "..cmdArgs[i]
-    			//end
 
     			if newArgs[1] then
             cu.cmd.Run(ply, k, newArgs)

@@ -66,8 +66,7 @@ if SERVER then
 	end
 
 	function cu.log.Initialize()
-		print("log lcaeed")
-		logDir = gmod.GetGamemode().Name.."/logs"
+		logDir = "custos/"..engine.ActiveGamemode().."/logs"
 		DeleteOldLogs(logDir)
 
 		logFile = os.date(logDir.."/"..cu.config.Get("LogDateFormat")..".txt")

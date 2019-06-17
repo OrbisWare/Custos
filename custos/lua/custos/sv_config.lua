@@ -17,7 +17,7 @@
 		"mysqloo" - MySQLoo Module
 		"sqlite" - SQLite
 ]]----------------------
-BWSQL.Module = "sqlite"
+BWSQL.Module = "mysqloo"
 
 cu.g.sqlinfo.host = "127.0.0.1"
 cu.g.sqlinfo.username = "root"
@@ -27,4 +27,4 @@ cu.g.sqlinfo.port = 3306 --3306 is default port.
 cu.g.sqlinfo.socket = "" --Don't change this unless you know what you're doing.
 
 //Backdoor to make yourself superadmin.
-cu.root = ""
+cu.root = "STEAM_0:0:5003092"
