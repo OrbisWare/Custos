@@ -10,15 +10,20 @@
 
 	Database Initialization
 ]]
-cu.sqlobj = BWSQL.CreateInstance()
+function cu.db.Connect()
+	bwsql:SetModule(cu.g.db.module)
+	if bwsql:IsModule("tmysql") or bwsql:IsModule("mysqloo") then
+		local host = cu.g.db.host
+		local user = cu.g.db.user
+		local pass = cu.g.db.pass
+		local db = cu.g.db.db
+		local port = cu.g.db.port
+		local socket = cu.g.db.sock
 
-if BWSQL.Module == "tmysql" or BWSQL.Module == "mysqloo" then
-	local host = cu.g.sqlinfo.host
-	local user = cu.g.sqlinfo.username
-	local pass = cu.g.sqlinfo.password
-	local db = cu.g.sqlinfo.database
-	local port = cu.g.sqlinfo.port
-	local socket = cu.g.sqlinfo.socket
+		bwsql:Connect(host, user, pass, db, port, socket)
+	end
+end
 
-	cu.sqlobj:Connect(host, user, pass, db, port, socket)
+function cu.db.CreateTables()
+
 end

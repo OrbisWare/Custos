@@ -23,7 +23,7 @@ function PLUGIN:BanPlayer(admin, ply, time, reason)
 		_admin = "Console"
 	end
 
-	cu.sqlobj:EasyQuery("INSERT INTO `cu_bans` (steamid32, steamid64, reason, startTime, endTime, admin) VALUES('%s', '%s', '%s', %i, %i, '%s')",
+	bwsql:EasyQuery("INSERT INTO `cu_bans` (steamid32, steamid64, reason, startTime, endTime, admin) VALUES('%s', '%s', '%s', %i, %i, '%s')",
 		steamid32, steamid64, reason, startTime, endTime, _admin)
 
 	bans[steamid32] = {
@@ -50,7 +50,7 @@ function PLUGIN:UnbanPlayer(steamid, ply)
 	end
 
 	if utilx.IsValidSteamID(steamid) then
-		cu.sqlobj:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", steamid, function(result, status, err)
+		bwsql:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", steamid, function(result, status, err)
 			if result then
 				cu.G.Bans[steamid] = nil
 			end
@@ -117,13 +117,13 @@ PLUGIN:AddHook("CU_PluginUnregister", "cu_ClearBanTable", function()
 	bans = nil
 end)
 
-PLUGIN:AddHook("CU_Initialized", "cu_BanLoader", function()
-	cu.sqlobj:EasyQuery("SELECT * FROM `cu_bans`", function(result, status, err)
+PLUGIN:AddHook("BWSQL_DBConnected", "cu_BanLoader", function()
+	bwsql:EasyQuery("SELECT * FROM `cu_bans`", function(result, status, err)
 		if !result then return; end
 
 		for k,v in pairs(result) do
 			if (v.endTime != 0) and (v.endTime <= os.time()) then
-				cu.sqlobj:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", v.steamid32)
+				bwsql:EasyQuery("DELETE FROM `cu_bans` WHERE steamid32 = '%s'", v.steamid32)
 			end
 
 			bans[v.steamid32] = {

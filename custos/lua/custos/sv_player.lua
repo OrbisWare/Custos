@@ -14,7 +14,7 @@ util.AddNetworkString("cu_SentUsers")
 local playerMeta = FindMetaTable("Player")
 
 function cu.user.Load()
-	cu.sqlobj:EasyQuery("SELECT * FROM `cu_users`", function(data, status, err)
+	bwsql:EasyQuery("SELECT * FROM `cu_users`", function(data, status, err)
 		if !data then return; end
 
 		for k,v in pairs(data) do
@@ -36,7 +36,7 @@ function cu.user.Load()
 end
 
 function cu.user.Save()
-	cu.sqlobj:EasyQuery("SELECT * FROM `cu_users`", function(_data, status, err)
+	bwsql:EasyQuery("SELECT * FROM `cu_users`", function(_data, status, err)
 		local sqlContainer = {}
 
 		for k,data in pairs(_data) do --ipairs
@@ -52,7 +52,7 @@ function cu.user.Save()
 
 				cu.util.PrintDebug("updating user "..tostring(v))
 
-				cu.sqlobj:EasyQuery("UPDATE `cu_users` SET steamid64 = '%s', groupid = '%s', added = %i, lastConnected = %i, perm = '%s' WHERE steamid32 = '%s'",
+				bwsql:EasyQuery("UPDATE `cu_users` SET steamid64 = '%s', groupid = '%s', added = %i, lastConnected = %i, perm = '%s' WHERE steamid32 = '%s'",
 					steamid64, groupid, added, lastConnected, perm, steamid32)
 
 				table.insert(sqlContainer, steamid32)
@@ -79,7 +79,7 @@ function cu.user.Save()
 
 			cu.util.PrintDebug("inserting user "..tostring(k))
 
-			cu.sqlobj:EasyQuery("INSERT INTO `cu_users` (steamid32, steamid64, groupid, added, lastConnected, perm) VALUES('%s', '%s', '%s', %i, %i, '%s')",
+			bwsql:EasyQuery("INSERT INTO `cu_users` (steamid32, steamid64, groupid, added, lastConnected, perm) VALUES('%s', '%s', '%s', %i, %i, '%s')",
 				k, steamid64, groupid, added, lastConnected, perm)
 		end
 

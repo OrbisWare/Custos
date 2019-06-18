@@ -9,20 +9,17 @@
 
 bwsql = bwsql or {}
 
+local Queue = {}
 local Module = "sqlite"
 local Status = false
 
-local type = type
-local tostring = tostring
-local table = table
-local error = error
-local ErrorNoHalt = ErrorNoHalt
+local type, tostring, tinsert, error, ErrorNoHalt = type, tostring, table.insert, error, ErrorNoHalt
 
 local function checktype(var, typee)
-	local _var = type(typ)
+	local _var = type(var)
 
 	if _var == typee then
-		return true
+		return var
 	else
 		return false
 	end
@@ -52,6 +49,10 @@ function bwsql:IsModule(mod)
   else
     return false
   end
+end
+
+function bwsql:Queue(str)
+	tinsert(Queue, str)
 end
 
 function bwsql:Connect(host, user, pass, db, port, sock)
@@ -85,11 +86,11 @@ function bwsql:Connect(host, user, pass, db, port, sock)
     if mysqloo then
       self.connection = mysqloo.connect(host, user, pass, db, port, sock)
 
-      self.connection:onConnected = function()
+      self.connection.onConnected = function()
         self:OnConnected()
       end
 
-      self.connection:onConnectionFailed = function(err)
+      self.connection.onConnectionFailed = function(err)
         self:OnConnectedFailed(err)
       end
 
@@ -104,15 +105,17 @@ function bwsql:Connect(host, user, pass, db, port, sock)
   end
 end
 
-function bwsql:Escape(str)
-	if Module == "sqlite" then
-		return sql.SQLStr(str, false)
+function bwsql:Escape(text)
+	if not checktype(text, "string") then
+		return text
+	end
 
-	elseif Module == "tmysql" then
-		return self.connection:Escape(str)
-
+	if Module == "tmysql" then
+		return self.connection:Escape(text)
 	elseif Module == "mysqloo" then
-		return self.connection:escape(str)
+		return self.connection:escape(text)
+	else
+		return sql.SQLStr(string.gsub(text, "\"", "'"), false)
 	end
 end
 
@@ -188,14 +191,22 @@ function bwsql:EasyQuery(...)
 			break
 		end
 
-		fargs[#fargs+1] = self:Escape(varargs[i])
+		local escape = self:Escape(varargs[i])
+		fargs[#fargs+1] = escape
 	end
 
 	local callback = checktype(varargs[off], "function") --opttype
 	local retval = checktype(varargs[off+1], "number") --opttype
 	local onfail = checktype(varargs[off+2], "function") --opttype
 
+	print(query)
 	self:SafeQuery(string.format(query, unpack(fargs)), callback, retval, onfail)
+end
+
+function bwsql:Think()
+	for k,v in pairs(Queue) do
+
+	end
 end
 
 function bwsql:NumRows()
@@ -251,11 +262,12 @@ end
 
 function bwsql:OnConnected()
   Status = true
-  MsgN("[MySQL] Sucessfully connected to via database!")
+  MsgN("[MySQL] Sucessfully connected to via database! Using module: "..Module)
+	hook.Call("BWSQL_DBConnected")
 end
 
 function bwsql:OnConnectedFailed(err)
-  error("[MySQL] Unable to connect to database! "..err
+  error("[MySQL] Unable to connect to database! "..err)
 end
 
 return bwsql

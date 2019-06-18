@@ -19,6 +19,9 @@ cu.util = cu.util or {} --Utility functions
 cu.user = cu.user or {} --user functions
 cu.cmd = cu.cmd or {} --Command functions
 cu.log = cu.log or {} --Log functions
+if SERVER then
+  cu.db = cu.db or {}
+end
 
 --[[---------------------
 	Globals - We store variables and other things in these.
@@ -30,8 +33,7 @@ cu.g.users = cu.g.users or {} --All of our user data.
 cu.g.permissions = cu.g.permissions or {} --All of our register permissions.
 cu.g.commands = cu.g.commands or {} --Our command(s) data.
 if SERVER then
-	cu.g.sqlinfo = cu.g.sqlinfo or {} --Table for our SQL info.
-	cu.sqlobj = cu.sqlobj or nil
+  cu.g.db = cu.g.db or {}
 end
 
 local cu_starttime = os.clock()

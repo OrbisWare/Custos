@@ -10,17 +10,26 @@
 
   Server Hooks
 ]]
-hook.Add("CU_Initialized", "CustosInit", function()
+hook.Add("InitPostEntity", "CustosInit", function()
+	cu.db.Connect()
+end)
+
+hook.Add("BWSQL_DBConnected", "CU_LoadData", function()
 	cu.group.Load()
   cu.group.Default()
+  --cu.user.Load()
 
-  cu.group.Save()
+	cu.group.Save()
 
-  cu.user.Load()
-
-  if cu.config.Get("LogEnabled") then
+	if cu.config.Get("LogEnabled") then
     cu.log.Initialize()
   end
+end)
+
+hook.Add("OnReloaded", "CU_Reloaded", function()
+	if cu.config.Get("LoadPlugins") then
+		cu.plugin.LoadDir("plugins")
+	end
 end)
 
 hook.Add("PlayerAuthed", "CU_PlayerAuthed", function(ply)
@@ -79,11 +88,11 @@ end)
 
 hook.Add("ShutDown", "CU_ServerShutdown", function()
     cu.group.Unload()
-    cu.user.Unload()
+    --cu.user.Unload()
 
     if (cu.config.Get("LogEnabled") and cu.config.Get("LogEvents")) then
       cu.log.Write("SERVER", "Server is shutting down/changing levels.")
     end
 
-    BWSQL.DestroyInstance()
+		bwsql:Disconnect()
 end)

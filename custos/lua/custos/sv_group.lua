@@ -89,7 +89,7 @@ function cu.group.Create(id, display, colorObj, inherit, perm, immunity)
 end
 
 function cu.group.Load()
-	cu.sqlobj:EasyQuery("SELECT * FROM `cu_groups`", function(data, status, err)
+	bwsql:EasyQuery("SELECT * FROM `cu_groups`", function(data, status, err)
 		if !data[1] then return end
 
 		cu.util.PrintDebug(data)
@@ -119,8 +119,8 @@ function cu.group.Reload()
 end
 
 function cu.group.Save()
-	cu.sqlobj:EasyQuery("SELECT * FROM `cu_groups`", function(_data, status, err)
-		print("sql connected")
+	bwsql:EasyQuery("SELECT * FROM `cu_groups`", function(_data, status, err)
+		utilx.PrintTableEx(_data)
 		local sqlContainer = {}
 
 		for k,data in ipairs(_data) do
@@ -136,7 +136,7 @@ function cu.group.Save()
 
 				cu.util.PrintDebug("updating group "..tostring(grpID))
 
-				cu.sqlobj:EasyQuery("UPDATE `cu_groups` SET display = '%s', colorHex = %i, inherit = '%s', perm = '%s', immunity = %i WHERE name = '%s'",
+				bwsql:EasyQuery("UPDATE `cu_groups` SET display = '%s', colorHex = %i, inherit = '%s', perm = '%s', immunity = %i WHERE name = '%s'",
 				grpDisplay, grpColor, inherit, perm, immunity, grpID)
 
 				table.insert(sqlContainer, grpID)
@@ -162,7 +162,7 @@ function cu.group.Save()
 			local perm = von.serialize(g.perm)
 			local immunity = g.immunity
 
-			cu.sqlobj:EasyQuery("INSERT INTO `cu_groups` (name, display, colorHex, inherit, perm, immunity) VALUES('%s', '%s', '%i', '%s', '%s', '%i')",
+			bwsql:EasyQuery("INSERT INTO `cu_groups` (name, display, colorHex, inherit, perm, immunity) VALUES('%s', '%s', '%i', '%s', '%s', '%i')",
 				k, grpDisplay, grpColor, inherit, perm, immunity)
 		end
 	end)
