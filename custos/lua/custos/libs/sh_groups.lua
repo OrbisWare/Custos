@@ -38,23 +38,22 @@
 ]]
 
 local userGroups = cu.g.groups
-function cu.group.Create(id, display, colorObj, inherit, immunity, perm)
-	local colorObj = utilx.CheckTypeStrict(colorObj, "table")
-	local immunity = utilx.CheckTypeStrict(immunity, "number")
+function cu.group.Create(id, data)
+	if not utilx.CheckTypeStrict(data, "table") then return; end
+	if not utilx.CheckTypeStrict(data.color, "table") then return; end
+	if not utilx.CheckTypeStrict(data.immunity, "number") then return; end
+	if not utilx.CheckTypeStrict(data.perm, "table") then return; end
 
-	if !utilx.CheckTypeStrict(perm, "table") then
-		return
+	userGroups[id] = data
+	hook.Call("CU_OnGroupCreation", nil, id, data)
+end
+
+function cu.group.Exists(id)
+	if userGroups[id] then
+		return true
+	else
+		return false
 	end
-
-	userGroups[id] = {
-		display = display,
-		color = colorObj,
-		parent = inherit,
-		immunity = immunity,
-		perm = perm
-	}
-
-	hook.Call("CU_OnGroupCreation", nil, id)
 end
 
 function cu.group.Remove(id)

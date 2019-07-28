@@ -1,5 +1,4 @@
 local PLUGIN = PLUGIN
-
 PLUGIN.Name = "Player Pickup"
 PLUGIN.Author = "Wishbone"
 PLUGIN.Description = "Allows people to pickup players using their physgun"

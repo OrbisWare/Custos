@@ -9,7 +9,6 @@
 	~https://github.com/BadWolfGames/custos
 ]]
 local PLUGIN = PLUGIN
-
 PLUGIN.Name = "Run Lua"
 PLUGIN.Author = "Wishbone"
 PLUGIN.Description = "Run lua code."

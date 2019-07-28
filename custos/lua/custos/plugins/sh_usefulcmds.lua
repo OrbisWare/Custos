@@ -1,5 +1,4 @@
 local PLUGIN = PLUGIN
-
 PLUGIN.Name = "Useful Commands"
 PLUGIN.Author = "Wishbone"
 PLUGIN.Description = "Adds rcon, freeze, and slay commands."

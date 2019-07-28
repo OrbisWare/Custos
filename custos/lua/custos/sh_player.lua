@@ -12,9 +12,9 @@
 ]]
 local playerMeta = FindMetaTable("Player")
 
-function playerMeta:IsModerator()
+function playerMeta:IsOperator()
 	if IsValid(self) then
-		return self:IsUserGroup("moderator") or self:IsUserGroup("admin")
+		return self:IsUserGroup("operator") or self:IsUserGroup("admin")
 	else
 		return true
 	end

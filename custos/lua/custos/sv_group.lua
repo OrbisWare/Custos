@@ -42,8 +42,8 @@ function cu.group.Default()
 		}
 	}
 
-	cu.g.groups["moderator"] = {
-		display = "Moderator",
+	cu.g.groups["operator"] = {
+		display = "Operator",
 		color = Color(255, 117, 0, 255),
 		parent = "user",
 		immunity = 10,
