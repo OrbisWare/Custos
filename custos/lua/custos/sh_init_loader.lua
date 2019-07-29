@@ -15,26 +15,6 @@ local function GetFileFromFilename(path)
 	return path:match( "[\\/]([^/\\]+)$" ) or path
 end
 
-if SERVER then
-	--[[function cu.AddCSLuaFile(filee)
-		local stat, err = pcall(AddCSLuaFile, filee)
-
-		if !stat then
-			ErrorNoHalt(filee.." failed to add clientside file: "..err)
-			return false
-		end
-	end]]
-end
-
---[[function cu.include(filee)
-	local stat, err = pcall(include, filee)
-
-	if !stat then
-		ErrorNoHalt(filee.." failed to include file: "..err)
-		return false
-	end
-end]]
-
 function cu.LoadDir(dir, echo)
 	local echo = echo or true
 	local loadedFile;

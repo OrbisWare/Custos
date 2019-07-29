@@ -17,5 +17,5 @@ cu.color_reason = Color(0, 0, 0, 255) --Default: black
 cu.color_player = Color(0, 0, 0, 255) --Default: black
 
 cu.chatprefixes = {
-	"/",
+	"!",
 }

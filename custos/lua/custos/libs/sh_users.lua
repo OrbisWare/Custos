@@ -11,7 +11,6 @@
 	Modular user System
 ]]
 local users = cu.g.users
-
 function cu.user.Add(ply, group, perms)
 	local sSteamid32
 	local sSteamid64

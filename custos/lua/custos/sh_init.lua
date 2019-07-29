@@ -72,7 +72,8 @@ MsgN("//Loading Log System...")
 cu.LoadFile("sh_log.lua")
 
 MsgN("//Loading Group System...")
-cu.LoadFile("sv_group.lua")
+cu.LoadFile("sv_groups.lua")
+cu.LoadFile("cl_groups.lua")
 
 MsgN("//Loading Player Scripts...")
 cu.LoadFile("sh_player.lua")
@@ -81,16 +82,20 @@ cu.LoadFile("sv_player.lua")
 MsgN("//Loading Plugin System...")
 cu.LoadFile("sh_plugin.lua")
 
-MsgN("//Loading Default Commands...")
-cu.LoadFile("sv_cmds.lua")
+MsgN("//Loading Defaults...")
+cu.LoadFile("sh_defaults.lua")
 
 MsgN("//Loading Miscellaneous...")
-cu.LoadFile("sv_cmds.lua")
 cu.LoadFile("sh_misc.lua")
 
 if cu.config.Get("LoadPlugins") then
 	MsgN("//Loading Plugins...")
 	cu.plugin.LoadDir("plugins")
+end
+
+if cu.config.Get("LoadCAMI") then
+  MsgN("//Loading CAMI...")
+  cu.LoadFile("sh_cucami.lua")
 end
 
 MsgN("//Loading Core Hooks...")

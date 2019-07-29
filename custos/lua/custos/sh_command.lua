@@ -71,16 +71,6 @@ if SERVER then
         return false, "You don't have access to that command!"
       end
 
-      /*local run, err, msg = pcall(OnRun, unpack(args))
-      if !run then
-        cu.log.Write("CMD", "%s tried to run command %s. Error %s", cu.util.PlayerName(ply), command, err)
-        return false, "Command failed to run: "..err
-      end
-      if not err then
-        return err, msg
-      end
-      return true*/
-
       local succ, msg = OnRun(ply, unpack(args))
       if not succ then
         return succ, msg

@@ -10,30 +10,13 @@
 
 	Modular group System
 
-	Default Groups:
+	Group Structure:
 	["superadmin"] = {
 		display = "Super Admin",
 		color = Color(0, 255, 0, 255),
 		parent = "admin",
 		immunity = 99,
-	},
-	["admin"] = {
-		display = "Admin",
-		color = Color(255, 0, 0, 255),
-		parent = "moderator",
-		immunity = 20,
-	},
-	["moderator"] = {
-		display = "Moderator",
-		color = Color(255, 117, 0, 255),
-		parent = "user",
-		immunity = 10,
-	},
-	["user"] = {
-		display = "user",
-		color = Color(0, 0, 255, 255),
-		parent = "",
-		immunity = 0,
+		perm = {}
 	}
 ]]
 
@@ -51,9 +34,12 @@ end
 function cu.group.Exists(id)
 	if userGroups[id] then
 		return true
-	else
-		return false
 	end
+	return false
+end
+
+function cu.group.GetAll()
+	return userGroups
 end
 
 function cu.group.Remove(id)

@@ -10,6 +10,7 @@
 
 	group system - serverside. group and Perm class functions.
 ]]
+util.AddNetworkString("cu_Groups")
 function cu.group.Default()
 	if cu.g.groups["user"] then return end
 

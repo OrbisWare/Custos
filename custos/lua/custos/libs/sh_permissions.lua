@@ -11,17 +11,16 @@
 	Modular Permission System
 ]]
 local permissions = cu.g.permissions
-
 function cu.perm.Register(perm)
-	if cu.perm.Check(perm) then
-		return
-	end
+	if cu.perm.Check(perm) then return; end
 
 	if utilx.CheckTypeStrict(perm, "table") then
 		for k,v in pairs(perm) do
 			permissions[k] = v
-			cu.util.PrintDebug(v.." permission sucessfully registered.")
+			cu.util.PrintDebug(k.." permission sucessfully registered.")
 		end
+	else
+		permissions[perm] = true
 	end
 end
 
@@ -30,6 +29,8 @@ function cu.perm.Unregister(perm)
 		for k,_ in pairs(perm) do
 			permissions[k] = nil
 		end
+	else
+		permissions[perm] = nil
 	end
 end
 
