@@ -87,6 +87,7 @@ if SERVER then
 
 	function cu.log.Write(prefix, ...)
 		if not cu.config.Get("LogEnabled") then return end
+		if not data then return end
 
 		local tbl = {...}
 		local str = tbl[1]
